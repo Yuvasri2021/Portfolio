@@ -204,7 +204,7 @@
           "button": "#ffffff",
           "button_label": "#203729",
           "secondary_button_label": "#ffffff",
-          "button_hover": "#ffffff",
+          "button_hover": "#DCE5DF",
           "shadow": "#cacaca"
         }
       },
