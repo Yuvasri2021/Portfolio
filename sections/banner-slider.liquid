@@ -213,14 +213,17 @@
                     </a>
                   </div>
                 {%- endif -%}
-                 <div class="icon-image-wrapper">
-                  {{ block.settings.icon_image
-                      | image_url: width: 750
-                      | image_tag:
-                      class: 'icon-image',
-                      loading: 'lazy'
-                     }}
-                  </div>
+                {% if block.settings.icon_image != blank %}
+  <div class="icon-image-wrapper">
+    {{
+      block.settings.icon_image
+      | image_url: width: 750
+      | image_tag:
+        class: 'icon-image',
+        loading: 'lazy'
+    }}
+  </div>
+{% endif %}
             </div>
           </div>
         {%- endfor -%}
