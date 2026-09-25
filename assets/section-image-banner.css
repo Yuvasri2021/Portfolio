@@ -408,6 +408,10 @@
   }
 }
 
+.banner--desktop-transparent .button--secondary:hover{
+  background-color:var(--color-button_hover)
+}
+
 @media screen and (max-width: 749px) {
   .banner--mobile-bottom::after,
   .banner--mobile-bottom .banner__media::after {
