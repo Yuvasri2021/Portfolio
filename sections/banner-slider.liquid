@@ -85,6 +85,10 @@
     left: 0;
     z-index: 3;
   }
+    .icon-image{
+  width:500px;
+  height:auto;
+  }
 </style>
 
 <banner-swiper class="slider-mobile-gutter {% if section.settings.layout == 'grid' %} page-width {% endif %} {% if section.settings.show_text_below %} mobile-text-below{% endif %}  slideshow-section swiper bannerSwiper">
@@ -209,15 +213,15 @@
                     </a>
                   </div>
                 {%- endif -%}
-                  <div>{{ block.settings.icon-image 
+                 <div class="icon-image-wrapper">
+                  {{
+                      block.settings.icon_image
                       | image_url: width: 750
-                  | image_tag:
-                    height: auto,
-                    class: image_class,
-                    sizes: sizes,
-                    widths: widths,
-                    fetchpriority: fetch_priority}}</div>
-              </div>
+                      | image_tag:
+                      class: 'icon-image',
+                      loading: 'lazy'
+                     }}
+                  </div>
             </div>
           </div>
         {%- endfor -%}
