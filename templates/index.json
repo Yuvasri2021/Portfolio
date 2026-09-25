@@ -55,9 +55,88 @@
         "auto_play": 0,
         "accessibility_info": "Slideshow about our brand"
       }
+    },
+    "image_with_text_TN4bUr": {
+      "type": "image-with-text",
+      "blocks": {
+        "caption_xCUfDc": {
+          "type": "caption",
+          "settings": {
+            "caption": "ABOUT ME",
+            "text_style": "caption-with-letter-spacing",
+            "text_size": "medium"
+          }
+        },
+        "heading_emfeW9": {
+          "type": "heading",
+          "settings": {
+            "heading": "<p>Image with text</p>",
+            "title_color": "",
+            "heading_size": "h1"
+          }
+        },
+        "text_t3Xadn": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "text_style": "body"
+          }
+        },
+        "button_4n8GFp": {
+          "type": "button",
+          "settings": {
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style_secondary": false,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "caption_xCUfDc",
+        "heading_emfeW9",
+        "text_t3Xadn",
+        "button_4n8GFp"
+      ],
+      "name": "t:sections.image-with-text.presets.name",
+      "settings": {
+        "section_bg_color": "#ffffff",
+        "section_bg_opacity": 100,
+        "left_opacity": 100,
+        "right_opacity": 100,
+        "top_opacity": 100,
+        "bottom_opacity": 100,
+        "layout_width": "full_bleed",
+        "media_type": "image",
+        "image": "shopify://shop_images/ChatGPT_Image_Sep_21_2026_05_13_06_PM.png",
+        "live_video_link": "",
+        "height": "adapt",
+        "desktop_image_width": "medium",
+        "layout": "image_first",
+        "desktop_content_position": "middle",
+        "desktop_content_alignment": "left",
+        "content_layout": "no-overlap",
+        "section_color_scheme": "",
+        "color_scheme": "",
+        "image_behavior": "none",
+        "mobile_content_alignment": "left",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "enable_card": false,
+        "card_bg": "#ffffff",
+        "card_opacity": 100,
+        "card_description": "",
+        "card_text_color": "#ffffff",
+        "card_border_radius": 16,
+        "card_image_width": 50,
+        "card_image_height": 400
+      }
     }
   },
   "order": [
-    "banner_slider_gdEnWx"
+    "banner_slider_gdEnWx",
+    "image_with_text_TN4bUr"
   ]
 }
