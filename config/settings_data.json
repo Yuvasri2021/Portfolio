@@ -13,7 +13,7 @@
     "logo_width": 200,
     "favicon": "shopify://shop_images/White_Logo.png",
     "enable_preloader": false,
-    "type_header_font": "poppins_n5",
+    "type_header_font": "frank_ruhl_libre_n6",
     "heading_text_transform": "capitalize",
     "heading_scale": 100,
     "type_body_font": "inter_n4",
