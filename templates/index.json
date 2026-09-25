@@ -24,6 +24,7 @@
             "button_label": "View My Work",
             "link": "#",
             "button_style_secondary": true,
+            "icon-image": "shopify://shop_images/shopify_services_icons.png",
             "box_align": "middle-left",
             "show_text_box": false,
             "text_alignment": "left",
