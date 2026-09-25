@@ -214,8 +214,7 @@
                   </div>
                 {%- endif -%}
                  <div class="icon-image-wrapper">
-                  {{
-                      block.settings.icon_image
+                  {{ block.settings.icon_image
                       | image_url: width: 750
                       | image_tag:
                       class: 'icon-image',
