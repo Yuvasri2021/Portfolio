@@ -209,7 +209,14 @@
                     </a>
                   </div>
                 {%- endif -%}
-                  <div>{{ block.settings.icon-image }}</div>
+                  <div>{{ block.settings.icon-image 
+                      | image_url: width: 750
+                  | image_tag:
+                    height: height,
+                    class: image_class,
+                    sizes: sizes,
+                    widths: widths,
+                    fetchpriority: fetch_priority}}</div>
               </div>
             </div>
           </div>
