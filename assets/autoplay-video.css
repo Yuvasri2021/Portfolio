@@ -1,0 +1,61 @@
+.gallery-video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-gallery-video {
+  width: 100%;
+  height: auto;
+}
+
+.video-blocks {
+  display: flex;
+  column-gap: 3rem;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+.mute-button {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: 32px;
+    height: 40px;
+    border: none;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.mute-button .mute-icon {
+  width: 20px;
+  height: 20px;
+  background: url("unmuted-icon.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.video-gallery-video.muted ~ .mute-button .mute-icon {
+  background: url("muted-icon.svg") no-repeat center center;
+}
+
+@media (max-width: 1200px) {
+  .video-blocks {
+    column-gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .video-blocks {
+    column-gap: 1rem;
+    flex-direction: column;
+  }
+  .mute-button{
+    top: 10px;
+    right: 10px;
+  }
+}
