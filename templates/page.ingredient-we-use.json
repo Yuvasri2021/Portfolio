@@ -1,0 +1,261 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "breadcrumb_D7LB3R": {
+      "type": "breadcrumb",
+      "settings": {
+        "layout": "full_bleed",
+        "use_breadcrumb_title": true,
+        "breadcrumb_image": "shopify://shop_images/ChatGPT_Image_Nov_7_2025_10_23_04_PM.png",
+        "breadcrumb_style": "center",
+        "image_overlay_opacity": 11,
+        "color_scheme": "scheme-3",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "image_with_text_nV7riC": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_hzUXHK": {
+          "type": "heading",
+          "settings": {
+            "heading": "The Essence of Ayurveda in Every Ingredient",
+            "title_color": "#1d070a",
+            "heading_size": "h1"
+          }
+        },
+        "caption_fAmaU7": {
+          "type": "caption",
+          "settings": {
+            "caption": "",
+            "text_style": "subtitle",
+            "text_size": "small"
+          }
+        },
+        "text_TtEBw9": {
+          "type": "text",
+          "settings": {
+            "text": "<p>At , every formulation begins with nature’s purest essence. We carefully select authentic Ayurvedic ingredients sourced from certified farms and trusted herbal suppliers across India. Each herb, extract, oil, butter, and natural active used in our products is tested for purity, potency, and safety — ensuring that only the best reaches your skin and hair. <br/><br/>Every ingredient at  is handled with utmost care - cleaned, sorted, and processed using gentle Ayurvedic techniques that retain its natural potency. Our formulations are prepared in small batches to preserve freshness, color, and aroma, ensuring every product feels alive with herbal vitality. <br/><br/>All our products are free from parabens, ammonia, sulfur, silicones, and mineral oils, staying true to the Ayurvedic principle of <em>swasthya rakshanam</em> — protecting and nurturing wellness through pure, natural formulations. Every creation reflects our commitment to clean, conscious beauty that respects both the body and nature.</p>",
+            "text_style": "body"
+          }
+        },
+        "button_JbAGWp": {
+          "type": "button",
+          "settings": {
+            "button_label": "Shop Our Products",
+            "button_link": "shopify://collections/all",
+            "button_style_secondary": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_hzUXHK",
+        "caption_fAmaU7",
+        "text_TtEBw9",
+        "button_JbAGWp"
+      ],
+      "name": "t:sections.image-with-text.presets.name",
+      "settings": {
+        "layout_width": "grid",
+        "image": "shopify://shop_images/ChatGPT_Image_Nov_7_2025_10_16_09_PM.png",
+        "height": "adapt",
+        "desktop_image_width": "medium",
+        "layout": "image_first",
+        "desktop_content_position": "middle",
+        "desktop_content_alignment": "left",
+        "content_layout": "no-overlap",
+        "section_color_scheme": "scheme-1",
+        "color_scheme": "scheme-4",
+        "image_behavior": "zoom-in",
+        "mobile_content_alignment": "left",
+        "padding_top": 68,
+        "padding_bottom": 28
+      }
+    },
+    "collapsible_content_q88Fai": {
+      "type": "collapsible-content",
+      "blocks": {
+        "collapsible_row_fXTAy4": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Pure Botanicals from the Nilgiris",
+            "icon": "clipboard",
+            "row_content": "<p>We take immense pride in sourcing directly from the Nilgiris - our home ground of purity and freshness. Many of our key botanicals and essential oils are grown and distilled in Ooty and Coonoor, ensuring authenticity and high natural quality. We collaborate with local traditional farmers, supporting sustainable cultivation and ethical wild-harvesting of medicinal herbs, flowers, and fruits. From lemongrass, rosemary, eucalyptus, and camphor oils to aloe vera, hibiscus, and turmeric roots, every ingredient is chosen for its therapeutic strength and freshness. Each extract and essential oil undergoes scientific testing for purity, stability, and bioactivity, ensuring consistent results while retaining the soul of Ayurveda.<br/><br/></p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_8HXC9L": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Authentic Ayurvedic Ingredients",
+            "icon": "clipboard",
+            "row_content": "<p>Our formulations are built upon the rich legacy of Ayurveda, India’s ancient system of holistic healing. We use classical herbs, roots, flowers, and natural actives documented in authentic Ayurvedic texts such as <em>Bhavaprakasha Nighantu</em> and <em>Charaka Samhita</em>. Every raw material is selected from certified herbal farms and trusted suppliers who maintain purity and traditional processing methods. These ingredients are gently extracted to retain their natural potency, aroma, and nutrient profile. Each formulation embodies the philosophy of <em>swasthasya swasthya rakshanam</em> - preserving health through natural balance. By combining traditional wisdom with precision formulation, we bring the essence of Ayurveda into modern skincare and haircare.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_j4W9Bg": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "No Paraben",
+            "icon": "clipboard",
+            "row_content": "<p>Parabens are synthetic preservatives commonly used in cosmetics to prevent bacterial growth and extend shelf life. However, research has shown that parabens can mimic estrogen and potentially disrupt the body’s natural hormonal balance. Prolonged exposure may also cause skin irritation, allergic reactions, and sensitivities, especially in delicate or damaged skin. Environmentally, parabens can enter aquatic ecosystems through wastewater and accumulate in marine organisms, posing ecological risks. At , we are committed to safety and transparency - our products are completely paraben-free. This ensures every formulation remains gentle and safe for long-term use.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_MFWYir": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "No Petrochemicals",
+            "icon": "clipboard",
+            "row_content": "<p>Petrochemicals are commonly used in cosmetics for their low cost, long shelf life, and ability to create a smooth, glossy texture that gives products an instant “luxury” feel. Derived from non-renewable fossil fuels such as mineral oil, paraffin, and petrolatum, these ingredients are valued for their texture and stability but pose serious sustainability concerns. The extraction and refining of crude oil release greenhouse gases, contaminate soil and water, and disturb fragile ecosystems. Many petrochemical derivatives are also poorly biodegradable, allowing residues to persist in the environment and accumulate in marine and soil ecosystems.<br/><br/>At , we do not support the use of petrochemical ingredients because they conflict with our environmental values and holistic philosophy. While these materials can make products feel artificially smooth or glossy, we prioritize safety, authenticity, and sustainability over superficial luxury. Our formulations rely instead on pure plant-based oils, natural emollients, and Ayurvedic butters - renewable, biodegradable alternatives that deliver genuine nourishment and care. This approach may offer a more natural texture, but it ensures that every  creation remains safe for the skin, gentle on the planet, and true to nature.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_9nJ6Bc": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "No silicones",
+            "icon": "clipboard",
+            "row_content": "<p>Silicones are synthetic compounds often used in cosmetics to give products a smooth, silky texture and instant shine. Though generally safe for topical use, their effects are purely cosmetic — forming a film that can cause buildup on skin or hair over time, reducing natural moisture balance and dulling vitality. Environmentally, certain cyclic silicones like D4 and D5 are non-biodegradable and have been restricted in rinse-off products in the EU due to their persistence and accumulation in water and soil.</p><p>At , we avoid silicones because true care comes from nourishment, not surface gloss. Instead, we rely on Ayurvedic oils, herbal actives, and plant-based emollients that deliver real, lasting nourishment — ensuring our products remain safe, sustainable, and naturally effective.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_row_HLkN8M": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Purity and safety tested",
+            "icon": "clipboard",
+            "row_content": "<p>We uphold the highest standards of safety, authenticity, and consistency in every batch we produce. All herbs, extracts, and natural actives undergo scientific testing for purity, stability, and potency, ensuring they meet AYUSH, ISO, and GMP quality benchmarks. Raw materials are authenticated using botanical and analytical techniques to prevent adulteration or contamination. Microbial, heavy metal, and stability analyses are conducted to verify long-term safety and product performance. Every formulation is created in controlled and hygienic facilities, preserving the integrity of the ingredients from harvest to packaging. Through this disciplined process, we guarantee that each product remains true to Ayurvedic purity while meeting modern scientific expectations.<br/><br/></p>",
+            "page": ""
+          }
+        }
+      },
+      "block_order": [
+        "collapsible_row_fXTAy4",
+        "collapsible_row_8HXC9L",
+        "collapsible_row_j4W9Bg",
+        "collapsible_row_MFWYir",
+        "collapsible_row_9nJ6Bc",
+        "collapsible_row_HLkN8M"
+      ],
+      "name": "t:sections.collapsible_content.presets.name",
+      "settings": {
+        "caption": "",
+        "heading": "Inspired by Ayurveda, Nurtured in the Nilgiris",
+        "heading_size": "h1",
+        "heading_alignment": "center",
+        "layout": "section",
+        "color_scheme": "",
+        "container_color_scheme": "",
+        "open_first_collapsible_row": true,
+        "image_ratio": "adapt",
+        "desktop_layout": "image_second",
+        "padding_top": 52,
+        "padding_bottom": 52
+      }
+    },
+    "multicolumn_YwVVbg": {
+      "type": "multicolumn",
+      "blocks": {
+        "column_YkqLBK": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/12.jpg",
+            "title": "",
+            "text": "<p>Made in Nilgiris<br/></p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_YtELhH": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/15.jpg",
+            "title": "",
+            "text": "<p>No toxic chemicals</p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_CUaqfq": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/13.jpg",
+            "title": "",
+            "text": "<p>Ayush approved <br/></p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_gXkQV8": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/Minimalist_logo_concepts_for_AyurHouse.jpg",
+            "title": "",
+            "text": "<p>Plant based</p>",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "column_YkqLBK",
+        "column_YtELhH",
+        "column_CUaqfq",
+        "column_gXkQV8"
+      ],
+      "custom_css": [],
+      "name": "t:sections.multicolumn.presets.name",
+      "settings": {
+        "layout": "grid",
+        "title": "Trusted quality - 100% Ayurvedic Products",
+        "section_heading_size": "h1",
+        "image_width": "custom",
+        "custom_width": 120,
+        "image_ratio": "adapt",
+        "columns_desktop": 4,
+        "column_alignment": "center",
+        "background_style": "none",
+        "column_bkg_color": "#740f1a",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "solid",
+        "color_scheme": "scheme-1",
+        "heading_size": "h1",
+        "swiper_enable": true,
+        "desktop_column": 4,
+        "laptop_column": 4,
+        "tablet_column": 3,
+        "mobile_column": 1,
+        "desktop_column_gaps": 30,
+        "mobile_column_gaps": 10,
+        "padding_top": 0,
+        "padding_bottom": 40
+      }
+    }
+  },
+  "order": [
+    "breadcrumb_D7LB3R",
+    "main",
+    "image_with_text_nV7riC",
+    "collapsible_content_q88Fai",
+    "multicolumn_YwVVbg"
+  ]
+}
