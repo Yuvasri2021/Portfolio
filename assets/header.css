@@ -107,7 +107,7 @@
 .header__icons {
   display: flex;
   grid-area: icons;
-  justify-self: end;
+  justify-self: center;
   /* padding-right: 0.8rem; */
 }
 
