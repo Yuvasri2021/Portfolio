@@ -1279,6 +1279,10 @@ button.shopify-payment-button__button--unbranded {
 
 }
 
+.button:hover{
+  background-color:var(--color-button_hover)
+}
+
 .button:hover::before,
 .shopify-challenge__button:hover::before,
 .customer button:hover::before,
