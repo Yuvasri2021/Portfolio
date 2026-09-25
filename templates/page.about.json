@@ -1,1 +1,97 @@
-{"sections":{"breadcrumb_D7LB3R":{"type":"breadcrumb","disabled":true,"settings":{"layout":"full_bleed","use_breadcrumb_title":true,"breadcrumb_style":"center","image_overlay_opacity":11,"color_scheme":"scheme-98af4e97-5e9e-4b8d-bba6-d0463179cbcb","padding_top":72,"padding_bottom":72}},"main":{"type":"main-page","disabled":true,"settings":{"padding_top":28,"padding_bottom":28}},"image_with_text_nV7riC":{"type":"image-with-text","blocks":{"caption_fAmaU7":{"type":"caption","settings":{"caption":"Serving Devotees with Faith and Tradition","text_style":"caption-with-letter-spacing","text_size":"small"}},"heading_hzUXHK":{"type":"heading","settings":{"heading":"Our Spiritual Journey","title_color":"#1d070a","heading_size":"h1"}},"text_TtEBw9":{"type":"text","settings":{"text":"<p>We are committed to preserving the sacred traditions of Vedic rituals and making them accessible to devotees everywhere. Our platform connects you with experienced priests who perform authentic poojas and spiritual ceremonies with devotion and proper Vedic practices.<\/p><p>Through our services, devotees can participate in sacred rituals, receive blessings, and stay spiritually connected regardless of distance. We aim to create a trusted space where faith, tradition, and devotion come together to support your spiritual journey.<\/p>","text_style":"body"}},"button_JbAGWp":{"type":"button","settings":{"button_label":"Book Now","button_link":"shopify:\/\/collections\/all","button_style_secondary":false}}},"block_order":["caption_fAmaU7","heading_hzUXHK","text_TtEBw9","button_JbAGWp"],"name":"t:sections.image-with-text.presets.name","settings":{"layout_width":"grid","image":"shopify:\/\/shop_images\/c83pzvhpmbndweuijb0n9qwij__CampaignCover2.webp","height":"adapt","desktop_image_width":"medium","layout":"image_first","desktop_content_position":"middle","desktop_content_alignment":"left","content_layout":"no-overlap","section_color_scheme":"scheme-1","color_scheme":"scheme-4","image_behavior":"zoom-in","mobile_content_alignment":"left","padding_top":68,"padding_bottom":0}},"image_with_text_HbTFBP":{"type":"image-with-text","blocks":{"caption_UtnmAQ":{"type":"caption","settings":{"caption":"Connecting Devotees with Authentic Vedic Rituals","text_style":"caption-with-letter-spacing","text_size":"small"}},"heading_J6PhHP":{"type":"heading","settings":{"heading":"Sacred Traditions, Timeless Blessings","title_color":"#1d070a","heading_size":"h1"}},"text_TXB4Rk":{"type":"text","settings":{"text":"<p>Our mission is to bring the divine experience of traditional Vedic rituals closer to devotees across the world. With the guidance of experienced priests and sacred practices, we ensure every ceremony is performed with purity, devotion, and respect for ancient traditions. Through our platform, you can easily book rituals and receive spiritual blessings from anywhere.<\/p>","text_style":"body"}},"button_jxKFLK":{"type":"button","settings":{"button_label":"Shop Our Products","button_link":"shopify:\/\/collections\/all","button_style_secondary":false}}},"block_order":["caption_UtnmAQ","heading_J6PhHP","text_TXB4Rk","button_jxKFLK"],"name":"t:sections.image-with-text.presets.name","settings":{"layout_width":"grid","image":"shopify:\/\/shop_images\/ajvrpzkox0amexamqxjlnzmu8__CampaignCover4.webp","height":"adapt","desktop_image_width":"medium","layout":"text_first","desktop_content_position":"middle","desktop_content_alignment":"left","content_layout":"no-overlap","section_color_scheme":"scheme-1","color_scheme":"scheme-4","image_behavior":"zoom-in","mobile_content_alignment":"left","padding_top":32,"padding_bottom":0}},"multicolumn_YwVVbg":{"type":"multicolumn","blocks":{"column_YkqLBK":{"type":"column","settings":{"image":"shopify:\/\/shop_images\/prasad.87c0c3d8ffdaed5afd19172499a5a752_bdda3a88-f580-45a3-baa3-2ff2318a95fc.png","title":"Personalized Sankalpa & Prasad Delivery","text":"<p>Experience personalised blessings through customised sankalpa and receive divine prasad delivered to your doorstep, adding a personal touch to your spiritual journey.<\/p>","link_label":"","link":""}},"column_YtELhH":{"type":"column","settings":{"image":"shopify:\/\/shop_images\/pandit.25648a84443a0be1aa719d3408270575.png","title":"Experienced and Trusted Priests","text":"<p>Rely on the expertise and trustworthiness of experienced priests, dedicated to performing rituals according to sacred texts and traditions.<\/p>","link_label":"","link":""}},"column_CUaqfq":{"type":"column","settings":{"image":"shopify:\/\/shop_images\/globe.89efad4c28b5d7f8a95542ddf1446abf.png","title":"Join from anywhere around the world","text":"<p>Access spiritual services from anywhere in the world, connecting with the divine without geographical limitations.<\/p>","link_label":"","link":""}},"column_gXkQV8":{"type":"column","settings":{"image":"shopify:\/\/shop_images\/calendar.2f06d009a97f7601bcd3b3ea4ce95f6f.png","title":"Sevas on all Important Festivals","text":"<p>Stay connected to significant festivals and auspicious moments, ensuring you never miss an opportunity to celebrate with devotion.<\/p>","link_label":"","link":""}},"column_L3CXpJ":{"type":"column","settings":{"image":"shopify:\/\/shop_images\/rupeeRound.e6c1eb912071405a54d8a51dd39c591b.png","title":"Grand Pujas at affordable cost","text":"<p>We offer grand pujas and rituals at a cost-effective price, making spiritual experiences accessible to all.<\/p>","link_label":"","link":""}}},"block_order":["column_YkqLBK","column_YtELhH","column_CUaqfq","column_gXkQV8","column_L3CXpJ"],"custom_css":[],"name":"t:sections.multicolumn.presets.name","settings":{"layout":"grid","title":"Benefits of live pujas with Devaseva","heading_alignment":"center","description":"","description_alignment":"center","section_heading_size":"h2","image_width":"third","custom_width":120,"image_ratio":"adapt","columns_desktop":4,"column_alignment":"center","background_style":"none","column_bkg_color":"#fff0d9","button_label":"","button_link":"","button_style":"solid","color_scheme":"scheme-1","heading_size":"h4","swiper_enable":true,"desktop_column":4,"laptop_column":4,"tablet_column":3,"mobile_column":2,"desktop_column_gaps":40,"mobile_column_gaps":10,"padding_top":60,"padding_bottom":60}}},"order":["breadcrumb_D7LB3R","main","image_with_text_nV7riC","image_with_text_HbTFBP","multicolumn_YwVVbg"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "breadcrumb_D7LB3R": {
+      "type": "breadcrumb",
+      "disabled": true,
+      "settings": {
+        "layout": "full_bleed",
+        "use_breadcrumb_title": true,
+        "breadcrumb_style": "center",
+        "image_overlay_opacity": 40,
+        "color_scheme": "scheme-2",
+        "padding_top": 0,
+        "padding_bottom": 80
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "custom_liquid_MCnTBH": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<div style=\"display:flex; gap:12px; flex-wrap:wrap; margin-bottom:30px; justify-content:center;\">\n\n  <button class=\"tab-btn active\" onclick=\"showTab('monthly', this)\">Monthly Poojas</button>\n  <button class=\"tab-btn\" onclick=\"showTab('birthday', this)\">Birthday Packages</button>\n  <button class=\"tab-btn\" onclick=\"showTab('short', this)\">Short-term Events</button>\n  <button class=\"tab-btn\" onclick=\"showTab('yearlong', this)\">Yearlong Programs</button>\n\n</div>\n\n<style>\n.tab-btn {\n  padding:10px 18px;\n  border:none;\n  border-radius:25px;\n  background:#f5f5f5;\n  cursor:pointer;\n  font-weight:600;\n  transition:all 0.3s ease;\n}\n\n.tab-btn:hover {\n  background:#000;\n  color:#fff;\n}\n\n.tab-btn.active {\n  background:#000;\n  color:#fff;\n}\n</style>\n\n<script>\ndocument.addEventListener(\"DOMContentLoaded\", function() {\n  function showTab(tab, el) {\n    document.querySelectorAll('.tab-content').forEach(elm => elm.style.display='none');\n    document.getElementById(tab).style.display='block';\n\n    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));\n    el.classList.add('active');\n  }\n\n  window.showTab = showTab;\n  showTab('monthly', document.querySelector('.tab-btn'));\n});\n</script>",
+        "color_scheme": "",
+        "layout": "grid",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "custom_liquid_Nedajb": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<div id=\"monthly\" class=\"tab-content\">\n  {% assign collection = collections['monthly-poojas'] %}\n  <div style=\"display:grid; grid-template-columns:repeat(3,1fr); gap:20px;\">\n    \n    {% for product in collection.products %}\n      <div style=\"border:1px solid #eee; padding:10px; text-align:center;\">\n        \n        <a href=\"{{ product.url }}\">\n          <img src=\"{{ product.featured_image | image_url: width: 400 }}\" style=\"width:100%; height:auto;\" />\n          \n          <h3 style=\"margin-top:10px;\">{{ product.title }}</h3>\n        </a>\n\n      </div>\n    {% endfor %}\n    \n  </div>\n</div>",
+        "color_scheme": "",
+        "layout": "grid",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "custom_liquid_CrpNd4": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<div id=\"birthday\" class=\"tab-content\" style=\"display:none;\">\n  {% assign collection = collections['birthday-packages'] %}\n  <div style=\"display:grid; grid-template-columns:repeat(3,1fr); gap:20px;\">\n    \n    {% for product in collection.products %}\n      <div style=\"border:1px solid #eee; padding:10px; text-align:center;\">\n        <a href=\"{{ product.url }}\">\n          <img src=\"{{ product.featured_image | image_url: width: 400 }}\" style=\"width:100%; height:auto;\" />\n          <h3 style=\"margin-top:10px;\">{{ product.title }}</h3>\n        </a>\n      </div>\n    {% endfor %}\n    \n  </div>\n</div>",
+        "color_scheme": "",
+        "layout": "full_bleed",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "custom_liquid_NYnLqk": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<div id=\"short\" class=\"tab-content\" style=\"display:none;\">\n  {% assign collection = collections['short-term-events'] %}\n  <div style=\"display:grid; grid-template-columns:repeat(3,1fr); gap:20px;\">\n    \n    {% for product in collection.products %}\n      <div style=\"border:1px solid #eee; padding:10px; text-align:center;\">\n        <a href=\"{{ product.url }}\">\n          <img src=\"{{ product.featured_image | image_url: width: 400 }}\" style=\"width:100%; height:auto;\" />\n          <h3 style=\"margin-top:10px;\">{{ product.title }}</h3>\n        </a>\n      </div>\n    {% endfor %}\n    \n  </div>\n</div>",
+        "color_scheme": "",
+        "layout": "full_bleed",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "custom_liquid_eJneKt": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<div id=\"yearlong\" class=\"tab-content\" style=\"display:none;\">\n  {% assign collection = collections['yearlong-programs'] %}\n  <div style=\"display:grid; grid-template-columns:repeat(3,1fr); gap:20px;\">\n    \n    {% for product in collection.products %}\n      <div style=\"border:1px solid #eee; padding:10px; text-align:center;\">\n        <a href=\"{{ product.url }}\">\n          <img src=\"{{ product.featured_image | image_url: width: 400 }}\" style=\"width:100%; height:auto;\" />\n          <h3 style=\"margin-top:10px;\">{{ product.title }}</h3>\n        </a>\n      </div>\n    {% endfor %}\n    \n  </div>\n</div>",
+        "color_scheme": "",
+        "layout": "full_bleed",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    }
+  },
+  "order": [
+    "breadcrumb_D7LB3R",
+    "main",
+    "custom_liquid_MCnTBH",
+    "custom_liquid_Nedajb",
+    "custom_liquid_CrpNd4",
+    "custom_liquid_NYnLqk",
+    "custom_liquid_eJneKt"
+  ]
+}
