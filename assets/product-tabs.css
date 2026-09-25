@@ -1,0 +1,66 @@
+.visibility-none {
+  opacity: 0;
+  overflow: hidden;
+  display: none;
+}
+.tabs {
+  margin-bottom: 0rem;
+}
+a.add-wishlist {
+    width: 4rem;
+    height: 4rem;}
+@media screen and (max-width: 1024px) {
+  .tabs {
+    margin-bottom: 0rem;
+    display: flex;
+    column-gap: var(--grid-mobile-horizontal-spacing);
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  .tabs .custom_tablink {
+    font-size: 15px !important;
+}
+  .tabs:-webkit-scrollbar {
+    height: 5px;
+  }
+  
+}
+
+.collection-tab-image img {
+  width: 100%;
+  height: auto;
+}
+
+.tabs.has-tabs-content {
+  display: flex;
+  column-gap: 2rem;
+}
+.collection-tab-image {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+.collection-tabs-content {
+  width: 100px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+
+  .card-icon {
+    width: 3rem !important;
+    height: 3rem !important; 
+  }
+  a.add-wishlist{
+    width: 18px !important;
+    height: 18px !important;}
+   }
+
+/* Custom Css */
+
+tabs align-center   .custom_tablink link active--button{
+  color: #EE7428;
+}

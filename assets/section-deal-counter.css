@@ -1,0 +1,63 @@
+/* deal banner css */
+
+.deal-clock > * {
+  font-family: var(--font-heading-family);
+  font-size: clamp(
+    calc(var(--font-heading-scale) * 3rem),
+    2vw,
+    calc(var(--font-heading-scale) * 4rem)
+  );
+}
+.deal-clock span {
+  font-size: 1.6rem;
+  margin-left: 0.5rem;
+}
+
+/* custom deal css */
+@media screen and (min-width: 1200px) {
+  .custom-deal-banner .deals-counter > div {
+    flex-basis: 33.333%;
+  }
+}
+@media screen and (min-width: 990px) {
+  .custom-deal-banner .deals-counter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .custom-deal-banner .deals-counter > div {
+    width: fit-content;
+  }
+  .custom-deal-banner .deal-buttons {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+@media screen and (max-width: 989px) {
+  .custom-deal-banner .deals-counter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    row-gap: 0.7rem;
+  }
+  .custom-deal-banner .deal-buttons {
+    margin-top: 2rem;
+  }
+}
+.custom-deal-banner .deal-clock {
+  width: 100%;
+  align-items: center;
+}
+.custom-deal-banner .deal-clock > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.custom-deal-banner .deal-clock span {
+  font-size: 1.4rem;
+  margin-left: 0rem;
+  font-weight: 400;
+}
