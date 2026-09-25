@@ -1,0 +1,186 @@
+{%- if url contains 'youtube.com/watch' -%}
+  {%- assign video_id = url | split: 'v=' -%}
+  {%- assign video_id = video_id[1] | split: '&' | first -%}
+  <div
+    id="YouTubeVideo-{{ section_id }}"
+    class="video-div"
+    data-type="youtube"
+    data-video-id="{{ video_id }}"
+  ></div>
+{%- endif -%}
+
+{%- if url contains 'youtu.be/' -%}
+  {%- assign video_id = url | split: '.be/' -%}
+  {%- assign video_id = video_id[1] | split: '&' | first -%}
+  <div
+    id="YouTubeVideo-{{ section_id }}"
+    class="video-div"
+    data-type="youtube"
+    data-video-id="{{ video_id }}"
+  ></div>
+{%- endif -%}
+
+{%- if url contains 'vimeo.com' -%}
+  {%- assign video_id = url | split: '.com/' -%}
+  {%- assign video_id = video_id[1] | split: '/' | first -%}
+  <button type="button" id="VimeoTrigger-{{ section_id }}" class="vimeo-mobile-trigger medium-up--hide">
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      role="presentation"
+      class="icon icon-play"
+      viewBox="18.24 17.35 24.52 28.3"
+    >
+      <path fill="#323232" d="M22.1 19.151v25.5l20.4-13.489-20.4-12.011z"/>
+    </svg>
+  </button>
+  <div
+    id="Vimeo-{{ section_id }}"
+    class="video-div"
+    data-type="vimeo"
+    data-video-id="{{ video_id }}"
+  ></div>
+{%- endif -%}
+
+{%- if url contains '.mp4' or url contains '.MP4' -%}
+  <video
+    id="Mp4Video-{{ section_id }}"
+    class="video-div"
+    data-type="mp4"
+    src="{{ url }}"
+    loop
+    muted
+    playsinline
+    autoplay
+  ></video>
+{%- endif -%}
+
+<script>
+ document.addEventListener('DOMContentLoaded', function() {
+
+  function VideoSection(container) {
+    this.container = container;
+    this.sectionId = container.getAttribute('data-section-id');
+    this.namespace = `.video-${this.sectionId}`;
+    this.videoObject = null;
+    
+    this.initWhenVisible({
+      element: this.container,
+      callback: this.init.bind(this),
+      threshold: 500
+    });
+  }
+
+  VideoSection.prototype = {
+    init: function() {
+      const dataDiv = this.container.querySelector('.video-div');
+      if (!dataDiv) return; // Exit if no video data div is found
+
+      const type = dataDiv.dataset.type;
+      switch (type) {
+        case 'youtube':
+          this.initYoutubeVideo(dataDiv.dataset.videoId);
+          break;
+        case 'vimeo':
+          this.initVimeoVideo(dataDiv.dataset.videoId);
+          break;
+        case 'mp4':
+          this.initMp4Video();
+          break;
+        default:
+          console.warn(`Unsupported video type: ${type}`);
+      }
+    },
+
+    initYoutubeVideo: function(videoId) {
+      const youtubeScript = document.createElement('script');
+      youtubeScript.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(youtubeScript);
+
+      window.onYouTubeIframeAPIReady = () => {
+        this.videoObject = new YT.Player(`YouTubeVideo-${this.sectionId}`, {
+          videoId: videoId,
+          playerVars: {
+            'autoplay': 1,
+            'loop': 1,
+            'playlist': videoId,  // Required for looping YouTube videos
+            'controls': 0,        // Disable video controls
+            'mute': 1,            // Mute the video if needed
+            'playsinline': 1
+          },
+          events: {
+            onReady: function(event) {
+              event.target.playVideo();
+            }
+          }
+        });
+      };
+    },
+
+    initVimeoVideo: function(videoId) {
+      const vimeoScript = document.createElement('script');
+      vimeoScript.src = 'https://player.vimeo.com/api/player.js';
+      document.head.appendChild(vimeoScript);
+
+      vimeoScript.onload = () => {
+        this.videoObject = new Vimeo.Player(`Vimeo-${this.sectionId}`, {
+          id: videoId,
+          loop: true,             // Loop Vimeo video
+          autoplay: true,         // Autoplay
+          muted: true             // Mute video
+        });
+
+        this.videoObject.play();
+        this.videoObject.setVolume(0); // Ensure the video is muted
+      };
+    },
+
+    initMp4Video: function() {
+      const mp4Video = `Mp4Video-${this.sectionId}`;
+      const mp4Div = document.getElementById(mp4Video);
+      if (!mp4Div) return;
+
+      const parent = mp4Div.closest('.video-parent-section');
+      parent.classList.add('loaded');
+
+      // Set video to loop, hide controls, and autoplay
+      mp4Div.loop = true;
+      mp4Div.controls = false;
+      mp4Div.muted = true;
+      mp4Div.play();
+
+      const playPromise = mp4Div.play();
+      if (playPromise !== undefined) {
+        playPromise.then(function() {
+          // Video playing normally
+        }).catch(function() {
+          parent.classList.add('video-interactable');
+        });
+      }
+    },
+
+    initWhenVisible: function({ element, callback, threshold = 500 }) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            callback();
+            observer.disconnect(); // Trigger the callback only once
+          }
+        });
+      }, { threshold: [0.1] }); // Visibility threshold of 10%
+      observer.observe(element);
+    },
+
+    onUnload: function() {
+      if (this.videoObject && typeof this.videoObject.destroy === 'function') {
+        this.videoObject.destroy();
+      }
+    }
+  };
+
+  // Initialize the video section for all containers with class 'video-parent-section'
+  document.querySelectorAll('.video-parent-section').forEach(function(container) {
+    new VideoSection(container);
+  });
+});
+</script>

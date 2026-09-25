@@ -1,0 +1,85 @@
+{%- if settings.cart_drawer_collection != blank -%}
+  {%- assign drawer_collection = collections[settings.cart_drawer_collection] -%}
+  <div class="cart-drawer__collection {% if cart == empty %}is-empty{% endif %}">
+   <div class="heading_cart">
+      <h4>{{ settings.cart_sub_text }}</h4>
+    <h2>{{ settings.cart_text }}</h2>
+    </div>
+    {% if settings.swiper_enable %}
+      <!-- Swiper Layout -->
+      <featured-swiper-slider class="{% if section.settings.full_width %} slider-component-full-width{% endif %} page-width {% if section.settings.full_width == false %} page-width-desktop{% endif %}">
+        <div data-slider-options='
+          {
+            "loop": "{%- if settings.centered_slide -%}1{%- else -%}0{%- endif -%}",
+            "desktop": "{{ settings.desktop_column }}",
+            "laptop": "2",
+            "tablet": "1",
+            "mobile": "1",
+            "gap": "{{ settings.column_gap }}",
+            "auto_play": "{{ section.settings.auto_play }}",
+            "pagination": "{% if settings.swiper_pagination %}true{% else %}false{% endif %}",
+            "navigation": "{% if settings.swiper_navigation %}true{% else %}false{% endif %}",
+            "effect": "{{ settings.slider_effect }}"
+          }
+        '>
+          <div class="swiper" data-swiper-slider>
+            <div
+              id="Slider-{{ section.id }}"
+              class="product-grid contains-card{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} swiper-wrapper"
+              role="list"
+              aria-label="Slider"
+            >
+              {%- for product in drawer_collection.products limit: 5 -%}
+                <div id="Slide-{{ section.id }}-{{ forloop.index }}" class="swiper-slide">
+                  {% render 'card-product-for-drawer',
+                    card_product: product,
+                    media_aspect_ratio: section.settings.image_ratio,
+                    show_secondary_image: section.settings.show_secondary_image,
+                    show_rating: section.settings.show_rating,
+                    show_quick_add: settings.enable_quickadd,
+                    section_id: section.id
+                  %}
+                </div>
+              {%- else -%}
+                {%- for i in (1..4) -%}
+                  <div class="grid__item">
+                    {% render 'card-product-for-drawer', show_vendor: section.settings.show_vendor %}
+                  </div>
+                {%- endfor -%}
+              {%- endfor -%}
+            </div>
+           
+             {% if settings.swiper_pagination %}
+              <div class="swiper-pagination"></div>
+            {% endif %}
+          </div>
+        </div>
+      </featured-swiper-slider>
+    {% else %}
+      <!-- Grid Layout -->
+      <div class="product-grid contains-card list-unstyled contains-card--product">
+        <div id="Slider-{{ section.id }}" class="grid grid--1-col grid--{{ settings.desktop_column }}-col-desktop">
+          {%- for product in drawer_collection.products limit: 5 -%}
+            <div id="Slide-{{ section.id }}-{{ forloop.index }}" class="grid__item">
+              {% render 'card-product-for-drawer',
+                card_product: product,
+                media_aspect_ratio: section.settings.image_ratio,
+                show_secondary_image: section.settings.show_secondary_image,
+                show_rating: section.settings.show_rating,
+                show_quick_add: settings.enable_quickadd,
+                section_id: section.id
+              %}
+            </div>
+          {%- else -%}
+            {%- for i in (1..4) -%}
+              <div class="grid__item">
+                {% render 'card-product-for-drawer', show_vendor: section.settings.show_vendor %}
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {% endif %}
+    
+  </div>
+{%- endif -%}

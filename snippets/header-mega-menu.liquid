@@ -1,0 +1,235 @@
+{% comment %}
+  Renders a megamenu for the header.
+
+  Usage:
+  {% render 'header-mega-menu' %}
+{% endcomment %}
+
+{%- assign shop_mega_menu = false -%}
+{% if section.settings.enable_new %}
+  {% assign new_tag = section.settings.new_tags | split: ',' | strip | downcase | handle %}
+  {% assign new_label = section.settings.new_txt %}
+{% endif %}
+
+{% if section.settings.enable_sale %}
+  {% assign sale_tag = section.settings.sale_tags | split: ',' | strip | downcase | handle %}
+  {% assign sale_label = section.settings.sale_txt %}
+{% endif %}
+
+{%- for block in section.blocks -%}
+  {% for i in (1..5) %}
+    {%- assign map_item = '' -%}
+    {%- assign link_title = link.title | escape | strip | handleize -%}
+    {%- assign shop_menu_collect = i | prepend: 'mega_' -%}
+    {% if block.settings[shop_menu_collect] != blank %}
+      {% assign map_item = block.settings[shop_menu_collect] | handleize %}
+      {%- if link_title == map_item -%}
+        {%- assign shop_mega_menu = true -%}
+        {%- capture promomenu -%}
+          {% render 'promo-menu', block: block %}
+        {%- endcapture -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+
+<li class="header-menu-highlevel">
+  {%- if link.links != blank -%}
+    <header-menu>
+      <details
+        id="Details-HeaderMenu-{{ forloop.index }}"
+        class="mega-menu  {% if shop_mega_menu %}mega-menu-image{% else %} mega-menu-width {% endif %}"
+      >
+        <summary
+          id="HeaderMenu-{{ link.handle }}"
+          class="header__menu-item list-menu__item link focus-inset"
+        >
+          <span
+            {%- if link.child_active %}
+              class="header__active-menu-item"
+            {% endif %}
+          >
+            {{- link.title | escape -}}
+            {% assign main__tag = link.handle %}
+            {% if new_tag contains main__tag %}
+              <em class="new-tag">{{ new_label }}</em>
+            {% elsif sale_tag contains main__tag %}
+              <em class="new-tag">{{ sale_label }}</em>
+            {% else %}
+
+            {% endif %}
+          </span>
+          {% render 'icon-caret' %}
+        </summary>
+        {% if shop_mega_menu %}
+          <div
+            id="MegaMenu-Content-{{ forloop.index }}"
+            class="mega-menu__content color-{{ section.settings.menu_color_scheme }} gradient motion-reduce global-settings-popup  {% if shop_mega_menu %}megamenu-with-images{% else %} no-promo__image {% endif %}"
+            tabindex="-1"
+          >
+            <ul
+              class="mega-menu__list  {% if section.settings.layout == 'grid' %} page-width {% else %} full_bleed {% endif %} megamenu-custom-width "
+              role="list"
+            >
+              {%- for childlink in link.links -%}
+                <li>
+                  <a
+                    id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                    href="{{ childlink.url }}"
+                    class="mega-menu__link mega-menu__link--level-2 link{% if childlink.current %} mega-menu__link--active{% endif %}"
+                    {% if childlink.current %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    {{ childlink.title | escape }}
+                    {% assign map__tag = child_link.handle %}
+                    {% if new_tag contains map__tag %}
+                      <em class="new-tag">{{ new_label }}</em>
+                    {% endif %}
+                  </a>
+                  {%- if childlink.links != blank -%}
+                    <ul class="list-unstyled  list-min-width" role="list">
+                      {%- for grandchildlink in childlink.links -%}
+                        <li>
+                          <a
+                            id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                            href="{{ grandchildlink.url }}"
+                            class="mega-menu__link link{% if grandchildlink.current %} mega-menu__link--active{% endif %}"
+                            {% if grandchildlink.current %}
+                              aria-current="page"
+                            {% endif %}
+                          >
+                            {{ grandchildlink.title | escape }}
+                            {% assign map__tag = grandchild_link.handle %}
+                            {% if new_tag contains map__tag %}
+                              <em class="new-tag">{{ new_label }}</em>
+                            {% endif %}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+              {{ promomenu }}
+            </ul>
+          </div>
+        {% else %}
+          <div
+            id="MegaMenu-Content-{{ forloop.index }}"
+            class="mega-menu__content color-{{ section.settings.menu_color_scheme }} gradient motion-reduce global-settings-popup  {% if shop_mega_menu %}megamenu-with-images{% else %} no-promo__image {% endif %} {% if link.levels == 1 %} link-level-1{% endif %} {% if link.levels == 2 %} link-level-2{% endif %}"
+            tabindex="-1"
+          >
+            <ul
+              class="mega-menu__list  {% if section.settings.layout == 'grid' %} page-width {% else %} full_bleed {% endif %} {% if link.levels == 1 %} mega-menu__list--condensed{% endif %}"
+              role="list"
+            >
+              {%- for childlink in link.links -%}
+                <li>
+                  <a
+                    id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                    href="{{ childlink.url }}"
+                    class="mega-menu__link mega-menu__link--level-2 link{% if childlink.current %} mega-menu__link--active{% endif %}"
+                    {% if childlink.current %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    {{ childlink.title | escape }}
+                    {% assign map__tag = childlink.handle %}
+                    {% if new_tag contains map__tag %}
+                      <em class="new-tag">{{ new_label }}</em>
+                    {% endif %}
+                  </a>
+                  {%- if childlink.links != blank -%}
+                    <ul class="list-unstyled list-min-width" role="list">
+                      {%- for grandchildlink in childlink.links -%}
+                        <li class="">
+                          <a
+                            id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                            href="{{ grandchildlink.url }}"
+                            class="mega-menu__link link{% if grandchildlink.current %} mega-menu__link--active{% endif %}"
+                            {% if grandchildlink.current %}
+                              aria-current="page"
+                            {% endif %}
+                          >
+                            {{ grandchildlink.title | escape }}
+                            {% assign map__tag = grandchildlink.handle %}
+                            {% if new_tag contains map__tag %}
+                              <em class="new-tag">{{ new_label }}</em>
+                            {% endif %}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {% endif %}
+      </details>
+    </header-menu>
+  {%- else -%}
+    {% if shop_mega_menu %}
+      <header-menu>
+        <details
+          id="Details-HeaderMenu-{{ forloop.index }}"
+          class="mega-menu  {% if shop_mega_menu %}mega-menu-image {% endif %}"
+        >
+          <summary
+            id="HeaderMenu-{{ link.handle }}"
+            class="header__menu-item list-menu__item link focus-inset"
+          >
+            <span
+              {%- if link.child_active %}
+                class="header__active-menu-item"
+              {% endif %}
+            >
+              {{- link.title | escape -}}
+              {% assign map__tag = link.handle %}
+              {% if new_tag contains map__tag %}
+                <em class="new-tag">{{ new_label }}</em>
+              {% endif %}
+            </span>
+            {% render 'icon-caret' %}
+          </summary>
+          {% if shop_mega_menu %}
+            <div
+              id="MegaMenu-Content-{{ forloop.index }} {% if shop_mega_menu %}megamenu-with-images{% endif %}"
+              class="mega-menu__content color-{{ section.settings.menu_color_scheme }} gradient motion-reduce global-settings-popup"
+              tabindex="-1"
+            >
+              <ul
+                class="mega-menu__list page-width{% if link.levels == 1 %} mega-menu__list--condensed{% endif %}"
+                role="list"
+              >
+                {{ promomenu }}
+              </ul>
+            </div>
+          {% endif %}
+        </details>
+      </header-menu>
+    {% else %}
+      <a
+        id="HeaderMenu-{{ link.handle }}"
+        href="{{ link.url }}"
+        class="header__menu-item list-menu__item link link--text focus-inset"
+        {% if link.current %}
+          aria-current="page"
+        {% endif %}
+      >
+        <span
+          {%- if link.current %}
+            class="header__active-menu-item"
+          {% endif %}
+        >
+          {{- link.title | escape -}}
+          {% assign main__tag = link.handle %}
+          {% if new_tag contains main__tag %}
+            <em class="new-tag">{{ new_label }}</em>
+          {% endif %}
+        </span>
+      </a>
+    {% endif %}
+  {%- endif -%}
+</li>

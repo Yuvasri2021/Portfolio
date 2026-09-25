@@ -1,0 +1,63 @@
+
+  <div class="sale-image-banner">
+     <img
+        class="custom-promo-image"
+        srcset="
+          {%- if section.settings.header_image.width >= 375 -%}{{ section.settings.header_image | image_url: width: 375 }} 375w,{%- endif -%}
+          {%- if section.settings.header_image.width >= 550 -%}{{ section.settings.header_image | image_url: width: 550 }} 550w,{%- endif -%}
+          {%- if section.settings.header_image.width >= 750 -%}{{ section.settings.header_image | image_url: width: 750 }} 750w,{%- endif -%}
+          {{ section.settings.header_image | image_url: width: 550 }} {{ section.settings.header_image.width }}w
+        "
+        sizes="100vw"
+        src="{{ section.settings.header_image | image_url: width: 550 }}"
+        loading="lazy"
+        alt="{{ section.settings.header_image.alt | escape }}"
+        width="{{ section.settings.header_image.width }}"
+        height="{{ section.settings.header_image.width | divided_by: section.settings.header_image.aspect_ratio | round }}"
+      >
+  </div>
+
+  
+<nav class="menu-drawer__navigation">
+  {% if section.settings.menu %}
+    <ul class="menu-drawer__menu has-submenu list-menu" role="list">
+      {% for link in section.settings.menu.links %}
+        <li class="h4">
+          <a
+            href="{{ link.url }}"
+            class="link--text list-menu__item list-menu__item--link{% if link.active %} list-menu__item--active{% endif %}"
+          >
+            {{ link.title | escape }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</nav>
+
+
+<ul class="custom-title-links menu-drawer__menu list-menu">
+  {% for block in section.blocks %}
+  <li>
+    <a href="{{ block.settings.image_link }}" class="cus-menu-link"></a>
+     <div class="menu-video-container">
+       <h3 class="h2 header-title">
+         {{ block.settings.link_text }}
+       </h3>
+       {{
+                block.settings.video
+                | video_tag:
+                  image_size: 'x498',
+                  autoplay: true,
+                  loop: true,
+                  controls: false,
+                  muted: true,
+                  loading: 'lazy',
+                  playsinline: true,
+                  class: 'header-gallery'
+              }}
+     </div>
+  </li>
+           {% endfor %}
+</ul>
+

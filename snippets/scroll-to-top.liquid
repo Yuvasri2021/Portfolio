@@ -1,0 +1,79 @@
+<style>
+    /* scroll to top button */
+  html {
+    scroll-behavior: smooth;
+  }
+  #scrollTopBtn {
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    right: 30px;
+    z-index: 2;
+    font-size: 14px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 50%;
+    width: 4.5rem;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 0 5px 2px;
+    height: 4.5rem;
+    transition: all 0.3s linear;
+    transform: rotate(270deg);
+    justify-content: center;
+    align-items: center;
+        color: rgb(var(--color-foreground));
+  }
+
+  #scrollTopBtn:hover svg {
+    /* background-color: #555 */
+    animation: up-down 1s linear infinite;
+  }
+  @keyframes up-down {
+    0% {
+      transform: translateX(0px);
+    }
+    50% {
+      transform: translateX(-10px);
+    }
+    100% {
+      transform: translateX(0px);
+    }
+  }
+</style>
+
+<button
+  id="scrollTopBtn"
+  title="Go to top"
+  class="color-{{ settings.color_scheme }} isolate gradient"
+>
+  {% render 'icon-arrow' %}
+</button>
+
+<script>
+     document.addEventListener('DOMContentLoaded', function() {
+    var scrollTopBtn = document.getElementById('scrollTopBtn'); // Get the button
+
+    // Smooth scroll to top when '#scrollTopBtn' button is clicked
+    scrollTopBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      // Smooth scroll behavior to the top of the page
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Enable smooth scrolling
+      });
+    });
+
+    // Show/hide the '#scrollTopBtn' element based on scroll position
+    window.addEventListener('scroll', function() {
+      var scroll = window.scrollY || window.pageYOffset; // Handle cross-browser compatibility
+
+      if (scroll >= 200) { // Show button when scrolled down 200px
+        scrollTopBtn.style.display = 'flex'; // Use 'flex' to maintain alignment
+      } else {
+        scrollTopBtn.style.display = 'none'; // Hide button if scrolled above 200px
+      }
+    });
+  });
+</script>

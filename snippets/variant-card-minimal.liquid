@@ -1,0 +1,992 @@
+{% comment %}
+  Renders a minimal variant card with a popup modal.
+
+  Accepts:
+  - card_product: {Object} Product Liquid object (required)
+  - card_variant: {Object} Variant Liquid object (required)
+  - section_id: {String} ID of the parent section (required)
+  - loop_index: {Number} Index of variant in loop (required for unique IDs)
+
+  Usage:
+  {% render 'variant-card-minimal', card_product: product, card_variant: variant, section_id: section.id, loop_index: forloop.index %}
+{% endcomment %}
+
+{%- liquid
+  assign modal_id = 'VariantModal-' | append: section_id | append: '-' | append: card_variant.id
+  assign form_id = 'VariantForm-' | append: section_id | append: '-' | append: card_variant.id
+  assign variant_image = card_variant.image | default: card_product.featured_media
+  assign variant_price = card_variant.price
+  assign variant_compare_price = card_variant.compare_at_price
+  assign is_on_sale = false
+  if variant_compare_price > variant_price
+    assign is_on_sale = true
+  endif
+  assign is_available = card_variant.available
+  assign variant_title = card_variant.title
+  if variant_title == 'Default Title'
+    assign variant_title = ''
+  endif
+  assign btn_label = button_label | default: 'Select'
+  assign card_title_size = title_size | default: '1.5rem'
+-%}
+
+<style>
+  .vcm-card {
+    border: 1px solid rgba(var(--color-foreground), 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .vcm-card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+    transform: translateY(-2px);
+  }
+  .vcm-card__image-wrap {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: rgba(var(--color-foreground), 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .vcm-card__image-wrap img,
+  .vcm-card__image-wrap .placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+  }
+  .vcm-card:hover .vcm-card__image-wrap img {
+    transform: scale(1.04);
+  }
+  .vcm-card__body {
+    padding: 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--row-gap);
+    flex: 1;
+  }
+  .vcm-card__title {
+    font-size: {{ card_title_size }};
+    font-weight: 700;
+    color: rgb(var(--color-foreground));
+    margin: 0;
+    line-height: 1.3;
+  }
+  .vcm-card__variant-name {
+    font-size: var(--Body-Text);
+    font-weight: 500;
+    color: rgba(var(--color-foreground), 0.75);
+    margin: 0;
+    padding: 3px 10px;
+    background: rgba(var(--color-foreground), 0.05);
+    border-radius: 20px;
+    display: inline-block;
+  }
+  .vcm-card__description {
+    font-size: var(--Body_text);
+    color: rgba(var(--color-foreground), 0.85);
+    margin: 0;
+    line-height: var(--line-height);
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .vcm-card__btn {
+    display: block;
+    width: 100%;
+    padding: 11px 16px;
+    background: rgb(var(--color-button));
+    color: rgb(var(--color-button-text));
+    border: none;
+    border-radius: 8px;
+    font-size: var(--Body-Text);
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: opacity 0.2s ease;
+    margin-top: auto;
+    letter-spacing: 0.03em;
+  }
+  .vcm-card__btn:hover {
+    opacity: 0.88;
+  }
+  .vcm-card__btn:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed;
+    background: #cccccc !important;
+    color: #666666 !important;
+    border: none !important;
+    filter: grayscale(1);
+    pointer-events: none;
+  }
+
+  /* Modal Overlay */
+  .vcm-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 2147483647;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .vcm-modal-overlay.is-open {
+    display: flex;
+  }
+  .vcm-modal {
+    background: rgb(var(--color-background));
+    border-radius: 16px;
+    max-width: 480px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: vcm-slide-in 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @keyframes vcm-slide-in {
+    from { opacity: 0; transform: scale(0.95) translateY(12px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .vcm-modal__image-col {
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    background: rgba(var(--color-foreground), 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    flex-shrink: 0;
+  }
+  .vcm-modal__image-col img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .vcm-modal__content-col {
+    padding: 24px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .vcm-modal__custom-content {
+    padding-top: 4px;
+  }
+  .vcm-popup-text-block {
+    border-top: 1px solid rgba(var(--color-foreground), 0.1);
+    padding-top: 14px;
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .vcm-popup-text-block__heading {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: rgb(var(--color-foreground));
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .vcm-popup-text-block__body {
+    font-size: 1.35rem;
+    color: rgba(var(--color-foreground), 0.75);
+    line-height: 1.65;
+    margin: 0;
+  }
+  .vcm-popup-text-block__body p {
+    margin: 0 0 6px;
+  }
+  .vcm-popup-text-block__body p:last-child {
+    margin-bottom: 0;
+  }
+  .vcm-modal__footer {
+    padding: 16px 24px 20px;
+    border-top: 1px solid rgba(var(--color-foreground), 0.1);
+    background: rgb(var(--color-background));
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 0 0 16px 16px;
+    position: sticky;
+    bottom: 0;
+  }
+  .vcm-modal__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(var(--color-background), 0.85);
+    border: none;
+    cursor: pointer;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+    color: rgb(var(--color-foreground));
+    z-index: 10;
+    backdrop-filter: blur(4px);
+  }
+  .vcm-modal__close:hover {
+    background: rgba(var(--color-foreground), 0.1);
+  }
+  .vcm-modal__title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: rgb(var(--color-foreground));
+    margin: 0;
+    line-height: 1.3;
+  }
+  .vcm-modal__variant-name {
+    font-size: 1.3rem;
+    color: rgba(var(--color-foreground), 0.6);
+    margin: 0;
+    font-weight: 500;
+  }
+  .vcm-modal__price {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .vcm-modal__price-current {
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgb(var(--color-foreground));
+  }
+  .vcm-modal__price-compare {
+    font-size: 1.5rem;
+    color: rgba(var(--color-foreground), 0.4);
+    text-decoration: line-through;
+  }
+  .vcm-modal__price-badge {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    background: #e63333;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .vcm-modal__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .vcm-modal__btn-cart {
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid rgb(var(--color-button));
+    background: rgb(var(--color-button));
+    color: rgb(var(--color-button-text));
+    transition: opacity 0.2s;
+    width: 100%;
+  }
+  .vcm-modal__btn-cart:hover { opacity: 0.85; }
+  .vcm-modal__btn-cart:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #ccc;
+    border-color: #ccc;
+  }
+  .vcm-modal__btn-buynow {
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid rgb(var(--color-foreground));
+    background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+    transition: background 0.2s, color 0.2s;
+    width: 100%;
+    text-decoration: none;
+    display: block;
+  }
+  .vcm-modal__btn-buynow:hover {
+    background: rgb(var(--color-foreground));
+    color: rgb(var(--color-background));
+  }
+  .vcm-modal__sold-out-msg {
+    font-size: 1.35rem;
+    color: #e63333;
+    font-weight: 600;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #f5c6c6;
+    border-radius: 8px;
+    background: #fff5f5;
+  }
+
+  /* ── Card Metafields ── */
+
+  .vcm-meta-block, 
+  vcm-meta-block__label, 
+  .vcm-meta-block__list, 
+  vcm-meta-block__value, 
+  .vcm-meta-block__list li,
+  .vcm-meta-block__link{
+  line-height:var(--line-height);
+  font-size:var(--Body-Text);
+  }
+  .vcm-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--row-gap);
+    padding: 10px 0 4px;
+    border-top: 1px solid rgba(var(--color-foreground), 0.05);
+  }
+  .vcm-meta-block__label {
+    {% comment %} font-size: 1.2rem; {% endcomment %}
+    font-weight: 700;
+    color: rgb(var(--color-foreground));
+    margin: 0 0 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .vcm-meta-block__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .vcm-meta-block__list li {
+    {% comment %} font-size: 1.25rem; {% endcomment %}
+    color: rgba(var(--color-foreground), 0.75);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .vcm-meta-block__list li::before {
+    content: '•';
+    color: #f97e19;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  .vcm-meta-block__value {
+    font-size: 1.3rem;
+    color: rgb(var(--color-foreground));
+    margin: 0;
+    font-weight: 500;
+  }
+  .vcm-meta-block__link {
+    {% comment %} font-size: 1.25rem; {% endcomment %}
+    color: rgb(var(--color-button));
+    text-decoration: underline;
+    word-break: break-all;
+  }
+  .vcm-meta-block__link:hover {
+    opacity: 0.8;
+  }
+</style>
+
+{%- unless only_modal -%}
+  <div class="vcm-card color-{{ card_color_scheme }} gradient">
+    {%- comment %} Image {%- endcomment %}
+    <div class="vcm-card__image-wrap">
+      {%- if variant_image -%}
+        <img
+          src="{{ variant_image | image_url: width: 500 }}"
+          ,
+          srcset="{{ variant_image | image_url: width: 300 }} 300w, {{ variant_image | image_url: width: 500 }} 500w, {{ variant_image | image_url: width: 800 }} 800w"
+          sizes="(min-width: 990px) 25vw, (min-width: 748px) 33vw, 50vw"
+          alt="{{ variant_image.alt | default: card_product.title | escape }}"
+          width="500"
+          height="500"
+          loading="lazy"
+        >
+      {%- else -%}
+        {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+
+    {%- comment %} Text body {%- endcomment %}
+    <div class="vcm-card__body">
+      <p class="vcm-card__title">{{ card_product.title | escape }}</p>
+
+      {%- if variant_title != '' -%}
+        <span class="vcm-card__variant-name">{{ variant_title }}</span>
+      {%- endif -%}
+
+      {%- comment %} ── In-card Metafields ── {%- endcomment %}
+      {%- liquid
+        assign ev_meta = card_product.metafields.custom.event
+        assign dt_meta = card_product.metafields.custom.event_date_and_time
+        assign ls_meta = card_product.metafields.custom.live_stream_link
+        assign has_meta = false
+        if show_event and ev_meta != blank
+          assign has_meta = true
+        endif
+        if show_event_date and dt_meta != blank
+          assign has_meta = true
+        endif
+        if show_live_stream and ls_meta != blank
+          assign has_meta = true
+        endif
+      -%}
+      {%- if has_meta -%}
+        <div class="vcm-card__meta">
+          {%- if show_event and ev_meta != blank -%}
+            <div class="vcm-meta-block">
+              <p class="vcm-meta-block__label">Events</p>
+              {%- if ev_meta.type contains 'list.' -%}
+                <ul class="vcm-meta-block__list">
+                  {%- for item in ev_meta.value -%}
+                    <li>{{ item }}</li>
+                  {%- endfor -%}
+                </ul>
+              {%- else -%}
+                <p class="vcm-meta-block__value">{{ ev_meta.value }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- if show_event_date and dt_meta != blank -%}
+            <div class="vcm-meta-block">
+              <p class="vcm-meta-block__label">Date</p>
+              {%- if dt_meta.type == 'date_time' -%}
+                <p class="vcm-meta-block__value">{{ dt_meta.value | date: '%d %B %Y at %I:%M %p' }}</p>
+              {%- elsif dt_meta.type == 'date' -%}
+                <p class="vcm-meta-block__value">{{ dt_meta.value | date: '%d %B %Y' }}</p>
+              {%- else -%}
+                <p class="vcm-meta-block__value">{{ dt_meta.value }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- if show_live_stream and ls_meta != blank -%}
+            <div class="vcm-meta-block">
+              <p class="vcm-meta-block__label">Live Stream</p>
+              {%- assign ls_url = ls_meta.value.url | default: ls_meta.value -%}
+              <a href="{{ ls_url }}" class="vcm-meta-block__link" target="_blank" rel="noopener noreferrer"
+                >Watch Live &rarr;</a
+              >
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if card_product.description != blank -%}
+        <p class="vcm-card__description">{{ card_product.description | strip_html }}</p>
+      {%- endif -%}
+
+      {%- if is_available -%}
+        <button
+          class="vcm-card__btn"
+          type="button"
+          onclick="vcmOpenModal('{{ modal_id }}', '{{ section_id }}')"
+        >
+          {{ btn_label }}
+        </button>
+      {%- else -%}
+        <button class="vcm-card__btn" type="button" disabled>Sold Out</button>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endunless -%}
+
+{%- comment %} ─── POPUP MODAL ──────────────────────────────────────────── {%- endcomment %}
+<div
+  id="{{ modal_id }}"
+  class="vcm-modal-overlay"
+  onclick="if(event.target===this)vcmCloseModal('{{ modal_id }}')"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ card_product.title | escape }} – {{ variant_title }}"
+>
+  <div class="vcm-modal color-{{ card_color_scheme }} gradient">
+    <button
+      class="vcm-modal__close"
+      type="button"
+      aria-label="Close"
+      onclick="vcmCloseModal('{{ modal_id }}')"
+    >
+      {% render 'icon-close' %}
+    </button>
+
+    {%- comment %} — Image Column — {%- endcomment %}
+    <div class="vcm-modal__image-col">
+      {%- if variant_image -%}
+        <img
+          src="{{ variant_image | image_url: width: 600 }}"
+          alt="{{ variant_image.alt | default: card_product.title | escape }}"
+          width="600"
+          height="{{ 600 | divided_by: variant_image.aspect_ratio | round }}"
+          loading="lazy"
+        >
+      {%- else -%}
+        {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+
+    {%- comment %} — Content Column — {%- endcomment %}
+    <div class="vcm-modal__content-col">
+      <h2 class="vcm-modal__title">{{ card_product.title | escape }}</h2>
+
+      {%- if variant_title != '' -%}
+        <p class="vcm-modal__variant-name">{{ variant_title }}</p>
+      {%- endif -%}
+
+      <div class="vcm-modal__price">
+        <span class="vcm-modal__price-current">
+          {%- if settings.currency_code_enabled -%}
+            {{ variant_price | money_with_currency }}
+          {%- else -%}
+            {{ variant_price | money }}
+          {%- endif -%}
+        </span>
+        {%- if is_on_sale -%}
+          <span class="vcm-modal__price-compare">
+            {%- if settings.currency_code_enabled -%}
+              {{ variant_compare_price | money_with_currency }}
+            {%- else -%}
+              {{ variant_compare_price | money }}
+            {%- endif -%}
+          </span>
+          {%- liquid
+            assign savings_pct = variant_compare_price | minus: variant_price | times: 100 | divided_by: variant_compare_price
+          -%}
+          <span class="vcm-modal__price-badge">-{{ savings_pct }}%</span>
+        {%- endif -%}
+      </div>
+
+      {%- comment %} — Modal Metafields — {%- endcomment %}
+      {%- liquid
+        assign ev_meta = card_product.metafields.custom.event
+        assign dt_meta = card_product.metafields.custom.event_date_and_time
+        assign ls_meta = card_product.metafields.custom.live_stream_link
+        assign has_meta = false
+        if show_event and ev_meta != blank
+          assign has_meta = true
+        endif
+        if show_event_date and dt_meta != blank
+          assign has_meta = true
+        endif
+        if show_live_stream and ls_meta != blank
+          assign has_meta = true
+        endif
+      -%}
+      {%- if has_meta -%}
+        <div
+          class="vcm-modal__meta"
+          style="margin: 1.5rem 0; display: flex; flex-direction: column; gap: 1rem; border-top: 1px solid rgba(var(--color-foreground), 0.08); border-bottom: 1px solid rgba(var(--color-foreground), 0.08); padding: 1.5rem 0;"
+        >
+          {%- if show_event and ev_meta != blank -%}
+            <div class="vcm-meta-block">
+              <p
+                class="vcm-meta-block__label"
+                style="font-weight: 700; font-size: 1.3rem; margin: 0 0 0.5rem 0; text-transform: uppercase; color: rgba(var(--color-foreground), 0.6);"
+              >
+                Events
+              </p>
+              {%- if ev_meta.type contains 'list.' -%}
+                <ul class="vcm-meta-block__list" style="margin: 0; padding-left: 1.5rem; font-size: 1.4rem;">
+                  {%- for item in ev_meta.value -%}
+                    <li>{{ item }}</li>
+                  {%- endfor -%}
+                </ul>
+              {%- else -%}
+                <p class="vcm-meta-block__value" style="margin: 0; font-size: 1.4rem;">{{ ev_meta.value }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- if show_event_date and dt_meta != blank -%}
+            <div class="vcm-meta-block">
+              <p
+                class="vcm-meta-block__label"
+                style="font-weight: 700; font-size: 1.3rem; margin: 0 0 0.5rem 0; text-transform: uppercase; color: rgba(var(--color-foreground), 0.6);"
+              >
+                Date
+              </p>
+              {%- if dt_meta.type == 'date_time' -%}
+                <p class="vcm-meta-block__value" style="margin: 0; font-size: 1.4rem;">
+                  {{ dt_meta.value | date: '%d %B %Y at %I:%M %p' }}
+                </p>
+              {%- elsif dt_meta.type == 'date' -%}
+                <p class="vcm-meta-block__value" style="margin: 0; font-size: 1.4rem;">
+                  {{ dt_meta.value | date: '%d %B %Y' }}
+                </p>
+              {%- else -%}
+                <p class="vcm-meta-block__value" style="margin: 0; font-size: 1.4rem;">{{ dt_meta.value }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- if show_live_stream and ls_meta != blank -%}
+            <div class="vcm-meta-block">
+              <p
+                class="vcm-meta-block__label"
+                style="font-weight: 700; font-size: 1.3rem; margin: 0 0 0.5rem 0; text-transform: uppercase; color: rgba(var(--color-foreground), 0.6);"
+              >
+                Live Stream
+              </p>
+              {%- assign ls_url = ls_meta.value.url | default: ls_meta.value -%}
+              <a
+                href="{{ ls_url }}"
+                class="vcm-meta-block__link"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="color: #0b3168; font-weight: 600; font-size: 1.4rem; text-decoration: underline;"
+                >Watch Live &rarr;</a
+              >
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment %} Custom Liquid Block from section settings {%- endcomment %}
+      {%- if popup_custom_liquid != blank -%}
+        <div class="vcm-modal__custom-content" style="margin-top: 1rem;">
+          {{ popup_custom_liquid }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment %} — Sticky Bottom Footer: Buttons — {%- endcomment %}
+    <div class="vcm-modal__footer">
+      {%- if is_available -%}
+        {%- comment %} Add to Cart Form {%- endcomment %}
+        <product-form data-section-id="{{ section_id }}">
+          {%- form 'product',
+            card_product,
+            id: form_id,
+            class: 'form',
+            novalidate: 'novalidate',
+            data-type: 'add-to-cart-form'
+          -%}
+            <input type="hidden" name="id" value="{{ card_variant.id }}" class="product-variant-id">
+            <input type="hidden" name="quantity" value="1">
+            <button
+              id="{{ form_id }}-submit"
+              type="submit"
+              name="add"
+              class="vcm-modal__btn-cart"
+              aria-live="polite"
+              data-sold-out-message="true"
+            >
+              <span>{{ 'products.product.add_to_cart' | t }}</span>
+              {%- render 'loading-spinner' -%}
+            </button>
+          {%- endform -%}
+        </product-form>
+
+        {%- comment %} Buy Now — JS posts to /cart/add.js + redirect to checkout {%- endcomment %}
+        <button
+          type="button"
+          class="vcm-modal__btn-buynow"
+          onclick="vcmBuyNow('{{ modal_id }}', {{ card_variant.id }}, this, '{{ section_id }}')"
+        >
+          Buy Now
+        </button>
+      {%- else -%}
+        <div class="vcm-modal__sold-out-msg">
+          {{ 'products.product.sold_out' | t }}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% unless vcm_js_loaded %}
+  {% assign vcm_js_loaded = true %}
+  <script>
+    (function () {
+      // Guard: only define once even if snippet renders multiple times
+      if (window._vcmInitialized) return;
+      window._vcmInitialized = true;
+
+      var _scrollY = 0;
+      var _openCount = 0;
+
+      window.vcmOpenModal = function (id, sectionId) {
+        var modal = document.getElementById(id);
+        if (!modal) return;
+
+        // Store sectionId on modal for later use
+        if (sectionId) modal.dataset.sectionId = sectionId;
+
+        // Lock scroll on first open
+        if (_openCount === 0) {
+          _scrollY = window.scrollY;
+          document.body.style.position = 'fixed';
+          document.body.style.top = '-' + _scrollY + 'px';
+          document.body.style.left = '0';
+          document.body.style.right = '0';
+          document.body.style.overflowY = 'scroll';
+        }
+        _openCount++;
+        modal.classList.add('is-open');
+
+        // ── Inject custom-content fields into the cart form on submit ────
+        // We use capture:true so this runs BEFORE Shopify's product-form.js
+        // handler, ensuring new FormData(form) picks up all the properties.
+        if (!modal._vcmSubmitBound) {
+          modal._vcmSubmitBound = true;
+          modal.addEventListener(
+            'submit', 
+            function (e) {
+              var form = e.target;
+              if (!form || form.tagName !== 'FORM') return;
+
+              var currentSectionId = modal.dataset.sectionId;
+
+              // Helper to check validation only on fields we care about
+              var validateExtraFields = function () {
+                var isValid = true;
+                // 1. Fields in modal
+                var contentArea = modal.querySelector('.vcm-modal__content-col');
+                if (contentArea) {
+                  contentArea.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(function (el) {
+                    if (!el.checkValidity()) {
+                      el.reportValidity();
+                      isValid = false;
+                    }
+                  });
+                }
+                if (!isValid) return false;
+
+                // 2. External fields (booking form) - Look globally for booking wrapper or form properties
+                var externalFields = document.querySelectorAll('.booking-wrapper input, .booking-wrapper select, .booking-wrapper textarea, [form^="product-form-"]:not(.product-variant-id)');
+                
+                for (var i = 0; i < externalFields.length; i++) {
+                   if (!externalFields[i].checkValidity()) {
+                      externalFields[i].reportValidity();
+                      isValid = false;
+                      break;
+                   }
+                }
+                return isValid;
+              };
+
+              if (!validateExtraFields()) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                return false;
+              }
+
+              // Remove any leftover proxy inputs from a previous submission
+              form.querySelectorAll('[data-vcm-proxy]').forEach(function (el) {
+                el.remove();
+              });
+
+              // Collect every named input / select / textarea in the scrollable
+              // content column and mirror its value as a hidden input inside the
+              // real product form so Shopify sends them as line-item properties.
+              var contentArea = modal.querySelector('.vcm-modal__content-col');
+              
+              var allInputs = [];
+              if (contentArea) {
+                allInputs = Array.from(contentArea.querySelectorAll('input:not([type="hidden"]), select, textarea'));
+              }
+
+              // Also add external fields globally
+              var externalFields = Array.from(document.querySelectorAll('.booking-wrapper input, .booking-wrapper select, .booking-wrapper textarea, [form^="product-form-"]:not(.product-variant-id)'));
+              
+              allInputs = allInputs.concat(externalFields);
+
+              allInputs.forEach(function (el) {
+                if (!el.name) return;
+                // Skip unchecked checkboxes / radios
+                if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) return;
+
+                var hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = el.name;
+                hidden.value =
+                  el.tagName === 'SELECT'
+                    ? el.options[el.selectedIndex]
+                      ? el.options[el.selectedIndex].value
+                      : ''
+                    : el.value;
+                hidden.setAttribute('data-vcm-proxy', 'true');
+                form.appendChild(hidden);
+              });
+            },
+            true /* capture phase — runs before Shopify's submit handler */
+          );
+        }
+        // ────────────────────────────────────────────────────────────────
+
+        modal.focus && modal.focus();
+      };
+
+      window.vcmCloseModal = function (id) {
+        var modal = document.getElementById(id);
+        if (!modal) return;
+        modal.classList.remove('is-open');
+        _openCount = Math.max(0, _openCount - 1);
+
+        // Restore scroll only when all modals are closed
+        if (_openCount === 0) {
+          document.body.style.position = '';
+          document.body.style.top = '';
+          document.body.style.left = '';
+          document.body.style.right = '';
+          document.body.style.overflowY = '';
+          window.scrollTo(0, _scrollY);
+        }
+      };
+
+      // Close on Escape key
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        document.querySelectorAll('.vcm-modal-overlay.is-open').forEach(function (modal) {
+          vcmCloseModal(modal.id);
+        });
+      });
+
+      // ── Buy Now ─────────────────────────────────────────────────────────
+      // Posts the variant + any custom-content properties to /cart/add.js,
+      // then redirects straight to /checkout.
+      window.vcmBuyNow = function (modalId, variantId, btn, sectionId) {
+        var modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        // Validation for external fields
+        var isValid = true;
+        var contentArea = modal.querySelector('.vcm-modal__content-col');
+        var externalFields = document.querySelectorAll('.booking-wrapper input, .booking-wrapper select, .booking-wrapper textarea, [form^="product-form-"]:not(.product-variant-id)');
+
+
+        var allInputs = [];
+        if (contentArea) allInputs = Array.from(contentArea.querySelectorAll('input:not([type="hidden"]), select, textarea'));
+        allInputs = allInputs.concat(Array.from(externalFields));
+
+        for (var i = 0; i < allInputs.length; i++) {
+          if (!allInputs[i].checkValidity()) {
+            allInputs[i].reportValidity();
+            isValid = false;
+            break;
+          }
+        }
+        if (!isValid) return;
+
+        // Show loading state on button
+        var originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '...';
+
+        var data = new FormData();
+        data.append('id', variantId);
+        data.append('quantity', '1');
+
+        // Mirror all named inputs from the content column as line-item properties
+        allInputs.forEach(function (el) {
+          if (!el.name) return;
+          if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) return;
+          var val =
+            el.tagName === 'SELECT'
+              ? el.options[el.selectedIndex]
+                ? el.options[el.selectedIndex].value
+                : ''
+              : el.value;
+          data.append(el.name, val);
+        });
+
+        fetch('/cart/add.js', { method: 'POST', body: data })
+          .then(function (res) {
+            if (res.ok) {
+              window.location.href = '/checkout';
+            } else {
+              res.json().then(function (json) {
+                alert(json.description || 'Could not add to cart. Please try again.');
+                btn.disabled = false;
+                btn.textContent = originalText;
+              });
+            }
+          })
+          .catch(function () {
+            alert('Something went wrong. Please try again.');
+            btn.disabled = false;
+            btn.textContent = originalText;
+          });
+      };
+
+      // ── Sync Helper: Toggle Buttons based on Form Validity ──────────────
+      window.vcmUpdateAllButtons = function () {
+        // Query for ALL required fields in any booking-wrapper or those tied to a product form
+        var bookingFields = document.querySelectorAll('.booking-wrapper [required], [form^="product-form-"][required]:not(.product-variant-id)');
+        var isFormValid = true;
+        
+        bookingFields.forEach(function(el) {
+          // If the element is hidden, we might want to skip it, but generic checkValidity is usually safer
+          if (!el.checkValidity()) {
+            isFormValid = false;
+          }
+        });
+
+        // Update card buttons
+        document.querySelectorAll('.vcm-card__btn').forEach(function(btn) {
+           btn.disabled = !isFormValid;
+           if (!isFormValid) {
+             btn.title = "Please fill the required details form first";
+             // Force visual update in case CSS is overridden
+             btn.style.setProperty('background', '#cccccc', 'important');
+             btn.style.setProperty('opacity', '0.5', 'important');
+           } else {
+             btn.title = "";
+             btn.style.removeProperty('background');
+             btn.style.removeProperty('opacity');
+           }
+        });
+
+        // Update modal submit buttons
+        document.querySelectorAll('.vcm-modal__btn-cart, .vcm-modal__btn-buynow').forEach(function(btn) {
+           btn.disabled = !isFormValid;
+        });
+      };
+
+      // Listen for changes globally to ensure all buttons respond
+      document.addEventListener('input', function(e) {
+        // Run update whenever an input changes, especially if it relates to booking or product forms
+        if (e.target.closest('.booking-wrapper') || e.target.closest('[form^="product-form-"]')) {
+          vcmUpdateAllButtons();
+        }
+      }, true);
+
+      // MutationObserver to handle cases where form fields or buttons are added/removed dynamically
+      var vcmObserver = new MutationObserver(function() {
+        vcmUpdateAllButtons();
+      });
+      vcmObserver.observe(document.body, { 
+        childList: true, 
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['required']
+      });
+
+      // Periodic check as a fallback for scripts that manipulate the DOM without triggering mutations correctly
+      setInterval(vcmUpdateAllButtons, 2000);
+
+      // Initial check
+      setTimeout(vcmUpdateAllButtons, 500); 
+      // ────────────────────────────────────────────────────────────────────
+    })();
+  </script>
+{% endunless %}
+

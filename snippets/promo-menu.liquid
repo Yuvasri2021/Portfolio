@@ -1,0 +1,168 @@
+{% if block.settings.header_image %}
+  <li class="mega-menu__link">
+    <a
+      {% if block.settings.image_link_1 == blank %}
+        role="link" aria-disabled="true"
+      {% else %}
+        href="{{ block.settings.image_link_1 }}"
+      {% endif %}
+      class="promo-banner-image"
+    >
+      <img
+        class="mega-promo-image"
+        srcset="
+          {%- if block.settings.header_image.width >= 375 -%}{{ block.settings.header_image | image_url: width: 375 }} 375w,{%- endif -%}
+          {%- if block.settings.header_image.width >= 550 -%}{{ block.settings.header_image | image_url: width: 550 }} 550w,{%- endif -%}
+          {%- if block.settings.header_image.width >= 750 -%}{{ block.settings.header_image | image_url: width: 750 }} 750w,{%- endif -%}
+          {{ block.settings.header_image | image_url: width: 550 }} {{ block.settings.header_image.width }}w
+        "
+        sizes="100vw"
+        src="{{ block.settings.header_image | image_url: width: 550 }}"
+        loading="lazy"
+        alt="{{ block.settings.header_image.alt | escape }}"
+        width="{{ block.settings.header_image.width }}"
+        height="{{ block.settings.header_image.width | divided_by: block.settings.header_image.aspect_ratio | round }}"
+      >
+    </a>
+  </li>
+{% endif %}
+{% if block.settings.header_image_2 %}
+  <li class="mega-menu__link">
+    <a
+      {% if block.settings.image_link_2 == blank %}
+        role="link" aria-disabled="true"
+      {% else %}
+        href="{{ block.settings.image_link_2 }}"
+      {% endif %}
+      class="promo-banner-image"
+    >
+      <img
+        class="mega-promo-image"
+        srcset="
+          {%- if block.settings.header_image_2.width >= 375 -%}{{ block.settings.header_image_2 | image_url: width: 375 }} 375w,{%- endif -%}
+          {%- if block.settings.header_image_2.width >= 550 -%}{{ block.settings.header_image_2 | image_url: width: 550 }} 550w,{%- endif -%}
+          {%- if block.settings.header_image_2.width >= 750 -%}{{ block.settings.header_image_2 | image_url: width: 750 }} 750w,{%- endif -%}
+          {{ block.settings.header_image_2 | image_url: width: 550 }} {{ block.settings.header_image_2.width }}w
+        "
+        sizes="100vw"
+        src="{{ block.settings.header_image_2 | image_url: width: 550 }}"
+        loading="lazy"
+        alt="{{ block.settings.header_image_2.alt | escape }}"
+        width="{{ block.settings.header_image_2.width }}"
+        height="{{ block.settings.header_image_2.width | divided_by: block.settings.header_image_2.aspect_ratio | round }}"
+      >
+    </a>
+  </li>
+{% endif %}
+{% if block.settings.header_image_3 %}
+  <li class="mega-menu__link">
+    <a
+      {% if block.settings.image_link_3 == blank %}
+        role="link" aria-disabled="true"
+      {% else %}
+        href="{{ block.settings.image_link_3 }}"
+      {% endif %}
+      class="promo-banner-image"
+    >
+      <img
+        class="mega-promo-image"
+        srcset="
+          {%- if block.settings.header_image_3.width >= 375 -%}{{ block.settings.header_image_3 | image_url: width: 375 }} 375w,{%- endif -%}
+          {%- if block.settings.header_image_3.width >= 550 -%}{{ block.settings.header_image_3 | image_url: width: 550 }} 550w,{%- endif -%}
+          {%- if block.settings.header_image_3.width >= 750 -%}{{ block.settings.header_image_3 | image_url: width: 750 }} 750w,{%- endif -%}
+          {{ block.settings.header_image_3 | image_url: width: 550 }} {{ block.settings.header_image_3.width }}w
+        "
+        sizes="100vw"
+        src="{{ block.settings.header_image_3 | image_url: width: 550 }}"
+        loading="lazy"
+        alt="{{ block.settings.header_image_3.alt | escape }}"
+        width="{{ block.settings.header_image_3.width }}"
+        height="{{ block.settings.header_image_3.width | divided_by: block.settings.header_image_3.aspect_ratio | round }}"
+      >
+    </a>
+  </li>
+{% endif %}
+{% if block.settings.header_image_4 %}
+  <li class="mega-menu__link">
+    <a
+      {% if block.settings.image_link_4 == blank %}
+        role="link" aria-disabled="true"
+      {% else %}
+        href="{{ block.settings.image_link_4 }}"
+      {% endif %}
+      class="promo-banner-image"
+    >
+      <img
+        class="mega-promo-image"
+        srcset="
+          {%- if block.settings.header_image_4.width >= 375 -%}{{ block.settings.header_image_4 | image_url: width: 375 }} 375w,{%- endif -%}
+          {%- if block.settings.header_image_4.width >= 550 -%}{{ block.settings.header_image_4 | image_url: width: 550 }} 550w,{%- endif -%}
+          {%- if block.settings.header_image_4.width >= 750 -%}{{ block.settings.header_image_4 | image_url: width: 750 }} 750w,{%- endif -%}
+          {{ block.settings.header_image_4 | image_url: width: 550 }} {{ block.settings.header_image_4.width }}w
+        "
+        sizes="100vw"
+        src="{{ block.settings.header_image_4 | image_url: width: 550 }}"
+        loading="lazy"
+        alt="{{ block.settings.header_image_4.alt | escape }}"
+        width="{{ block.settings.header_image_4.width }}"
+        height="{{ block.settings.header_image_4.width | divided_by: block.settings.header_image_4.aspect_ratio | round }}"
+      >
+    </a>
+  </li>
+{% endif %}
+{% if block.settings.header_image_5 %}
+  <li class="mega-menu__link">
+    <a
+      {% if block.settings.image_link_5 == blank %}
+        role="link" aria-disabled="true"
+      {% else %}
+        href="{{ block.settings.image_link_5 }}"
+      {% endif %}
+      class="promo-banner-image"
+    >
+      <img
+        class="mega-promo-image"
+        srcset="
+          {%- if block.settings.header_image_5.width >= 375 -%}{{ block.settings.header_image_5 | image_url: width: 375 }} 375w,{%- endif -%}
+          {%- if block.settings.header_image_5.width >= 550 -%}{{ block.settings.header_image_5 | image_url: width: 550 }} 550w,{%- endif -%}
+          {%- if block.settings.header_image_5.width >= 750 -%}{{ block.settings.header_image_5 | image_url: width: 750 }} 750w,{%- endif -%}
+          {{ block.settings.header_image_5 | image_url: width: 550 }} {{ block.settings.header_image_5.width }}w
+        "
+        sizes="100vw"
+        src="{{ block.settings.header_image_5 | image_url: width: 550 }}"
+        loading="lazy"
+        alt="{{ block.settings.header_image_5.alt | escape }}"
+        width="{{ block.settings.header_image_5.width }}"
+        height="{{ block.settings.header_image_5.width | divided_by: block.settings.header_image_5.aspect_ratio | round }}"
+      >
+    </a>
+  </li>
+{% endif %}
+{% if block.settings.header_image_6 %}
+  <li class="mega-menu__link">
+    <a
+      {% if block.settings.image_link_6 == blank %}
+        role="link" aria-disabled="true"
+      {% else %}
+        href="{{ block.settings.image_link_6 }}"
+      {% endif %}
+      class="promo-banner-image"
+    >
+      <img
+        class="mega-promo-image"
+        srcset="
+          {%- if block.settings.header_image_6.width >= 375 -%}{{ block.settings.header_image_6 | image_url: width: 375 }} 375w,{%- endif -%}
+          {%- if block.settings.header_image_6.width >= 550 -%}{{ block.settings.header_image_6 | image_url: width: 550 }} 550w,{%- endif -%}
+          {%- if block.settings.header_image_6.width >= 750 -%}{{ block.settings.header_image_6 | image_url: width: 750 }} 750w,{%- endif -%}
+          {{ block.settings.header_image_6 | image_url: width: 550 }} {{ block.settings.header_image_6.width }}w
+        "
+        sizes="100vw"
+        src="{{ block.settings.header_image_6 | image_url: width: 550 }}"
+        loading="lazy"
+        alt="{{ block.settings.header_image_6.alt | escape }}"
+        width="{{ block.settings.header_image_6.width }}"
+        height="{{ block.settings.header_image_6.width | divided_by: block.settings.header_image_6.aspect_ratio | round }}"
+      >
+    </a>
+  </li>
+{% endif %}
