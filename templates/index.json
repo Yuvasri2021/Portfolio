@@ -15,7 +15,7 @@
         "slide_tjdhr6": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/banner_2.png",
+            "image": "shopify://shop_images/des-banner.png",
             "image2": "shopify://shop_images/mobile-banner.png",
             "image_link": true,
             "heading": "",
