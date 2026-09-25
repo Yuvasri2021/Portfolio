@@ -360,7 +360,7 @@ details[open] > .header__submenu {
   text-decoration: none;
   color: rgba(var(--color-foreground), 1);
   text-transform: capitalize;
-  font-family: var(--font-heading-family);
+  /* font-family: var(--font-heading-family); */
   letter-spacing: 0.5px;
 }
 
