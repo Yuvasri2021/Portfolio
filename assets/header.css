@@ -107,8 +107,14 @@
 .header__icons {
   display: flex;
   grid-area: icons;
-  justify-self: center;
+  justify-self: end;
   /* padding-right: 0.8rem; */
+}
+
+@media screen and (max-width:450px){
+.header__icons {
+  justify-self: center;
+}
 }
 
 .header__icons .shopify-app-block {
