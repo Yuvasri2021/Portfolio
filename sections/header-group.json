@@ -1,1 +1,66 @@
-{"name":"t:sections.header.name","type":"header","sections":{"marquee_9bN3Y8":{"type":"marquee","blocks":{"text_rtVHpB":{"type":"text","settings":{"text":"|| Join Rare Sevas From Anywhere in the World ||","icon":"none","marquee_image":"shopify:\/\/shop_images\/mdi_om.d43c8d8748f8186250935c95d35986e7.png","button_link":""}}},"block_order":["text_rtVHpB"],"disabled":true,"name":"Scrolling Bar","settings":{"custom_class_name":"","title":"","head_size":"h2","content_alignment":"center","subtitle":"","layout":"full_bleed","color_scheme":"scheme-2","heading_size":"body","scroll_direction":"right","image_height":"30","speed":"50","coloum_space":52,"rotate":0,"padding_top":8,"padding_bottom":8,"margin_top":40,"margin_bottom":52}},"announcement_bar_hGn6wA":{"type":"announcement-bar","blocks":{"countdown_M3pxJL":{"type":"countdown","settings":{"prefix_text":"<p>Varaha Jayanthi Celebrations:<\/p>","end_date":"2026-05-07","end_time":"18:00","end_message":"Booking is closed","link":"shopify:\/\/products\/varaha-jayanthi-celebrations-varaha-rising-the-great-karmic-resurrection"}},"countdown_RPbemN":{"type":"countdown","settings":{"prefix_text":"<p>Kalastami Bhairava Mahotsava:<\/p>","end_date":"2026-05-10","end_time":"18:00","end_message":"Booking is closed","link":"shopify:\/\/products\/ashta-bhairava-svacchanda-bhairava-and-pratyangira-sharabhesvara-mahotsava-special-rituals"}},"announcement_itpYD8":{"type":"announcement","disabled":true,"settings":{"text":"|| Manokamana Phala Siddhirastu ||","link":""}},"announcement_GAqyyD":{"type":"announcement","disabled":true,"settings":{"text":"|| Join Rare Sevas From Anywhere in the World ||","link":""}}},"block_order":["countdown_M3pxJL","countdown_RPbemN","announcement_itpYD8","announcement_GAqyyD"],"name":"t:sections.announcement-bar.presets.name","settings":{"layout":"grid","color_scheme":"scheme-1","show_line_separator":false,"section_link":"shopify:\/\/pages\/explore-sevas","show_social":false,"auto_rotate":true,"change_slides_speed":3,"enable_country_selector":false,"enable_language_selector":false}},"header":{"type":"header","blocks":{"promo_menu_DJeGng":{"type":"Promo-menu","disabled":true,"settings":{"mega_1":"Japa Challange","image_link_1":"","image_link_2":"","image_link_3":"","image_link_4":"","image_link_5":"","image_link_6":""}}},"block_order":["promo_menu_DJeGng"],"settings":{"layout":"grid","logo_position":"top-center","menu":"main-menu-prakash","menu_type_desktop":"mega","mobile_screen_width":"1200","sticky_header_type":"none","show_line_separator":false,"enable_transparent_header":false,"color_scheme":"scheme-2","menu_color_scheme":"scheme-1","enable_country_selector":true,"enable_language_selector":false,"enable_customer_avatar":true,"show_header_wishlist":false,"icon_type":"icon","mobile_logo_position":"center","enable_new":false,"new_txt":"hot","new_tags":"test 1,pages, home,check 2,about,adsda","enable_sale":true,"sale_txt":"New","sale_tags":"","margin_bottom":0,"padding_top":0,"padding_bottom":0}}},"order":["marquee_9bN3Y8","announcement_bar_hGn6wA","header"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "header": {
+      "type": "header",
+      "blocks": {
+        "promo_menu_DJeGng": {
+          "type": "Promo-menu",
+          "disabled": true,
+          "settings": {
+            "mega_1": "Japa Challange",
+            "image_link_1": "",
+            "image_link_2": "",
+            "image_link_3": "",
+            "image_link_4": "",
+            "image_link_5": "",
+            "image_link_6": ""
+          }
+        }
+      },
+      "block_order": [
+        "promo_menu_DJeGng"
+      ],
+      "settings": {
+        "layout": "grid",
+        "logo_position": "middle-left",
+        "menu": "main-menu",
+        "menu_type_desktop": "mega",
+        "mobile_screen_width": "1200",
+        "sticky_header_type": "none",
+        "show_line_separator": false,
+        "enable_transparent_header": false,
+        "color_scheme": "scheme-2",
+        "menu_color_scheme": "scheme-1",
+        "enable_country_selector": true,
+        "enable_language_selector": false,
+        "enable_customer_avatar": true,
+        "show_header_wishlist": false,
+        "icon_type": "icon",
+        "mobile_logo_position": "center",
+        "enable_new": false,
+        "new_txt": "hot",
+        "new_tags": "test 1,pages, home,check 2,about,adsda",
+        "enable_sale": true,
+        "sale_txt": "New",
+        "sale_tags": "",
+        "margin_bottom": 0,
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    }
+  },
+  "order": [
+    "header"
+  ]
+}
