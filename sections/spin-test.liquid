@@ -1,0 +1,190 @@
+<div class="wheel-container">
+  <div class="arrow">.</div>
+  <div class="wheel" id="wheel">
+    <div class="segment" data-index="0" style="transform: rotate(0deg); background: #ff0000;">Welcome50</div>
+    <div class="segment" data-index="1" style="transform: rotate(90deg); background: #00ff00;">Welcome20</div>
+    <div class="segment" data-index="2" style="transform: rotate(180deg); background: #0000ff;">FreeShipping</div>
+    <div class="segment" data-index="3" style="transform: rotate(270deg); background: #ffff00;">TryAgain</div>
+  </div>
+</div>
+
+{%- form 'contact', id: 'ContactForm', class: 'spin-form' -%}
+  <input
+    class="user_name"
+    autocomplete="name"
+    type="text"
+    id="userName"
+    name="user_name"
+    value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+    placeholder="{{ 'templates.contact.form.name' | t }}"
+    required
+  >
+
+  <input type="email" id="userEmail" name="contact[email]" placeholder="Enter your email" required>
+
+  <div class="field visually-hidden">
+    <input type="text" id="couponCode" name="contact[coupon_code]">
+    <label class="field__label" for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
+  </div>
+  <button id="claimDiscountButton" type="button" class="button">Claim Discount</button>
+  <button id="continueShoppingButton" type="submit" class="button">Continue Shopping</button>
+
+  <div id="validationMessage" style="color: red; text-align: center; margin-top: 10px;"></div>
+{%- endform -%}
+
+<div class="result" id="result">Your coupon code will appear here</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const wheel = document.getElementById('wheel');
+    const claimDiscountButton = document.getElementById('claimDiscountButton');
+    const continueShoppingButton = document.getElementById('continueShoppingButton');
+    const resultDiv = document.getElementById('result');
+    const userNameInput = document.getElementById('userName');
+    const userEmailInput = document.getElementById('userEmail');
+    const couponCodeInput = document.getElementById('couponCode');
+    const form = document.getElementById('ContactForm');
+    const validationMessage = document.getElementById('validationMessage');
+    const segments = Array.from(wheel.querySelectorAll('.segment'));
+    let isSpinning = false;
+
+    const probabilities = [20, 15, 45, 20]; // Corresponds to each segment
+
+    claimDiscountButton.addEventListener('click', function() {
+        validationMessage.textContent = ''; // Clear previous validation messages
+
+        if (userNameInput.value.trim() === '' || userEmailInput.value.trim() === '') {
+            validationMessage.textContent = 'Please fill in the required fields.';
+            return;
+        }
+
+        if (isSpinning) return;
+        isSpinning = true;
+        claimDiscountButton.disabled = true;
+        continueShoppingButton.disabled = true;
+
+        // Determine the selected segment based on probabilities
+        const totalProbability = probabilities.reduce((acc, p) => acc + p, 0);
+        let randomNumber = Math.floor(Math.random() * totalProbability);
+
+        let cumulativeProbability = 0;
+        let chosenIndex = 0;
+        for (let i = 0; i < probabilities.length; i++) {
+            cumulativeProbability += probabilities[i];
+            if (randomNumber < cumulativeProbability) {
+                chosenIndex = i;
+                break;
+            }
+        }
+
+        const segmentAngle = 360 / segments.length;
+        const rotationOffset = segmentAngle * 3 / 2; // Ensure the arrow points to the correct segment
+        const randomDegree = Math.floor(Math.random() * 360) + 3600;
+        const finalDegree = randomDegree - (chosenIndex * segmentAngle) - rotationOffset;
+
+        wheel.style.transition = 'transform 4s ease-out';
+        wheel.style.transform = `rotate(${finalDegree}deg)`;
+        wheel.classList.add('active');
+
+        setTimeout(function() {
+            isSpinning = false;
+            claimDiscountButton.disabled = false;
+            continueShoppingButton.disabled = false;
+            wheel.classList.remove('active');
+
+            const selectedCoupon = segments[chosenIndex].textContent;
+            resultDiv.textContent = `Congratulations! You won: ${selectedCoupon}`;
+            
+            // Set the coupon code in the hidden input field
+            couponCodeInput.value = selectedCoupon;
+
+            // Hide form fields and claimDiscountButton
+            userNameInput.style.display = 'none';
+            userEmailInput.style.display = 'none';
+            claimDiscountButton.style.display = 'none';
+
+            // Show the continue shopping button
+            continueShoppingButton.style.display = 'block';
+        }, 4000);
+    });
+
+    continueShoppingButton.addEventListener('click', function() {
+        if (userNameInput.style.display === 'none' && userEmailInput.style.display === 'none') {
+            if (couponCodeInput.value.trim() === '') {
+                validationMessage.textContent = 'Please claim your discount first.';
+                return;
+            }
+            form.submit(); // Submit the form
+        } else {
+            validationMessage.textContent = 'Please fill in the required fields.';
+        }
+    });
+});
+</script>
+
+<style>
+   .wheel-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin: 0 auto;
+  }
+
+  .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: relative;
+      transform: rotate(0deg);
+      transition: transform 4s ease-out;
+  }
+
+  .segment {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      transform-origin: 100% 100%;
+      text-align: center;
+      line-height: 150%;
+  }
+
+  .spin-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+  }
+
+  .spin-form input {
+      margin-bottom: 10px;
+      padding: 10px;
+      width: 80%;
+      max-width: 300px;
+  }
+
+  .button {
+      margin: 10px;
+  }
+
+  #continueShoppingButton {
+      display: none; /* Initially hidden */
+  }
+
+  .result {
+      margin-top: 20px;
+      text-align: center;
+  }
+
+  .arrow {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid black;
+      position: absolute;
+      top: 50%; /* Middle of the wheel */
+      left: -30px; /* Positioned to the right */
+      transform: translateY(-50%) rotate(90deg); /* Pointing to the middle of the wheel */
+        z-index: 999;
+  }
+</style>

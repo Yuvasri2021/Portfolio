@@ -1,0 +1,550 @@
+{{ 'hot-spots.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+     .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  {% for block in section.blocks %}
+  .thumb-block--{{ block.id }}{
+       top: {{ block.settings.top_position }}%;
+      left: {{ block.settings.left_position }}%;
+    transform: translate(-25px, -25px) !important;
+  }
+  {% endfor %}
+{%- endstyle -%}
+
+{% assign block_count = section.blocks.size %}
+
+<div class="hot-spot-section color-{{ section.settings.color_scheme }} gradient  section-{{ section.id }}-padding">
+  <div class=" {% if section.settings.layout == 'grid' %} page-width page-width--narrow{% endif %} {% if section.settings.layout == 'full_bleed' %} page-full-width {% endif %}">
+    <div class="title-wrapper title-wrapper--no-top-margin align-{{ section.settings.text_align }}">
+      {%- if section.settings.title != blank -%}
+        <h2 class="title inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          {{ section.settings.title }}
+        </h2>
+      {%- endif -%}
+    </div>
+    <hot-spots data-block-count="{{ section.blocks.size }}">
+      <div class="swiper_area">
+        <div class="slider-tabs__wrapper">
+          <button class="hotspot-close-button">X</button>
+          <div
+            class="swiper hotspot-container gallery-top-{{ section.id }} main-swiper-slide"
+            data-auto="{{ section.settings.auto_play }}"
+            id="gallery-top-{{ section.id }}"
+          >
+            <div class="overlay-area"></div>
+            <div class="swiper-wrapper" id="Slider-{{ section.id }}">
+              {%- for block in section.blocks -%}
+                {%- case block.type -%}
+                  {%- when 'product' -%}
+                    <div
+                      class="swiper-slide hot-spot-card hotspot_product"
+                      id="Slide-{{ section.id }}-{{ forloop.index }}"
+                      {{ block.shopify_attributes }}
+                      role="group"
+                      aria-roledescription="{{ 'sections.slideshow.slide' | t }}"
+                      aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+                      tabindex="-1"
+                    >
+                      <div class="hot-spot-area">
+                        {% assign product = all_products[block.settings.product] %}
+                        {% render 'card-product',
+                          card_product: product,
+                          media_aspect_ratio: section.settings.product_image_ratio,
+                          image_shape: section.settings.image_shape,
+                          show_secondary_image: section.settings.show_secondary_image,
+                          show_vendor: block.settings.show_vendor,
+                          show_rating: section.settings.show_rating,
+                          section_id: section.id,
+                          quick_add: section.settings.quick_add,
+                          show_booking_info: section.settings.show_booking_info,
+                          card_color_scheme: section.settings.card_color_scheme,
+                          show_card_button: section.settings.show_card_button,
+                          card_button_label: section.settings.card_button_label,
+                          show_button_on_hover: section.settings.show_button_on_hover,
+                          card_border_radius: section.settings.card_border_radius,
+                          card_image_border_radius: section.settings.card_image_border_radius,
+                          price_position: section.settings.price_position
+                        %}
+                      </div>
+                    </div>
+                {%- endcase -%}
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+        {%- liquid
+          assign highest_ratio = 0
+          assign image = section.settings['bg-image']
+
+          if image.aspect_ratio > highest_ratio
+            assign highest_ratio = image.aspect_ratio
+          endif
+        -%}
+
+        <div class="hotspots content-container">
+          {% if section.settings['bg-image'] != blank %}
+            <div
+              class="media media--transparent media--{{ section.settings.image_ratio }}"
+              {% if section.settings.image_ratio == 'adapt' %}
+                style="padding-bottom: {{ 1 | divided_by: highest_ratio | times: 100 }}%;"
+              {% endif %}
+            >
+              {%- liquid
+                assign grid_space_desktop = settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                assign grid_space_tablet = settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                assign grid_space_mobile = settings.spacing_grid_horizontal | divided_by: 2 | plus: 30 | append: 'px'
+                assign image_width = 1
+              -%}
+              {% capture sizes %}
+            (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ grid_space_desktop }}) * {{ image_width }}),
+            (min-width: 990px) calc((100vw - {{ grid_space_desktop }}) * {{ image_width }}),
+            (min-width: 749px) calc((100vw - {{ grid_space_tablet }}) * {{ image_width }}),
+            calc((100vw - {{ grid_space_mobile }}) * {{ image_width }})
+          {% endcapture %}
+              {{
+                section.settings['bg-image']
+                | image_url: width: 3200
+                | image_tag:
+                  widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                  sizes: sizes,
+                  class: 'hotspot-image'
+              }}
+            </div>
+          {%- else -%}
+            {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg hotspot-image' }}
+          {% endif %}
+          <div
+            class="swiper hotspot-container gallery-thumbs-{{ section.id }} swiper-horizontal swiper-tabs"
+            id="gallery-thumbs-{{ section.id }}"
+          >
+            <div class="swiper-wrapper">
+              {%- for block in section.blocks -%}
+                {%- case block.type -%}
+                  {%- when 'product' -%}
+                    <div
+                      class="swiper-slide thumb-block--{{ block.id }} hotspot_button_class"
+                      data-index="{{ forloop.index }}"
+                    >
+                      <div class="hotspot-dots-block">
+                        <span class="hotspot-dots"></span>
+                      </div>
+                    </div>
+                {% endcase %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </hot-spots>
+  </div>
+</div>
+
+
+ <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    class hotSpots extends HTMLElement {
+      constructor() {
+        super();
+        const blockCount = parseInt(this.dataset.blockCount, 10) || 4;
+        const main = this.querySelectorAll('[id^="gallery-top-"]');
+        const thumb = this.querySelectorAll('[id^="gallery-thumbs-"]');
+
+        for (let i = 0; i < main.length; i++) {
+          const galleryThumbs = new Swiper(thumb[i], {
+            loop: false,
+            spaceBetween: 0,
+            slidesPerView: blockCount,
+            watchSlidesVisibility: true,
+            watchSlidesProgress: true,
+          });
+
+          new Swiper(main[i], {
+            loop: true,
+            effect: 'cube',
+            cubeEffect: {/* … */},
+            thumbs: { swiper: galleryThumbs },
+            autoplay: false,
+          });
+        }
+      }
+    }
+
+    customElements.define('hot-spots', hotSpots);
+  });
+</script>
+
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Select all buttons, spans, spanContainer, the overlay area, and the close button
+    const buttons = document.querySelectorAll('.hotspot_button_class');
+    const spans = document.querySelectorAll('.hotspot_product');
+    const spanContainer = document.querySelector('.swiper_area');
+    const overlayArea = document.querySelector('.overlay-area'); // Select the overlay area
+    const closeButton = document.querySelector('.hotspot-close-button'); // Select the close button
+
+    buttons.forEach(button => {
+      button.addEventListener('click', function() {
+        const index = this.getAttribute('data-index') - 1; // 0-based index
+
+        // Remove the class from all spans first
+        spans.forEach(span => span.classList.remove('visible-class'));
+
+        // Remove the class from span-container
+        spanContainer.classList.remove('active-container-class');
+
+        // Add the class to the corresponding span
+        if (spans[index]) {
+          spans[index].classList.add('visible-class');
+        }
+
+        // Add a class to the span-container
+        spanContainer.classList.add('active-container-class');
+
+        // Lock scroll by adding a class to the body
+        document.body.classList.add('scroll-lock');
+      });
+    });
+
+    // Close functionality for the overlay area
+    overlayArea.addEventListener('click', closeHotspot);
+
+    // Close functionality for the close button
+    closeButton.addEventListener('click', closeHotspot);
+
+    // Handle clicks outside buttons and span-container to remove the active-container-class
+    document.addEventListener('click', function(event) {
+      if (
+        !event.target.closest('.hotspot_button_class') &&
+        !event.target.closest('.swiper_area') &&
+        !event.target.closest('.overlay-area')
+      ) {
+        closeHotspot();
+      }
+    });
+
+    // Close hotspot function
+    function closeHotspot() {
+      // Remove the active-container-class and unlock the scroll
+      spanContainer.classList.remove('active-container-class');
+      spans.forEach(span => span.classList.remove('visible-class'));
+      document.body.classList.remove('scroll-lock');
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Hotspots",
+  "tag": "section",
+  "class": "section hot-spots-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "full_bleed",
+          "label": "t:sections.slideshow.settings.layout.options__1.label"
+        },
+        {
+          "value": "grid",
+          "label": "t:sections.slideshow.settings.layout.options__2.label"
+        }
+      ],
+      "default": "full_bleed",
+      "label": "t:sections.slideshow.settings.layout.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+  	  "type": "image_picker",
+  	  "id": "bg-image",
+  	  "label": "Custom Background Image"
+	},
+     {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__1.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__3.label"
+        },
+        {
+          "value": "circle",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__4.label"
+        }
+      ],
+      "default": "adapt",
+      "label": "t:sections.multicolumn.settings.image_ratio.label"
+    },
+     {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "t:sections.featured-collection.settings.title.default",
+      "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        },
+        {
+          "value": "hxl",
+          "label": "t:sections.all.heading_size.options__4.label"
+        },
+        {
+          "value": "hxxl",
+          "label": "t:sections.all.heading_size.options__5.label"
+        }
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left",
+      "label": "Title alignment"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 45
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 45
+    },
+    {
+      "type": "select",
+      "id": "quick_add",
+      "default": "standard",
+      "label": "t:sections.main-collection-product-grid.settings.quick_add.label",
+      "info": "t:sections.main-collection-product-grid.settings.quick_add.info",
+      "options": [
+        {
+          "value": "standard",
+          "label": "t:sections.main-collection-product-grid.settings.quick_add.options.option_2"
+        },
+        {
+          "value": "bulk",
+          "label": "t:sections.main-collection-product-grid.settings.quick_add.options.option_3"
+        }
+      ]
+    },
+       {
+      "type": "select",
+      "id": "product_image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.featured-collection.settings.image_ratio.options__1.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.featured-collection.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.featured-collection.settings.image_ratio.options__3.label"
+        }
+      ],
+      "default": "adapt",
+      "label": "Product image ratio"
+    },
+    {
+      "type": "color_scheme",
+      "id": "card_color_scheme",
+      "label": "Card color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Product Card Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_card_button",
+      "default": false,
+      "label": "Show button"
+    },
+    {
+      "type": "text",
+      "id": "card_button_label",
+      "default": "Book Now",
+      "label": "Button label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button_on_hover",
+      "default": false,
+      "label": "Show button on hover"
+    },
+    {
+      "type": "select",
+      "id": "price_position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "top",
+      "label": "Price position"
+    },
+    {
+      "type": "header",
+      "content": "Product Card Design"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_image_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Card image border radius",
+      "default": 16
+    }
+  ],
+  "blocks": [
+        {
+          "type": "product",
+          "name": "Product",
+          "limit": 4,
+          "settings":[
+          {
+          "type" : "product",
+          "id" : "product",
+          "label" : "Select Product"
+          },
+          {
+          "type": "checkbox",
+          "id": "show_vendor",
+          "default": false,
+          "label": "Show vendor"
+          },
+          {
+          "type": "range",
+          "id": "top_position",
+          "label":"Top Position (in %)",
+          "min": 1,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 40
+          },
+          {
+          "type": "range",
+          "id": "left_position",
+          "label":"Left Position (in %)",
+          "min": 1,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 40
+          }
+          ]
+          },
+        ],
+        "presets": [
+          {
+            "name": "Hotspots",
+            "blocks": [
+              {
+                "type": "product"
+              },
+              {
+                "type": "product"
+              },
+              {
+                "type": "product"
+              }
+            ]
+          }
+        ]
+      }
+{% endschema %}

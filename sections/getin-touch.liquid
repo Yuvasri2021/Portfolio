@@ -1,0 +1,259 @@
+{%- style -%}  
+.section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .contact-information{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .contact-info,
+  .address-info,
+  .store-info{
+    display: flex;
+    column-gap: 15px;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 250px;
+  }
+  .contact-information img{
+    max-width: 70px;
+    max-height: 70px;
+    display: block;
+    flex-shrink: 0;
+  }
+ .address-timing{
+    max-width: 250px;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .contact-information {
+      flex-direction: column;
+      align-items: center;
+    }
+    .contact-info,
+    .address-info,
+    .store-info {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+
+   .connect > *,
+   .store-timing > *,
+   .address-timing > *{
+        margin:0;
+    }
+{% endstyle %}
+
+<div class="section-{{ section.id }}-padding video-slider color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+<div class="contact-section">
+  {%- if section.settings.title != blank -%}
+      <h2 class="video-title title inline-richtext {{ section.settings.heading_size }} {{ section.settings.heading_alignment }}">
+        {{ section.settings.title }}
+      </h2>
+    {%- endif -%}
+  <div class="contact-information">
+    <div class="contact-info">
+      {% if section.settings.contact_icon != blank %}
+        <img src="{{ section.settings.contact_icon | img_url: '80x60', crop: 'center' }}" alt="Contact Icon">
+      {% endif %}
+      <div class="connect">
+        <p class="inline-richtext"> {{ section.settings.phone_number }}</p>
+        <p class="inline-richtext"> {{ section.settings.email_address }}</p>
+      </div>
+    </div>
+    
+    <div class="store-info">
+      {% if section.settings.hours_icon != blank %}
+        <img src="{{ section.settings.hours_icon | img_url: '80x60', crop: 'center' }}" alt="Store Hours Icon">
+      {% endif %}
+      <div class="store-timing">
+        <p>{{ section.settings.weekday_hours }}</p>
+        <p>{{ section.settings.weekend_hours }}</p>
+      </div>
+    </div>
+    
+    <div class="address-info">
+      {% if section.settings.address_icon != blank %}
+        <img src="{{ section.settings.address_icon | img_url: '80x60', crop: 'center' }}" alt="Address Icon">
+      {% endif %}
+      <div class="address-timing">
+        <p>{{ section.settings.street_address }}</p>
+        <p>{{ section.settings.pin_code }}</p>
+      </div>
+    </div>
+  </div>
+    </div>
+</div>
+</div>
+
+{% schema %}
+{
+  "name": "Get In Touch",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "Get In Touch",
+      "label": "Heading"
+    },
+ {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        },
+        {
+          "value": "hxl",
+          "label": "t:sections.all.heading_size.options__4.label"
+        },
+        {
+          "value": "hxxl",
+          "label": "t:sections.all.heading_size.options__5.label"
+        }
+      ],
+      "default": "h2",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.rich-text.settings.content_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.rich-text.settings.content_alignment.options__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.rich-text.settings.content_alignment.options__3.label"
+        }
+      ],
+      "default": "center",
+      "label": "Heading Alignment"
+    },
+    {
+      "type": "header",
+      "content": "Contact Information"
+    },
+    {
+      "type": "image_picker",
+      "id": "contact_icon",
+      "label": "Contact Icon"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "phone_number",
+      "label": "Phone Number",
+      "default": "+91 09876543210"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "email_address",
+      "label": "Email Address",
+      "default": "acsb@gmail.com"
+    },
+    {
+      "type": "header",
+      "content": "Store Hours"
+    },
+    {
+      "type": "image_picker",
+      "id": "hours_icon",
+      "label": "Hours Icon"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "weekday_hours",
+      "label": "Weekday Hours",
+      "default": "Mon – Sat: 9.30 am – 5.00 pm"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "weekend_hours",
+      "label": "Weekend Hours",
+      "default": "Sunday: Holiday"
+    },
+    {
+      "type": "header",
+      "content": "Address Information"
+    },
+    {
+      "type": "image_picker",
+      "id": "address_icon",
+      "label": "Address Icon"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "street_address",
+      "label": "Street Address",
+      "default": "130/135, Jograj Building, Bedford, Coonoor."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "pin_code",
+      "label": "PIN Code",
+      "default": "643101"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    },
+  ],
+  "presets": [
+    {
+      "name": "Get In Touch",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,183 @@
+{{ 'section-deal-counter.css' | asset_url | stylesheet_tag }}
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: calc({{ section.settings.padding_top }}px * 0.75);
+    padding-bottom: calc({{ section.settings.padding_bottom }}px  * 0.75);
+  }
+
+  @media screen and (min-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .custom-deal-wrapper{
+      padding-left: 4rem;
+      padding-right: 4rem;
+    }
+
+  }
+  .custom-deal-wrapper .deal-clock > *{
+    font-size: clamp(calc(var(--font-heading-scale) * 2rem),1vw,calc(var(--font-heading-scale) * 2.5rem));
+  }
+    @media screen and (max-width: 749px) {
+      .deal-clock {
+        column-gap: 1rem;
+      }
+    }
+{%- endstyle -%}
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="section-{{ section.id }}-padding {% if section.settings.layout == 'grid' %} page-width {% endif %} custom-deal-wrapper">
+    <div class="deals-counter">
+      <div class="offer--text rte">
+        {{ section.settings.offer_text }}
+      </div>
+      {% if section.settings.deal_date != blank %}
+        {% assign deal_time = section.settings.deal_date | date: '%d %b %Y' %}
+        <div class="deal-count" data-end-date="{{ deal_time }}">
+          <div class="deal-clock {{ section.settings.heading_size }}">
+            <div class="days"></div>
+            :
+            <div class="hours"></div>
+            :
+            <div class="minutes"></div>
+            :
+            <div class="seconds"></div>
+          </div>
+          <div class="deal-ended"></div>
+        </div>
+      {% endif %}
+      <div class="deal-buttons">
+        <a
+          {% if section.settings.link %}
+            href="{{ section.settings.link }}"
+          {% else %}
+            role="link" aria-disabled="true"
+          {% endif %}
+          class="button {% if section.settings.button_style_secondary %}button--secondary{% else %}button--primary{% endif %}"
+        >
+          {{- section.settings.button_label | escape -}}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.custom-deal-banner.name",
+  "tag": "section",
+  "class": "section custom-deal-banner",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "full_bleed",
+          "label": "t:sections.all.layout.options__1.label"
+        },
+        {
+          "value": "grid",
+          "label": "t:sections.all.layout.options__2.label"
+        }
+      ],
+      "default": "full_bleed",
+      "label": "t:sections.all.layout.label"
+    },
+    {
+      "type": "richtext",
+      "id": "offer_text",
+      "default": "t:sections.custom-deal-banner.settings.text.default",
+      "label": "t:sections.custom-deal-banner.settings.text.label"
+    },
+    {
+      "type": "text",
+      "id": "deal_date",
+      "label": "t:sections.deal-counter.blocks.deal.settings.deal_date.label",
+      "default": "25 jan 2026",
+      "info": "25 jan 2026"
+    },
+     {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "h2",
+              "label": "t:sections.all.heading_size.options__1.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.all.heading_size.options__2.label"
+            },
+            {
+              "value": "h0",
+              "label": "t:sections.all.heading_size.options__3.label"
+            },
+            {
+              "value": "hxl",
+              "label": "t:sections.all.heading_size.options__4.label"
+            },
+            {
+              "value": "hxxl",
+              "label": "t:sections.all.heading_size.options__5.label"
+            }
+          ],
+          "default": "h1",
+          "label": "t:sections.all.heading_size.label"
+        },
+    {
+          "type": "text",
+          "id": "button_label",
+          "default": "t:sections.slideshow.blocks.slide.settings.button_label.default",
+          "label": "t:sections.slideshow.blocks.slide.settings.button_label.label",
+          "info": "t:sections.slideshow.blocks.slide.settings.button_label.info"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.slideshow.blocks.slide.settings.link.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "button_style_secondary",
+          "label": "t:sections.slideshow.blocks.slide.settings.secondary_style.label",
+          "default": false
+        },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 52
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.custom-deal-banner.presets.name"
+    }
+  ]
+}
+{% endschema %}

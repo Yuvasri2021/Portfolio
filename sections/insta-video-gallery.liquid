@@ -1,0 +1,618 @@
+{{ 'insta-video-gallery.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 748px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .section-video-gallery {
+    overflow-x: clip !important;
+    width: 100%;
+    display: block;
+  }
+
+  .insta-video-gallery {
+    overflow-x: clip !important;
+    width: 100%;
+    position: relative;
+    display: block;
+  }
+
+  /* Header Layout */
+  .gallery-header {
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+
+  .gallery-header__title { 
+    margin: 0;
+    font-family: var(--font-heading-family);
+    /* font-weight: 700; */
+  }
+
+  .gallery-header__description {
+    max-width: 700px;
+    margin: 1rem auto 0 auto;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  /* Main Swiper Layout */
+  .mainInstaSwiper {
+    padding: 2rem 0 16rem;
+    overflow: visible !important;
+  }
+
+  @media screen and (max-width: 748px) {
+    .mainInstaSwiper {
+      padding: 1rem 0 4rem;
+    }
+  }
+
+  .mainInstaSwiper .swiper-wrapper {
+    transition-timing-function: linear !important;
+  }
+
+  .insta-card {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    cursor: pointer;
+    transition: transform 0.1s linear;
+    width: 100%;
+  }
+
+  .mainInstaSwiper .swiper-slide {
+    width: 200px; /* Mobile width */
+    height: auto;
+  }
+
+  @media screen and (min-width: 748px) {
+    .mainInstaSwiper .swiper-slide {
+      width: {{ section.settings.card_max_width }}px;
+    }
+  }
+
+  .insta-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .insta-card__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 3rem 2rem 2rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: #fff;
+    z-index: 2;
+  }
+
+  .insta-card__title {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #fff;
+  }
+
+  .insta-card__description {
+    margin: 0;
+    font-size: var(--Body-Text);
+    opacity: 0.9;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Lightbox Modal */
+  #emtsLightbox {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    background: rgba(0,0,0,0.9);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menu-close-button {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    width: 44px;
+    height: 44px;
+    background: #F58021;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10001;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* box-shadow: 0 4px 12px rgba(0,0,0,0.3); */
+    border: none;
+  }
+
+  .menu-close-button::before,
+  .menu-close-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 2px;
+    background-color: #fff;
+    border-radius: 2px;
+  }
+
+  .menu-close-button::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .menu-close-button::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  .menu-close-button:hover {
+    transform: scale(1.1) rotate(180deg);
+    background: #e67e00;
+  }
+
+  .instaVideoGallery {
+    width: 100%;
+    height: 80vh;
+  }
+
+  .instaVideoGallery .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto !important;
+    max-width: 90vw;
+  }
+
+  .instaVideoGallery video {
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+  }
+
+  .insta-video-gallery .swiper-button-next,
+  .insta-video-gallery .swiper-button-prev {
+    color: #fff;
+  }
+
+  @media screen and (max-width: 748px) {
+    .gallery-header__content {
+       flex-direction: column;
+    }
+    .gallery-header__description {
+      max-width: 100%;
+    }
+    .insta-card__title {
+      font-size: 1.8rem;
+    }
+  }
+
+  .insta-card__video-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .insta-card iframe, .insta-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
+    display: block;
+  }
+
+  .insta-card iframe {
+    pointer-events: none; /* Allow clicks to pass to the insta-card for modal triggering */
+    width: 100%;
+    height: 100%;
+  }
+
+  .lightbox-video-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox-video-container iframe {
+     width: 450px;
+     height: 80vh;
+     max-width: 90vw;
+     border-radius: 12px;
+     border: none;
+  }
+{%- endstyle -%}
+
+<div class="insta-video-gallery color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+  <div class="page-width">
+    <div class="gallery-header">
+      {%- if section.settings.title != blank -%}
+        <h2 class="gallery-header__title {{ section.settings.heading_size }}">
+          {{ section.settings.title }}
+        </h2>
+      {%- endif -%}
+      {%- if section.settings.section_description != blank -%}
+        <div class="gallery-header__description rte">
+          {{ section.settings.section_description }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- Main Auto Slider -->
+    <div class="swiper mainInstaSwiper" id="mainSwiper-{{ section.id }}">
+      <div class="swiper-wrapper">
+        {% for block in section.blocks %}
+          {%- liquid
+            assign video_url = block.settings.video_url
+            assign url_down = video_url | downcase
+            assign video_type = 'mp4'
+            if url_down contains 'youtube.com/shorts/'
+              assign video_type = 'youtube'
+              assign video_id = video_url | split: 'shorts/' | last | split: '?' | first
+              assign embed_url = 'https://www.youtube.com/embed/' | append: video_id | append: '?autoplay=1&mute=1&loop=1&playlist=' | append: video_id | append: '&controls=0&modestbranding=1&rel=0'
+            endif
+          -%}
+          <div class="swiper-slide {% cycle '','slide--offset' %}" {{ block.shopify_attributes }}>
+            <div class="insta-card" onclick="openModal({{ forloop.index0 }})">
+              <div class="insta-card__video-wrapper">
+                {% if video_type == 'mp4' %}
+                  <video src="{{ video_url }}" autoplay loop muted playsinline></video>
+                {% else %}
+                  <iframe src="{{ embed_url }}" allow="autoplay; encrypted-media" frameborder="0"></iframe>
+                {% endif %}
+              </div>
+              <div class="insta-card__overlay">
+                {%- if block.settings.title != blank -%}
+                  <h3 class="insta-card__title">{{ block.settings.title }}</h3>
+                {%- endif -%}
+                {%- if block.settings.description != blank -%}
+                  <p class="insta-card__description">{{ block.settings.description }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Lightbox Modal (Invisible until clicked) -->
+    <div id="emtsLightbox" class="emts-lightbox">
+      <button class="menu-close-button" onclick="closeModal()" aria-label="Close modal"></button>
+      <div class="swiper instaVideoGallery">
+        <div class="swiper-wrapper">
+          {% for block in section.blocks %}
+            {%- liquid
+              assign video_url = block.settings.video_url
+              assign url_down = video_url | downcase
+              assign video_type = 'mp4'
+              if url_down contains 'youtube.com/shorts/'
+                assign video_type = 'youtube'
+                assign video_id = video_url | split: 'shorts/' | last | split: '?' | first
+                assign embed_url = 'https://www.youtube.com/embed/' | append: video_id | append: '?autoplay=1&loop=1&playlist=' | append: video_id
+              endif
+            -%}
+            <div class="swiper-slide" data-video-type="{{ video_type }}" data-embed-url="{{ embed_url }}">
+              <div class="lightbox-video-container">
+                {% if video_type == 'mp4' %}
+                  <video src="{{ video_url }}" loop muted playsinline></video>
+                {% else %}
+                  <iframe src="" allow="autoplay; encrypted-media" frameborder="0"></iframe>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let mainGallerySwiper;
+  let lightboxSwiper;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initializing the Main Auto Slider
+    mainGallerySwiper = new Swiper("#mainSwiper-{{ section.id }}", {
+      slidesPerView: 'auto',
+      spaceBetween: {{ section.settings.gap_between }},
+      loop: true,
+      loopedSlides: 8, // Ensure enough copies for the marquee
+      speed: 10000, 
+      {% if section.settings.enable_autoplay %}
+      autoplay: {
+        delay: 0,
+        disableOnInteraction: false,
+      },
+      {% else %}
+      autoplay: false,
+      {% endif %}
+      freeMode: true,
+      watchSlidesProgress: true,
+      on: {
+        setTranslate: function() {
+          const swiper = this;
+          const { slides } = swiper;
+          const amplitude = 80; 
+          const enableZigzag = {{ section.settings.enable_zigzag | json }};
+          
+          for (let i = 0; i < slides.length; i++) {
+            const slide = slides[i];
+            const progress = slide.progress;
+            const card = slide.querySelector('.insta-card');
+            
+            if (card) {
+               let yOffset = 0;
+               if(window.innerWidth > 748 && enableZigzag) {
+                  // Triangle wave formula for sharp zigzag path
+                  const normalizedProgress = ((progress % 2) + 2) % 2;
+                  yOffset = amplitude * (1 - Math.abs(normalizedProgress - 1));
+               }
+               card.style.transform = `translateY(${yOffset}px)`;
+            }
+          }
+        },
+        setTransition: function(speed) {
+          const swiper = this;
+          const { slides } = swiper;
+          for (let i = 0; i < slides.length; i++) {
+            const card = slides[i].querySelector('.insta-card');
+            if (card) {
+              card.style.transitionDuration = `${speed}ms`;
+            }
+          }
+        }
+      }
+    });
+
+    // Initializing the Lightbox Swiper
+    lightboxSwiper = new Swiper(".instaVideoGallery", {
+      effect: "coverflow",
+      centeredSlides: true,
+      slidesPerView: "auto",
+      spaceBetween: 30,
+      coverflowEffect: {
+        rotate: 0,
+        stretch: 0,
+        depth: 100,
+        modifier: 2,
+        slideShadows: false
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      on: {
+        slideChange: function() {
+          pauseAllLightboxVideos();
+          playActiveLightboxVideo();
+        }
+      }
+    });
+  });
+
+  function openModal(index) {
+    const modal = document.getElementById("emtsLightbox");
+    modal.style.display = "flex";
+    document.body.style.overflow = 'hidden';
+    
+    setTimeout(() => {
+      lightboxSwiper.slideTo(index, 0);
+      lightboxSwiper.update();
+      playActiveLightboxVideo();
+    }, 10);
+  }
+
+  function closeModal() {
+    const modal = document.getElementById("emtsLightbox");
+    modal.style.display = "none";
+    document.body.style.overflow = '';
+    pauseAllLightboxVideos();
+  }
+
+  function playActiveLightboxVideo() {
+    const activeSlide = lightboxSwiper.slides[lightboxSwiper.activeIndex];
+    if (activeSlide) {
+      const type = activeSlide.getAttribute('data-video-type');
+      const embedUrl = activeSlide.getAttribute('data-embed-url');
+      
+      if (type === 'mp4') {
+        const video = activeSlide.querySelector('video');
+        if (video) {
+          video.muted = false;
+          video.play().catch(() => {
+            video.muted = true;
+            video.play();
+          });
+        }
+      } else {
+        const iframe = activeSlide.querySelector('iframe');
+        if (iframe && embedUrl) {
+          // Add autoplay for external player if not already there
+          const finalUrl = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
+          iframe.src = finalUrl;
+        }
+      }
+    }
+  }
+
+  function pauseAllLightboxVideos() {
+    document.querySelectorAll('.instaVideoGallery video').forEach(v => {
+      v.pause();
+      v.currentTime = 0;
+    });
+    // Stop iframes by clearing src
+    document.querySelectorAll('.instaVideoGallery iframe').forEach(f => {
+      f.src = "";
+    });
+  }
+
+  document.getElementById('emtsLightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Insta Video Gallery",
+  "class": "section section-video-gallery",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "Sacred Paths",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "section_description",
+      "default": "<p>Each path offers a unique resonance with universal frequencies, curated by masters of the Vedic tradition.</p>",
+      "label": "Section Description"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" }
+      ],
+      "default": "h1",
+      "label": "Heading Size"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Slider Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "Enable Auto-Scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_zigzag",
+      "label": "Enable Zigzag Animation",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "card_max_width",
+      "min": 150,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Video Width (Desktop)",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "gap_between",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap Between Videos",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Video Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "video_url",
+          "label": "Video URL (.mp4)",
+          "default": "https://videos.pexels.com/video-files/4835063/4835063-uhd_1440_2560_30fps.mp4"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Vedic Astrology",
+          "label": "Card Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "default": "Understand your cosmic blueprint and navigate destiny.",
+          "label": "Card Description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Insta Video Gallery",
+      "blocks": [{ "type": "column" }, { "type": "column" }, { "type": "column" }, { "type": "column" }]
+    }
+  ]
+}
+{% endschema %}

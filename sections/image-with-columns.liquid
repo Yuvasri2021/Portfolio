@@ -1,0 +1,547 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<style>
+    .background--{{ section.id }} {
+    background: url('{{ section.settings.bg_image | img_url: '2000x'  }}');
+  }
+    .columns-alignment {
+  display: flex;
+  flex-direction: column;
+}
+
+.columns-alignment.left {
+  text-align: left;
+  align-items: flex-start;
+}
+
+.columns-alignment.center {
+  text-align: center;
+  align-items: center;
+}
+
+.columns-alignment.right {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.image-with-columns {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+.main-image {
+  width: 50%;
+}
+
+.two-col-image {
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.image-height--small .two-col-image {
+  height: 300px;
+}
+
+.image-height--medium .two-col-image {
+  height: 450px;
+}
+
+.image-height--large .two-col-image {
+  height: 600px;
+}
+
+.image-height--adapt .two-col-image {
+  height: auto;
+}
+
+.layout--image_first {
+  flex-direction: row;
+}
+
+.layout--text_first {
+  flex-direction: row-reverse;
+}
+.main_content_columns {
+  width: 50%;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.column-block {
+  padding: 24px 24px 0 24px;
+  position:relative;
+}
+
+.column_number{
+font-size: 85px;
+font-weight:700;
+    position: absolute;
+    top: 50px;
+    right: 19px;
+  color: #413939;
+    opacity: .1;
+  }
+  .block_contents{
+  margin-bottom: 60px;
+  max-width: 90%;
+  }
+ .columns_heading{
+margin:0;
+}
+.columns_heading p{
+    margin: 0 2rem;
+}
+.block_contents p{
+   font-size: 14px;
+    letter-spacing: 0.03rem;
+}
+.block_contents h3{
+margin:0;
+}
+
+
+@media screen and (max-width: 1024px) {
+
+  .image-with-columns {
+    gap: 25px;
+  }
+
+  .main-image {
+    width: 45%;
+  }
+
+  .main_content_columns {
+    width: 55%;
+  }
+
+  .column_number {
+    font-size: 70px;
+    top: 70px;
+  }
+
+
+
+@media screen and (max-width: 768px) {
+
+  .image-with-columns {
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 20px;
+  }
+
+  .layout--text_first {
+    flex-direction: column-reverse;
+  }
+
+  .main-image,
+  .main_content_columns {
+    width: 100%;
+  }
+
+  .block_contents {
+    max-width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .column-block {
+    padding: 20px;
+  }
+
+  .column_number {
+    top: 45px;
+    right: 15px;
+  }
+
+  .columns_heading {
+    text-align: center;
+  }
+
+  .columns_heading p {
+    margin: 0;
+  }
+
+  .block_contents h3 {
+    font-size: 18px;
+  }
+
+  .block_contents p {
+    font-size: 13px;
+  }
+
+}
+
+@media screen and (max-width: 480px) {
+
+  .column_number {
+    top: 90px;
+    font-size:50px;
+  }
+  .block_contents h3 {
+    font-size: 16px;
+  }
+
+  .block_contents p {
+    font-size: 12px;
+  }
+
+}
+
+</style>
+
+<div class="section-{{ section.id }}-padding {% if section.settings.bg_image %} background--{{ section.id }} {% endif %} color-{{ section.settings.color_scheme }} gradient">
+<div class="page-width ">
+    <div class="columns-alignment {{ section.settings.content_alignment }}">
+       {% assign separator = "," %}
+
+{% assign title_parts = section.settings.title | split: separator %}
+{% assign before_comma = title_parts[0] %}
+{% assign after_comma_full = title_parts[1] %}
+
+<h2 class="columns_heading title inline-richtext {{ section.settings.heading_size }}">
+
+  {{ before_comma | strip }}
+
+  {% if after_comma_full %}
+    {% assign after_comma_full = after_comma_full | strip %}
+    {% assign after_words = after_comma_full | split: " " %}
+    {% assign first_word = after_words[0] %}
+    {% assign rest_words = after_words | slice: 1, after_words.size | join: " " %}
+
+    <span style="color: {{ section.settings.section_title_color }};">
+      {{ first_word }}
+    </span>
+
+    {% if rest_words != blank %}
+      {{ " " }}{{ rest_words }}
+    {% endif %}
+  {% endif %}
+
+</h2>
+
+        <p class="subtitle rte {{ section.settings.description_style }}">{{ section.settings.subtitle }}</p>
+    </div>
+
+<div class="image-with-columns layout--{{ section.settings.container_layout }}">
+   
+  <div class="main-image image-height--{{ section.settings.height }}">
+    {%- if section.settings.main_image != blank -%}
+      {{
+        section.settings.main_image
+        | image_url: width: 1500
+        | image_tag: class: 'two-col-image'
+      }}
+    {%- endif -%}
+  </div>
+
+<div class="main_content_columns">
+  {% for block in section.blocks %}
+    <div class="column-block color-{{ block.settings.color_scheme_1 }} gradient"
+     style="border-radius: {{ block.settings.column_border_radius }}px;">
+     <div class="block_contents">
+     
+   {% assign separator = "," %}
+
+{% assign title_parts = block.settings.column_title | split: separator %}
+{% assign before_comma = title_parts[0] %}
+{% assign after_comma_full = title_parts[1] %}
+
+
+  {{ before_comma | strip }}
+  {% if after_comma_full %}
+    {% assign after_comma_full = after_comma_full | strip %}
+    {% assign after_words = after_comma_full | split: " " %}
+    {% assign first_word = after_words[0] %}
+    {% assign rest_words = after_words | slice: 1, after_words.size | join: " " %}
+
+    <span class="title-rest" style="color: {{ block.settings.title_rest_color }};">
+      {{ first_word }}
+    </span>
+    
+    {% if rest_words != blank %}
+      {{ " " }}{{ rest_words }}
+    {% endif %}
+  {% endif %}
+
+
+
+      <p>{{ block.settings.column_description }}</p>
+      </div>
+      <span class="column_number">{{ block.settings.column_number }}
+      </span>
+    </div>
+  {% endfor %}
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+
+{% schema %}
+{
+  "name": "Image with Columns",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image"
+    },
+     {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "full_bleed",
+          "label": "Full Width"
+        },
+        {
+          "value": "grid",
+          "label": "Grid"
+        }
+      ],
+      "default": "full_bleed",
+      "label": "Layout"
+    },
+    {
+     "type":"richtext",
+     "id":"title",
+     "label":"Heading",
+    },
+     {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        },
+        {
+          "value": "hxl",
+          "label": "t:sections.all.heading_size.options__4.label"
+        },
+        {
+          "value": "hxxl",
+          "label": "t:sections.all.heading_size.options__5.label"
+        }
+      ],
+      "default": "h2",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+  "type": "color",
+  "id": "section_title_color",
+  "label": "Section Title Highlight Color",
+  "default": "#FF5722"
+},
+     {
+     "type":"inline_richtext",
+     "id":"subtitle",
+     "label":"Description",
+    },
+     {
+      "type": "select",
+      "id": "description_style",
+      "label": "t:sections.featured-collection.settings.description_style.label",
+      "options": [
+        {
+          "value": "body",
+          "label": "t:sections.featured-collection.settings.description_style.options__1.label"
+        },
+        {
+          "value": "subtitle",
+          "label": "t:sections.featured-collection.settings.description_style.options__2.label"
+        },
+        {
+          "value": "uppercase",
+          "label": "t:sections.featured-collection.settings.description_style.options__3.label"
+        }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.rich-text.settings.desktop_content_position.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.rich-text.settings.desktop_content_position.options__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.rich-text.settings.desktop_content_position.options__3.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.rich-text.settings.desktop_content_position.label"
+    },
+    {
+     "type":"image_picker",
+     "id":"main_image",
+     "label":"Main Image",
+    },
+     {
+      "type": "select",
+      "id": "height",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.image-with-text.settings.height.options__1.label"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.image-with-text.settings.height.options__2.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.image-with-text.settings.height.options__3.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.image-with-text.settings.height.options__4.label"
+        }
+      ],
+      "default": "adapt",
+      "label": "t:sections.image-with-text.settings.height.label"
+    },
+    {
+      "type": "select",
+      "id": "container_layout",
+      "options": [
+        {
+          "value": "image_first",
+          "label": "t:sections.image-with-text.settings.layout.options__1.label"
+        },
+        {
+          "value": "text_first",
+          "label": "t:sections.image-with-text.settings.layout.options__2.label"
+        }
+      ],
+      "default": "image_first",
+      "label": "t:sections.image-with-text.settings.layout.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 52
+    }
+  ],
+  "blocks": [
+    {
+      "type": "columns",
+      "name": "Text Columns",
+      "limit": 5,
+      "settings": [
+         {
+     "type":"richtext",
+     "id":"column_title",
+     "label":"Heading",
+    },
+    {
+  "type": "color",
+  "id": "title_rest_color",
+  "label": "Rest of Title Color",
+  "default": "#FF5722"
+},
+     {
+     "type":"inline_richtext",
+     "id":"column_description",
+     "label":"Description",
+    },
+    {
+     "type":"text",
+     "id":"column_number",
+     "label":"Number",
+    },
+        {
+      "type": "color_scheme",
+      "id": "color_scheme_1",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+  "type": "range",
+  "id": "column_border_radius",
+  "label": "Columns border radius",
+  "min": 0,
+  "max": 40,
+  "step": 2,
+  "unit": "px",
+  "default": 12
+}
+
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image with Columns",
+      "blocks": [
+        {
+          "type": "columns"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

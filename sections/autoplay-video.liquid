@@ -1,0 +1,235 @@
+{{ 'autoplay-video.css' | asset_url | stylesheet_tag }}
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div
+  id="{{ section.id }}"
+  class="video-banner section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient"
+>
+  <div class="{% if section.settings.layout == 'grid' %}page-width{% else %}full_bleed{% endif %}">
+    {%- unless section.settings.title == blank -%}
+      <div class="title-wrapper-with-link title-wrapper--self-padded-mobile title-wrapper--no-top-margin multicolumn__title">
+        <h2 class="title inline-richtext {{ section.settings.heading_size }}">
+          {{ section.settings.title }}
+        </h2>
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ section.settings.button_link }}" class="link underlined-link">
+            {{- section.settings.button_label | escape -}}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endunless -%}
+
+    <div class="video-blocks swiper-container  content-container">
+      <div class="swiper-wrapper">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.video != blank -%}
+            <div class="gallery-video swiper-slide "  data-aos="zoom-in">
+              {{
+                block.settings.video
+                | video_tag:
+                  image_size: 'x498',
+                  autoplay: true,
+                  loop: true,
+                  controls: false,
+                  muted: true,
+                  loading: 'lazy',
+                  playsinline: true,
+                  class: 'video-gallery-video'
+              }}
+              {% if section.settings.enable_mute_button %}
+                <button class="mute-button" aria-label="Toggle Mute">
+                  <span class="mute-icon"></span>
+                </button>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="gallery-video swiper-slide">
+              {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</div>
+{% if section.settings.enable_mute_button %}
+  <script>
+        document.addEventListener('DOMContentLoaded', function () {
+      var muteButtons = document.querySelectorAll('.mute-button');
+
+      muteButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          var video = this.parentElement.querySelector('video');
+          if (video) {
+            video.muted = !video.muted;
+            // Optionally, update button icon based on mute state
+            if (video.muted) {
+              this.querySelector('.mute-icon').style.backgroundImage = "url({{ 'muted-icon.svg' | asset_url }})";
+            } else {
+              this.querySelector('.mute-icon').style.backgroundImage = "url({{ 'unmuted-icon.svg' | asset_url }})";
+            }
+          }
+        });
+      });
+    });
+  </script>
+{% endif %}
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+    var swiper = new Swiper('.video-blocks', {
+      slidesPerView: 1,
+      spaceBetween: 30,
+      grabCursor: true,
+       lazy: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      breakpoints: {
+        1200: {
+          slidesPerView: 1,
+        },
+        768: {
+          slidesPerView: 1,
+        },
+      },
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Video gallery",
+  "tag": "section",
+  "class": "section video-gallery-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+     {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "full_bleed",
+          "label": "t:sections.slideshow.settings.layout.options__1.label"
+        },
+        {
+          "value": "grid",
+          "label": "t:sections.slideshow.settings.layout.options__2.label"
+        }
+      ],
+      "default": "full_bleed",
+      "label": "t:sections.slideshow.settings.layout.label"
+    },
+     {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "Video gallery",
+      "label": "t:sections.multicolumn.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        },
+        {
+          "value": "hxl",
+          "label": "t:sections.all.heading_size.options__4.label"
+        },
+        {
+          "value": "hxxl",
+          "label": "t:sections.all.heading_size.options__5.label"
+        }
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mute_button",
+      "label": "Enable mute button",
+      "default": false,
+      "info": "works only for single video without swiper."
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 52
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Video",
+      "limit": 12,
+      "settings": [
+      {
+      "type": "video",
+      "id": "video",
+      "label": "t:sections.video.settings.video.label"
+      }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video gallery",
+      "blocks": [
+        {
+          "type": "video"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

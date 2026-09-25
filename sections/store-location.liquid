@@ -1,0 +1,341 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .title-wrapper .title{
+    margin:0;
+  }
+
+  .map iframe{
+    border-radius: 2.5rem 0 0 2.5rem;
+  }
+
+  .store-location > .map,
+    .store-location > .shop-location {
+      width: 50%;
+    }
+
+    .store-location {
+      display: flex;
+      border: solid #ffffff var(--product-card-border-width);
+      border-radius: var(--product-card-corner-radius);
+    }
+
+    .store {
+      display: flex;
+      height:100%;
+      gap: 20px;
+      align-items: center;
+      align-items: stretch;
+          border-width: 0 0 6px 6px;
+    border-style: solid;
+    border-color: #ffffff;
+    }
+    .store:hover {
+  border-left-color: #64111D; 
+}
+
+    .store img {
+      width:240px;
+      object-fit: cover;
+    }
+    .address{
+    max-width: 400px;
+    }
+
+    @media screen and (max-width:800px){
+      .store {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      {% comment %} margin-bottom: 10px; {% endcomment %}
+    }
+    }
+    @media screen and (max-width:750px){
+
+      .title-wrapper .title{
+        margin-bottom: 1rem;
+      }
+
+      .store-location > .map,
+    .store-location > .shop-location {
+      width: 100%;
+    }
+      .store-location{
+      display:flex;
+      flex-direction:column;
+      row-gap:15px;
+    }
+
+    .map iframe{
+    border-radius: 1rem 1rem 0 0;
+    }
+    }
+    .location{
+    display: flex;
+      flex-direction: column;
+      justify-content: center;}
+
+    .location>*{
+      margin-top:0;
+      margin-bottom:0.8rem;
+      line-height:1.2;
+    }
+</style>
+
+<div class="section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    <div class="title-wrapper {{ section.settings.heading_alignment }}">
+      {%- if section.settings.subtitle != blank -%}
+        <p class="subtitle" {{ section.shopify_attributes }}>
+          
+          {{ section.settings.subtitle }}
+          
+        </p>
+      {%- endif -%}
+      {% if section.settings.heading != blank %}
+        <h2 class="title text-center {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+      {% endif %}
+    </div>
+
+    <div class="store-location color-{{ section.settings.container_color_scheme }}">
+      <div class="map">
+        {% assign locations = section.blocks | slice: 0, 3 %}
+        {% if locations.size > 0 %}
+          {% assign first_location = locations[0] %}
+          <iframe
+            src="https://www.google.com/maps?q={{ first_location.settings.address | url_encode }},{{ first_location.settings.city | url_encode }}&output=embed"
+            width="100%"
+            height="100%"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          >
+          </iframe>
+        {% else %}
+          <p>No shop locations added.</p>
+        {% endif %}
+      </div>
+
+      <div class="shop-location">
+        {% for block in section.blocks limit: 3 %}
+          <div class="store" data-address="{{ block.settings.address | escape }}, {{ block.settings.city | escape }}">
+            {% if block.settings.shop_image != blank %}
+              <img src="{{ block.settings.shop_image | image_url: width: 400 }}" alt="{{ block.settings.shop_name }}">
+            {% endif %}
+            <div class="location">
+              <h3 class="shop-name">{{ block.settings.shop_name }}</h3>
+              <p class="address">{{ block.settings.address }}</p>
+              <p class="phone h5">{{ block.settings.phone }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var map;
+  var geocoder;
+  var marker;
+
+  function initShopMap() {
+    map = new google.maps.Map(document.getElementById('shop-map'), {
+      zoom: 12,
+      center: { lat: 11.0168, lng: 76.9558 }, // default: Coimbatore
+    });
+    geocoder = new google.maps.Geocoder();
+
+    // Set initial marker to first shop
+    var firstShop = document.querySelector('.shop-location .store');
+    if (firstShop) {
+      updateMap(firstShop.dataset.address);
+    }
+
+    // Add click event to each shop
+    document.querySelectorAll('.shop-location .store').forEach(function (shop) {
+      shop.addEventListener('click', function () {
+        updateMap(this.dataset.address);
+      });
+    });
+  }
+
+  function updateMap(address) {
+    geocoder.geocode({ address: address }, function (results, status) {
+      if (status === 'OK') {
+        map.setCenter(results[0].geometry.location);
+        if (marker) marker.setMap(null); // remove previous marker
+        marker = new google.maps.Marker({
+          map: map,
+          position: results[0].geometry.location,
+        });
+      } else {
+        console.error('Geocode failed: ' + status);
+      }
+    });
+  }
+</script>
+
+<!-- Google Maps API -->
+<script
+  async
+  defer
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initShopMap"
+></script>
+
+{% schema %}
+{
+  "name": "Map & Location",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "container_color_scheme",
+      "label": "Container Color",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "default": "Sub title",
+      "label": "t:sections.slideshow.blocks.slide.settings.subtitle.label"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Store Location"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "small"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        },
+        {
+          "value": "hxl",
+          "label": "t:sections.all.heading_size.options__4.label"
+        },
+        {
+          "value": "hxxl",
+          "label": "t:sections.all.heading_size.options__5.label"
+        }
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "image_picker",
+      "id": "map_image",
+      "label": "Map Image"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "shop",
+      "name": "Shop Location",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "shop_image",
+          "label": "Shop Image"
+        },
+        {
+          "type": "text",
+          "id": "shop_name",
+          "label": "Shop Name",
+          "default": "Shop Name"
+        },
+        {
+          "type": "text",
+          "id": "address",
+          "label": "Address",
+          "default": "123 Street, Area"
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "label": "Phone",
+          "default": "Phone No"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Map & Location",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

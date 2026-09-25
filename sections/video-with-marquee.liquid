@@ -1,0 +1,231 @@
+{% style %}
+   .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+    .content-wrapper{display:flex;flex-direction:row;align-items:center;gap:50px;}
+    .marquee-container {
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+        width: 100%;
+    }
+    .marquee-content {
+        display: flex;
+        gap: 20px;
+        animation: marqueeAnimation linear infinite;
+    }
+    .block-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+    }
+    .block-item img {
+        width: 50px;
+        height: auto;
+    }
+    /* .blo.content-wrapper ck-button {
+        background-color: #000;
+        color: #fff;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 5px;
+    } */
+ 
+  @media screen and (max-width:990px){
+     .content-wrapper {display:flex;flex-direction:column;}
+     .content-wrapper .text-container {  text-align: center;}
+.video-custom-section video,.video-custom-section .video-container ,text-container{width:100%;}
+  }
+    @keyframes marqueeAnimation {
+        from { transform: translateX(100%); }
+        to { transform: translateX(-100%); }
+    }
+  {% endstyle %}
+<section class="video-custom-section section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}">
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="video-container">
+                {%- if section.settings.video != blank -%}
+                    {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false }}
+                {%- else -%}
+                   {{ 'hero-apparel-3' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
+                {%- endif -%}
+            </div>
+            <div class="text-container">
+                <h3>{{ section.settings.heading }}</h3>
+                <p>{{ section.settings.description }}</p>
+                {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+                    <a href="{{ section.settings.button_link }}" class="button button--secondary">{{ section.settings.button_label }}</a>
+                {%- endif -%}
+               <div class="marquee-container" data-direction="{{ section.settings.marquee_direction }}" data-speed="{{ section.settings.marquee_speed }}">
+            <div class="marquee-content">
+                {%- for block in section.blocks -%}
+                    <div class="block-item">
+                        {%- if block.settings.image != blank -%}
+                            <img src="{{ block.settings.image | image_url }}" alt="{{ block.settings.image.alt }}">
+                        {%- endif -%}
+                        <p>{{ block.settings.text }}</p>
+                        {%- if block.settings.link_label != blank and block.settings.link_url != blank -%}
+                            <a href="{{ block.settings.link_url }}" class="block-button">{{ block.settings.link_label }}</a>
+                        {%- endif -%}
+                    </div>
+                {%- endfor -%}
+            </div>
+        </div>
+            
+        
+        </div>
+        </div>
+       
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let marquee = document.querySelector(".marquee-content");
+        let container = document.querySelector(".marquee-container");
+        let direction = container.dataset.direction;
+        let speed = container.dataset.speed;
+        marquee.style.animationDuration = speed + "s";
+        if (direction === "right") {
+            marquee.style.animationDirection = "reverse";
+        }
+    });
+</script>
+
+{% schema %}
+{
+  "name": "Video with marquee",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Upload Video"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Made Right"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "We put patience, precision and a lot of care into every tee. Doing it right is a reward in itself."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "select",
+      "id": "marquee_direction",
+      "label": "Marquee Scroll Direction",
+      "options": [
+        { "value": "left", "label": "Left to Right" },
+        { "value": "right", "label": "Right to Left" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "label": "Marquee Speed",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "content_block",
+      "name": "Content Block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Upload Image"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link Label"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video with marquee",
+      "blocks": [
+        {
+          "type": "content_block"
+        },
+        {
+          "type": "content_block"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+

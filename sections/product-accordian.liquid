@@ -1,0 +1,724 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  /* Default: closed */
+.infn-panel {
+  min-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+/* When open → fit content */
+.infn-panel.is-open {
+  min-height: fit-content;
+  overflow: visible;
+}
+
+  /* Section CSS */
+ #inf-accordion-{{ section.id }} { 
+  box-sizing: border-box; 
+}
+
+#inf-accordion-{{ section.id }} .infn-intro,
+#inf-accordion-{{ section.id }} .infn-main {
+  width: 100%;
+}
+/* Only when both exist, split 50%-50% */
+#inf-accordion-{{ section.id }} .infn-stack.both > .infn-intro,
+#inf-accordion-{{ section.id }} .infn-stack.both > .infn-main {
+  width: calc(50% - 15px); /* subtract half the gap */
+}
+
+.product-accordion .title-wrapper{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  cursor: pointer;
+  }
+  .heading-wrapper{
+    margin:0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .product-accordion .accordion-icon{
+    align-items: center;
+  }
+.product-accordion .accordion-title{
+  margin: 0;
+}
+.hr-line{
+  height:2px;
+  margin:0;
+}
+.infn-intro img {
+    width:100%; 
+    height: 100%;
+    display:block; 
+    border-radius: var(--product-card-corner-radius);
+    object-fit:cover; 
+  }
+
+.infn-main { 
+    padding:3.5rem;
+    border-radius: var(--product-card-corner-radius);
+    box-shadow:0 1px 0 rgba(0,0,0,0.04);
+     min-height: -webkit-fill-available; 
+  }
+
+  /* NEW: Remove padding from infn-main when only image exists */
+  .infn-main.image-only {
+    padding: 0 !important;
+  }
+
+  details.infn-accordion-item { 
+    border-bottom:1px solid rgb(71, 71, 71); 
+    padding:12px 0; 
+  }
+
+
+  summary.infn-accordion-toggle { 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    cursor:pointer; 
+    font-weight:600; 
+  }
+  .infn-stack {
+    display:flex;
+    /* max-width: 990px; */
+    margin: auto;
+    gap:30px; 
+    padding: 3rem;
+  } 
+ .product-accordion .infn-main .image-with-text__heading{
+  margin: 0;
+ }
+ .product-accordion .infn-main .image-with-text__text,
+ .product-accordion .infn-main .button.button--primary,
+ .product-accordion .infn-main .image-block{
+  margin-top: 1.2rem;
+ }
+ /* for first child */
+ .product-accordion .infn-main .image-block:first-child {
+  margin-top: 0;
+}
+
+.infn-prose p{
+  line-height: 1.5;
+  margin-bottom: 0;
+  margin-top: 0px;
+}
+.product-accordion .feature-title{
+  font-size: 1.8rem;
+}
+.accordion-item, .accordion-header {
+  border: none;
+  box-shadow: none; 
+}
+
+.image-block img {
+  width: 100%;
+  border-radius: var(--product-card-corner-radius);
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+@media screen and (max-width:769px){
+  .infn-stack { 
+     display:flex;
+     flex-direction: column;
+     flex-wrap: wrap;
+    row-gap: 20px;
+    padding: 1rem 0;
+  }
+  
+  /* NEW: Mobile styles for image-only infn-main */
+  .infn-main.image-only {
+    padding: 0 !important;
+  }
+  
+  #inf-accordion-{{ section.id }} .infn-intro,
+  #inf-accordion-{{ section.id }} .infn-main {
+    width: 100% !important;
+  }
+  
+  .ingredient-content.with-padding  { 
+    padding:20px;
+  }
+  
+ .infn-main .image-block.no-padding {
+  padding: 0 !important;
+}
+}
+{%- endstyle -%}
+
+
+<section id="inf-accordion-{{ section.id }}" class="{{ section.settings.custom_class_name }} section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient" style="{% if section.settings.section_background_color %}background-color: {{ section.settings.section_background_color }};{% endif %}">
+<div class="page-width">
+  <!-- Title -->
+  <div class="title-wrapper heading-wrapper" id="accordion-title-wrapper-{{ section.id }}">
+    <h2 id="infn-top-title-{{ section.id }}" tabindex="0" role="button" aria-expanded="false" class="accordion-title inline-richtext {{ section.settings.heading_size }}">
+      {{ section.settings.section_title }}
+    </h2>
+    <span class="accordion-icon">{% render 'icon-product-accordion' %}</span>
+  </div>
+  <hr class="hr-line" style="background-color: {{ section.settings.heading_line_color }};">
+
+  <!-- Panel -->
+ <div id="infn-panel-{{ section.id }}" class="infn-panel{% if section.settings.open_by_default %} is-open{% endif %}" aria-hidden="{% if section.settings.open_by_default %}false{% else %}true{% endif %}">
+
+  <!-- Dynamic class based on content -->
+  {%- assign has_text_content = false -%}
+  {%- assign has_image_content = false -%}
+  
+  {% for block in section.blocks %}
+    {% case block.type %}
+      {% when 'heading' or 'caption' or 'text' or 'button' or 'feature' %}
+        {%- assign has_text_content = true -%}
+      {% when 'image' %}
+        {%- assign has_image_content = true -%}
+    {% endcase %}
+  {% endfor %}
+  
+  {%- if has_image_content and has_text_content -%}
+    {%- assign stack_class = 'infn-stack both' -%}
+    {%- assign main_class = 'infn-main' -%}
+  {%- elsif has_image_content and has_text_content == false -%}
+    {%- assign stack_class = 'infn-stack' -%}
+    {%- assign main_class = 'infn-main image-only' -%}
+  {%- else -%}
+    {%- assign stack_class = 'infn-stack' -%}
+    {%- assign main_class = 'infn-main' -%}
+  {%- endif -%}
+
+  <div class="{{ stack_class }}">
+
+      {%- if section.settings.section_image != blank -%}
+      <div class="infn-intro">
+          <img class="infn-image" src="{{ section.settings.section_image | img_url: '600x' }}" alt="{{ section.settings.section_image_alt | escape }}">
+      </div>
+      {% endif %}
+
+       {% if section.blocks.size > 0 %}
+     <div class="{{ main_class }} color-{{ section.settings.section_color_scheme }}">
+        <div class="infn-accordion" role="list">
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {%- when 'heading' -%}
+                  <h2
+                    class="image-with-text__heading inline-richtext {{ block.settings.heading_size }}"
+                    {{ block.shopify_attributes }}
+                  >
+                    {{ block.settings.heading }}
+                  </h2>
+
+                  {%- when 'caption' -%}
+                  <p
+                    class="image-with-text__text image-with-text__text--caption {{ block.settings.text_style }} {{ block.settings.text_style }}--{{ block.settings.text_size }} {{ block.settings.text_style }}"
+                    {{ block.shopify_attributes }}
+                  >
+                    {{ block.settings.caption | escape }}
+                  </p>
+
+            {%- when 'text' -%}
+  {% assign text_clean = block.settings.text | strip_html | strip %}
+  <div class="image-with-text__text rte {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+    {% if text_clean != blank %}
+      {{ block.settings.text }}
+    {% endif %}
+  </div>
+
+
+                {%- when 'button' -%}
+                  {%- if block.settings.button_label != blank -%}
+                    <a
+                      {% if block.settings.button_link == blank %}
+                        role="link" aria-disabled="true"
+                      {% else %}
+                        href="{{ block.settings.button_link }}"
+                      {% endif %}
+                      class="button{% if block.settings.button_style_secondary %} button--secondary{% else %} button--primary{% endif %}"
+                      {{ block.shopify_attributes }}
+                    >
+                      {{ block.settings.button_label | escape }}
+                    </a>
+                  {%- endif -%}
+
+         {%- when 'image' -%}
+{% if product.metafields.custom.ingredients != blank %}
+  <!-- Show metafield ingredient (text, image, etc.) -->
+  <div class="ingredient-content with-padding">
+    {{ product.metafields.custom.ingredients | metafield_tag }}
+  </div>
+{% elsif block.settings.image != blank %}
+  <!-- If metafield is empty, show the section image -->
+  <div class="image-block no-padding">
+    <img
+      src="{{ block.settings.image | img_url: 'master' }}"
+      alt="{{ block.settings.image.alt | escape }}"
+      loading="lazy"
+    >
+  </div>
+{% endif %}
+
+
+
+{%- assign no_info_displayed = false -%}
+
+{%- when 'feature' -%}
+  {% if block.settings.feature_title != blank %}
+<details id="infn-block-{{ block.id }}" class="infn-accordion-item" role="listitem">
+  <summary class="infn-accordion-toggle" aria-controls="infn-content-{{ block.id }}">
+    {% assign title_clean = block.settings.feature_title | strip_html | strip %}
+    {% assign subtitle_clean = block.settings.feature_subtitle | strip_html | strip %}
+    {% assign content_clean = block.settings.feature_content | strip_html | strip %}
+
+    {% if title_clean != blank %}
+      <span class="feature-title">{{ block.settings.feature_title }}</span>
+      <span aria-hidden="true">+</span>
+    {% elsif title_clean == blank and subtitle_clean == blank and content_clean == blank and no_info_displayed == false %}
+      <span class="infn-back-label infn-empty-text">No additional information available.</span>
+      {% assign no_info_displayed = true %}
+    {% endif %}
+  </summary>
+
+  <div id="infn-content-{{ block.id }}" class="infn-accordion-content" role="region" aria-labelledby="infn-block-{{ block.id }}">
+    {% if subtitle_clean != blank %}
+      <div class="infn-back-label">{{ block.settings.feature_subtitle }}</div>
+    {% endif %}
+
+    {% if content_clean != blank %}
+      <div class="infn-prose">{{ block.settings.feature_content }}</div>
+    {% endif %}
+  </div>
+</details>
+
+{% endif %}
+
+
+          {%- endcase -%}
+          {% endfor %}
+        </div>
+      </div>
+       {% endif %}
+    </div>
+  </div>
+</div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sid = '{{ section.id }}';
+  const titleWrapper = document.getElementById('accordion-title-wrapper-' + sid);
+  const panel = document.getElementById('infn-panel-' + sid);
+  const details = panel.querySelectorAll('details.infn-accordion-item');
+
+  if (!titleWrapper || !panel) return;
+
+  // Temporarily disable transitions on load
+  panel.style.transition = 'none';
+
+  // Respect initial state from Liquid
+  if (panel.classList.contains('is-open')) {
+    panel.style.maxHeight = panel.scrollHeight + 'px';
+    panel.style.opacity = '1';
+    panel.setAttribute('aria-hidden', 'false');
+  } else {
+    panel.style.maxHeight = '0';
+    panel.style.opacity = '0';
+    panel.setAttribute('aria-hidden', 'true');
+
+    // Close all accordion items only if panel is closed by default
+    details.forEach(d => d.removeAttribute('open'));
+    details.forEach(d => {
+      const icon = d.querySelector('summary [aria-hidden="true"]');
+      if (icon) icon.textContent = '+';
+    });
+  }
+
+  // Allow transitions after initial load
+  requestAnimationFrame(() => {
+    panel.style.transition = '';
+  });
+
+  // Toggle main panel
+  titleWrapper.addEventListener('click', function() {
+    const isOpen = panel.classList.contains('is-open');
+    if (isOpen) {
+      panel.classList.remove('is-open');
+      panel.style.maxHeight = '0';
+      panel.style.opacity = '0';
+      panel.setAttribute('aria-hidden', 'true');
+      details.forEach(d => d.removeAttribute('open'));
+      details.forEach(d => {
+        const icon = d.querySelector('summary [aria-hidden="true"]');
+        if (icon) icon.textContent = '+';
+      });
+    } else {
+      panel.classList.add('is-open');
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+      panel.style.opacity = '1';
+      panel.setAttribute('aria-hidden', 'false');
+    }
+  });
+
+  // Accordion toggle icons
+  details.forEach(d => {
+    const icon = d.querySelector('summary [aria-hidden="true"]');
+    d.addEventListener('toggle', () => {
+      if (icon) icon.textContent = d.open ? '-' : '+';
+    });
+  });
+});
+</script>
+
+
+
+
+{%- schema -%}
+{
+  "name": "Product accordion",
+  "settings": [
+    {
+    "type": "header",
+    "content": "Add your custom class name here"
+    },
+    {
+    "type": "text",
+    "id": "custom_class_name",
+    "label": "Custom class"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "Benefits"
+    },
+      {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        },
+        {
+          "value": "hxl",
+          "label": "t:sections.all.heading_size.options__4.label"
+        },
+        {
+          "value": "hxxl",
+          "label": "t:sections.all.heading_size.options__5.label"
+        }
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+  "type": "color",
+  "id": "heading_line_color",
+  "label": "Heading Line Color",
+  "default": "#000000"
+},
+    {
+      "type": "image_picker",
+      "id": "section_image",
+      "label": "Section image (left)",
+      "info": "Optional image to display on the left (mobile stacks under content)."
+    },
+    {
+      "type": "text",
+      "id": "section_image_alt",
+      "label": "Section image alt text",
+      "default": "Benefits image"
+    },
+    {
+      "type": "color_scheme",
+      "id": "section_color_scheme",
+      "label": "Accordion section color",
+      "default": "scheme-1"
+    },
+     {
+  "type": "checkbox",
+  "id": "open_by_default",
+  "label": "Open the panel",
+  "default": false
+},
+     {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "feature_title",
+          "label": "Feature title",
+          "default": "Tackles Hyperpigmentation"
+        },
+        {
+          "type": "richtext",
+          "id": "feature_subtitle",
+          "label": "Feature subtitle (small label shown above content)"
+        },
+        {
+          "type": "richtext",
+          "id": "feature_content",
+          "label": "Feature content",
+          "default": "<p>Explain how this feature helps the customer. Use basic HTML.</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Optional small icon image"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open this feature by default",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "back_label",
+          "label": "Optional short back label"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "t:sections.image-with-text.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "t:sections.image-with-text.blocks.heading.settings.heading.default",
+          "label": "t:sections.image-with-text.blocks.heading.settings.heading.label"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "h2",
+              "label": "t:sections.all.heading_size.options__1.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.all.heading_size.options__2.label"
+            },
+            {
+              "value": "h0",
+              "label": "t:sections.all.heading_size.options__3.label"
+            },
+            {
+              "value": "hxl",
+              "label": "t:sections.all.heading_size.options__4.label"
+            },
+            {
+              "value": "hxxl",
+              "label": "t:sections.all.heading_size.options__5.label"
+            }
+          ],
+          "default": "h1",
+          "label": "t:sections.all.heading_size.label"
+        }
+      ]
+    },
+    {
+      "type": "caption",
+      "name": "t:sections.image-with-text.blocks.caption.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "caption",
+          "default": "t:sections.image-with-text.blocks.caption.settings.text.default",
+          "label": "t:sections.image-with-text.blocks.caption.settings.text.label"
+        },
+        {
+          "type": "select",
+          "id": "text_style",
+          "options": [
+            {
+              "value": "subtitle",
+              "label": "t:sections.image-with-text.blocks.caption.settings.text_style.options__1.label"
+            },
+            {
+              "value": "caption-with-letter-spacing",
+              "label": "t:sections.image-with-text.blocks.caption.settings.text_style.options__2.label"
+            }
+          ],
+          "default": "caption-with-letter-spacing",
+          "label": "t:sections.image-with-text.blocks.caption.settings.text_style.label"
+        },
+        {
+          "type": "select",
+          "id": "text_size",
+          "options": [
+            {
+              "value": "small",
+              "label": "t:sections.image-with-text.blocks.caption.settings.caption_size.options__1.label"
+            },
+            {
+              "value": "medium",
+              "label": "t:sections.image-with-text.blocks.caption.settings.caption_size.options__2.label"
+            },
+            {
+              "value": "large",
+              "label": "t:sections.image-with-text.blocks.caption.settings.caption_size.options__3.label"
+            }
+          ],
+          "default": "medium",
+          "label": "t:sections.image-with-text.blocks.caption.settings.caption_size.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.image-with-text.blocks.text.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "t:sections.image-with-text.blocks.text.settings.text.default",
+          "label": "t:sections.image-with-text.blocks.text.settings.text.label"
+        },
+        {
+          "type": "select",
+          "id": "text_style",
+          "options": [
+            {
+              "value": "body",
+              "label": "t:sections.image-with-text.blocks.text.settings.text_style.options__1.label"
+            },
+            {
+              "value": "subtitle",
+              "label": "t:sections.image-with-text.blocks.text.settings.text_style.options__2.label"
+            }
+          ],
+          "default": "body",
+          "label": "t:sections.image-with-text.blocks.text.settings.text_style.label"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "t:sections.image-with-text.blocks.button.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_label",
+          "default": "t:sections.image-with-text.blocks.button.settings.button_label.default",
+          "label": "t:sections.image-with-text.blocks.button.settings.button_label.label",
+          "info": "t:sections.image-with-text.blocks.button.settings.button_label.info"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "t:sections.image-with-text.blocks.button.settings.button_link.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "button_style_secondary",
+          "default": false,
+          "label": "t:sections.image-with-text.blocks.button.settings.outline_button.label"
+        }
+      ]
+    },
+    {
+  "type": "image",
+  "name": "Image",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.image-with-text.settings.image.label"
+    }
+  ]
+}
+  ],
+  "presets": [
+    {
+      "name": "Product accordion",
+      "category": "FAQ",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "feature_title": "Featured Title",
+            "feature_content": "<p>Content</p>"
+          }
+        },
+         {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type": "button"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 20
+}
+{%- endschema -%}

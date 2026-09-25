@@ -1,0 +1,722 @@
+{%- style -%}  
+.section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  
+  .video-title {
+    margin-top: 0;
+    margin-bottom: 0rem;
+  }
+
+  .video-slider .testimonial__image {
+    /* height: 350px; */
+    width: 100%;
+    background: none;
+  }
+
+  .video-slider video {
+    width: 100%;
+    border-radius: var(--product-card-corner-radius);
+    display: block;
+  }
+
+  .video-slider .testimonial__image.media-wrapper {
+    margin-right: 0;
+    overflow: hidden;
+    border-radius: var(--product-card-corner-radius);
+  }
+
+  .video-slider .video-slider-list:before,
+  .video-slider .video-slider-list:after {
+    width: 0%;
+  }
+
+  .video-slider-item {
+    padding: 0;
+  }
+
+  .video-slider-list {
+    padding-bottom: 1.0rem;
+    position: static;
+    display: flex;
+  }
+
+  .video-slider-list::-webkit-scrollbar-track {
+    background: white;
+  }
+
+  .video-slider-list::-webkit-scrollbar-thumb {
+    background: lightgray;
+    border: 4px solid transparent;
+    border-radius: 12px;
+    background-clip: padding-box;
+  }
+
+ .color-scheme-1 .video-hover-btn {
+  background-color: var(--color-button);
+  color: var(--color-button-text);
+}
+
+
+  @media only screen and (max-width: 700px) {
+    .video-slider .testimonial__image {
+      margin-left: 0;
+    }
+
+    .video-slider .video-slider-list {
+      width: 100%;
+    }
+    
+  }
+
+  /* Hover Button Styling */
+  .video-wrapper {
+  position: relative;
+  height: fit-content;
+  object-fit: cover;
+  width: 100%; 
+  box-sizing: border-box;
+}
+
+.video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--product-card-corner-radius);
+  border: var(--product-card-border-width) solid #ffffff;
+}
+
+.video-hover-btn {
+  display: flex;
+    align-items: center;
+    justify-content: center;
+  position: absolute;
+  bottom: 2%;
+  left: 10px;
+  width: calc(100% - 2rem); 
+  padding: 10px ;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  z-index: 2;
+}
+
+.product-info-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;    
+  width: 100%;
+}
+
+.product-image {
+      width: 50px;
+    height: 50px;
+}
+
+.product-image img {
+     width: 50px;
+    height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  max-width: calc(100% - 60px);
+}
+.product-details > *{
+  color: #ffffff;
+}
+
+.product-title {
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-price {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.product-info-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    width: 100%;
+}
+
+.open-variants-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: none;
+  /* margin-left: 10px; */
+}
+
+.product-variants-modal {
+  display: none;
+  /* position: fixed; */
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  top: 0;
+   inset: 0; 
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  max-width: 400px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.close-modal-btn {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius:50%;
+  border-width: 1px;
+}
+
+.modal-content>* {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.variant-list h5{
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+.variant-option {
+  margin-bottom: 10px;
+}
+
+.variant-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.variant-values {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.variant-value {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+.variant-list {
+  margin-top: 20px;
+}
+
+.variant-list h4 {
+  margin-bottom: 10px;
+}
+
+.variant-item {
+  margin-bottom: 5px;
+}
+
+.variant-list ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.variant-link {
+  display: flex;
+  justify-content: space-between;
+  text-decoration: none;
+  color: #333;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+      column-gap: 5px;
+}
+
+.variant-link:hover {
+  background-color: #f9f9f9;
+}
+
+.variant-title,
+.variant-price {
+  font-size: 16px;
+}
+.variant-price {
+  font-weight: bold;
+}
+.variant-values {
+  list-style: none; /* Remove default list bullets */
+  padding: 0;
+  margin: 0; /* Remove default margin */
+  display: flex; /* Arrange items horizontally */
+  flex-wrap: wrap; /* Allow items to wrap to the next line */
+  gap: 10px; /* Space between the pills */
+}
+
+/* .section-flex-header{
+    display:flex;
+    justify-content:space-between;
+    align-items: start; */
+}
+
+.navwrap{ display:flex; column-gap:20px; justify-content:flex-end;align-items:center; margin-top:6px;}
+.navbtn{ width:50px; height:50px; border-radius:50%;cursor:pointer; border:1px solid var(--brc); background:#fff; display:grid; place-items:center; }
+
+@media screen and (max-width:750px){
+  .navwrap{
+    column-gap: 10px;
+  }
+}
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding video-slider color-{{ section.settings.color_scheme }}">
+  <div class="{% if section.settings.layout == 'grid' %} page-width {% endif %} ">
+    <div class="section-flex-header">
+          {%- if section.settings.title != blank -%}
+      <div class="title-wrapper title-wrapper--no-top-margin {{ section.settings.content_alignment }}">
+        {%- if section.settings.subtitle != blank -%}
+    <p  class="subtitle" {{ section.shopify_attributes }}>{{ section.settings.subtitle }}</p>
+{%- endif -%} 
+
+
+      <h2 class="video-title title inline-richtext {{ section.settings.heading_size }}">
+        {{ section.settings.title }}
+      </h2>
+
+      </div>
+    {%- endif -%}
+      {% comment %} <div class="navwrap">
+      <button type="button" class="navbtn prev" aria-label="Scroll left">
+        <svg viewBox="0 0 24 24" width="26" height="26"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="navbtn next" aria-label="Scroll right">
+        <svg viewBox="0 0 24 24" width="26" height="26"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div> {% endcomment %}
+
+</div>
+
+
+    <div class="videoSwiper swiper" >
+  <div
+    data-slider-options='{
+      "desktop": "{{ section.settings.desktop_column }}",
+      "laptop": "{{ section.settings.laptop_column }}",
+      "tablet": "{{ section.settings.tablet_column }}",
+      "mobile": "{{ section.settings.mobile_column }}",
+      "desktop_gap": "{{ section.settings.desktop_column_gaps }}",
+      "mobile_gap": "{{ section.settings.mobile_column_gaps }}"
+    }'
+  >
+    <div class="swiper" id="swiper-{{ section.id }}" data-swiper-slider>
+      <div class="swiper-wrapper">
+        {%- for block in section.blocks -%}
+          <div class="swiper-slide video-slider-item" {{ block.shopify_attributes }}>
+            <div class="testimonial__image media-wrapper media-wrapper--small" >
+              <div class="video-wrapper" data-aos="flip-left" data-aos-duration="500" data-aos-easing="linear">
+                {%- if block.settings.video != blank -%}
+                  {{ block.settings.video | video_tag:
+                    image_size: "3840px",
+                    autoplay: true,
+                    loop: true,
+                    controls: false,
+                    muted: true,
+                    playsinline: true
+                  }}
+                {%- else -%}
+                  <div class="media media--square">
+                    {{ 'image' | placeholder_svg_tag: 'placeholder' }}
+                  </div>
+                {%- endif -%}
+
+                {%- assign product = block.settings.video_product -%}
+{%- if product != blank -%}
+  <div class="video-hover-btn product-overlay-pill" data-aos="flip-left">
+    <a class="product-info-link" href="{{ product.url }}">
+      <div class="product-info-pill">
+        {%- if product.featured_media != blank -%}
+          <div class="product-image">
+            <img src="{{ product.featured_media | image_url: width: 100 }}" alt="{{ product.featured_media.alt | escape }}" loading="lazy">
+          </div>
+        {%- endif -%}
+        <div class="product-details">
+          <h3 class="product-title h5">{{ product.title | escape }}</h3>
+          <p class="product-price">
+            {%- if product.price_varies -%}
+                {{ product.price_min | money }}
+            {%- else -%}
+              {{ product.price | money }}
+            {%- endif -%}
+          </p>
+        </div>
+      </div>
+    </a>
+<button class="open-variants-btn" data-modal-target="product-modal-{{ product.id }}">
+    <svg fill="#ffffff" height="20" width="20" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 512 512" xml:space="preserve">
+<g>
+	<g>
+		<g>
+			<path d="M256,0C114.618,0,0,114.618,0,256s114.618,256,256,256s256-114.618,256-256S397.382,0,256,0z M256,469.333
+				c-117.818,0-213.333-95.515-213.333-213.333S138.182,42.667,256,42.667S469.333,138.182,469.333,256S373.818,469.333,256,469.333
+				z"/>
+			<path d="M347.582,198.248L256,289.83l-91.582-91.582c-8.331-8.331-21.839-8.331-30.17,0c-8.331,8.331-8.331,21.839,0,30.17
+				l106.667,106.667c8.331,8.331,21.839,8.331,30.17,0l106.667-106.667c8.331-8.331,8.331-21.839,0-30.17
+				C369.42,189.917,355.913,189.917,347.582,198.248z"/>
+		</g>
+	</g>
+</g>
+</svg>
+    </button>  
+  </div>
+{%- endif -%}
+
+<div class="product-variants-modal" id="product-modal-{{ product.id }}">
+  <div class="modal-content">
+    <button class="close-modal-btn">&times;</button>
+    <h5><strong>{{ product.title | escape }}</strong></h5>
+
+    <div class="variant-list">
+      <h5>Variants</h5>
+      <ul>
+        {%- for variant in product.variants -%}
+          <li class="variant-item">
+            <a href="{{ variant.url }}" class="variant-link">
+              <span class="variant-title">{{ variant.title | escape }}</span>
+              <span class="variant-price">{{ variant.price | money }}</span>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+</div>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {% comment %} <div class="swiper-controls">
+        <div class="swiper-pagination"></div>
+      </div> {% endcomment %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var swiperEl = document.querySelector("#swiper-{{ section.id }}");
+
+    if (swiperEl) {
+      var swiper = new Swiper(swiperEl, {
+        slidesPerView: {{ section.settings.desktop_column }},
+        spaceBetween: {{ section.settings.desktop_column_gaps }},
+        autoplay: {
+        delay: 2500,
+        disableOnInteraction: true,
+      },
+         navigation: {
+          nextEl: ".navbtn.next",
+          prevEl: ".navbtn.prev"
+        },
+
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true
+        },
+        breakpoints: {
+          320: {
+            slidesPerView: 1.2,
+            centeredSlides: true,
+            spaceBetween: {{ section.settings.mobile_column_gaps }}
+          },
+          768: {
+            slidesPerView: {{ section.settings.tablet_column }},
+            centeredSlides: false,
+            spaceBetween: {{ section.settings.desktop_column_gaps }}
+          },
+          1024: {
+            slidesPerView: {{ section.settings.laptop_column }},
+            spaceBetween: {{ section.settings.desktop_column_gaps }}
+          },
+          1200: {
+            slidesPerView: {{ section.settings.desktop_column }},
+            spaceBetween: {{ section.settings.desktop_column_gaps }}
+          }
+        }
+      });
+    }
+  });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const modalButtons = document.querySelectorAll('.open-variants-btn');
+  const modals = document.querySelectorAll('.product-variants-modal');
+
+  modalButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const modalId = button.getAttribute('data-modal-target');
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.style.display = 'block';
+      }
+    });
+  });
+
+  modals.forEach(modal => {
+    const closeBtn = modal.querySelector('.close-modal-btn');
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+  });
+
+  window.addEventListener('click', (event) => {
+    modals.forEach(modal => {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  });
+});
+</script>
+
+
+{% schema %}
+{
+  "name": "Videos slider",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+     {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "full_bleed",
+          "label": "t:sections.all.layout.options__1.label"
+        },
+        {
+          "value": "grid",
+          "label": "t:sections.all.layout.options__2.label"
+        }
+      ],
+      "default": "full_bleed",
+      "label": "t:sections.all.layout.label"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "Video slider",
+      "label": "Videos title"
+    },
+ {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        },
+        {
+          "value": "hxl",
+          "label": "t:sections.all.heading_size.options__4.label"
+        },
+        {
+          "value": "hxxl",
+          "label": "t:sections.all.heading_size.options__5.label"
+        }
+      ],
+      "default": "h2",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.rich-text.settings.content_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.rich-text.settings.content_alignment.options__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.rich-text.settings.content_alignment.options__3.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.rich-text.settings.content_alignment.label"
+    },
+    {
+  "type": "text",
+  "id": "subtitle",
+   "default": "Sub title",
+          "label": "t:sections.slideshow.blocks.slide.settings.subtitle.label"
+},
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    },
+     {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Swiper Slides"
+    },
+    {
+      "type": "checkbox",
+      "id": "swiper_enable",
+      "default": false,
+      "label": "Enable Swiper"
+    },
+    {
+      "type": "range",
+      "id": "desktop_column",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "label": "Desktop slides",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "laptop_column",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "label": "Laptop slides",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "tablet_column",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Tablet slides",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "mobile_column",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Mobile slides",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "desktop_column_gaps",
+      "min": 5,
+      "max": 100,
+      "step": 5,
+      "label": "Desktop Columngap",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "mobile_column_gaps",
+      "min": 5,
+      "max": 100,
+      "step": 5,
+      "label": "Mobile Columngap",
+      "default": 10
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video file"
+        },
+        {
+      "type": "header",
+      "content": "Product Container"
+    },    
+     {
+      "type": "product",
+      "id": "video_product",
+      "label": "Select product"
+    }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Videos slider",
+      "blocks": [
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  }
+}
+{% endschema %}

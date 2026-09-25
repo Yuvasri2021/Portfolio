@@ -1,0 +1,522 @@
+{{ 'section-portfolio-slider.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+{% if section.settings.image_shape == 'blob' %}
+  {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    {% if section.settings.enable_banner and section.settings.main_image != blank %}
+      #portfolio-section-{{ section.id }} .banner__media::before {
+        padding-bottom: {{ 1 | divided_by: section.settings.main_image.aspect_ratio | times: 100 }}%;
+        content: '';
+        display: block;
+      }
+    {% endif %}
+  }
+
+  {% if section.settings.bg_image != blank %}
+  #portfolio-section-{{ section.id }} {
+    background-image: url('{{ section.settings.bg_image | image_url: width: 2000 }}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  {% endif %}
+{%- endstyle -%}
+
+<div id="portfolio-section-{{ section.id }}" class="portfolio-slider-section section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}">
+  <div class="{% if section.settings.layout == 'grid' %}page-width{% endif %}">
+    
+    <div class="section-flex-header">
+      <div class="title-wrapper {{ section.settings.content_alignment }}">
+        {%- if section.settings.subtitle != blank -%}
+          <p class="subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.title != blank -%}
+          <h2 class="title inline-richtext {{ section.settings.heading_size }}">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        
+        {%- if section.settings.description != blank or section.settings.show_description and section.settings.collection.description != empty -%}
+          <div class="description rte {{ section.settings.description_style }}">
+            {%- if section.settings.show_description -%}
+              {{ section.settings.collection.description }}
+            {%- else -%}
+              {{ section.settings.description }}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+      
+      <div class="navwrap">
+        <button type="button" class="navbtn prev" aria-label="Previous slide">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg>
+        </button>
+        <button type="button" class="navbtn next" aria-label="Next slide">
+           <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg>
+        </button>
+      </div>
+    </div>
+    
+    {% if section.settings.enable_banner %}
+      <div class="main-banner">
+        <div class="feature-banner-image">
+          <div class="banner__media media">
+            {% if section.settings.main_image != blank %}
+              {%- capture sizes -%}
+                (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px,
+                (min-width: 749px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)
+              {%- endcapture -%}
+              {{
+                section.settings.main_image
+                | image_url: width: 1500
+                | image_tag: sizes: sizes, widths: '165, 360, 535, 750, 1070, 1500'
+              }}
+            {%- else -%}
+              {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {% endif %}
+          </div>
+        </div>
+        <div class="collection-area">
+    {% endif %}
+
+    <div class="portfolio-swiper swiper" id="swiper-{{ section.id }}">
+      <div class="swiper-wrapper">
+        
+        {%- if section.settings.collection != blank -%}
+          {%- for product in section.settings.collection.products limit: section.settings.products_to_show -%}
+            <div class="swiper-slide portfolio-swiper-slide">
+              {% render 'card-product',
+                card_product: product,
+                media_aspect_ratio: section.settings.image_ratio,
+                image_shape: section.settings.image_shape,
+                show_secondary_image: false,
+                show_vendor: false,
+                show_rating: false,
+                section_id: section.id,
+                quick_add: 'none',
+                card_color_scheme: section.settings.card_color_scheme,
+                show_card_button: false,
+                price_position: section.settings.price_position,
+                card_border_radius: section.settings.card_border_radius,
+                card_image_border_radius: section.settings.card_image_border_radius
+              %}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {% comment %} Fallback blocks if no collection is selected {% endcomment %}
+          {%- liquid
+            assign ratio = 100
+            if section.settings.image_ratio == 'portrait'
+              assign ratio = 125
+            elsif section.settings.image_ratio == 'landscape'
+              assign ratio = 75
+            elsif section.settings.image_ratio == 'square'
+              assign ratio = 100
+            endif
+          -%}
+          {%- for block in section.blocks -%}
+            <div class="swiper-slide portfolio-swiper-slide" {{ block.shopify_attributes }}>
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}" class="portfolio-card{% if section.settings.card_shadow %} has-shadow{% endif %}" style="--bg-color: {{ block.settings.bg_color }}; border-radius: {{ section.settings.card_border_radius }}px; overflow: hidden;">
+              {%- else -%}
+                <div class="portfolio-card{% if section.settings.card_shadow %} has-shadow{% endif %}" style="--bg-color: {{ block.settings.bg_color }}; border-radius: {{ section.settings.card_border_radius }}px; overflow: hidden;">
+              {%- endif -%}
+
+                <div class="portfolio-card__image-wrapper{% if section.settings.image_shape != 'default' %} shape--{{ section.settings.image_shape }}{% endif %}" style="--image-ratio-percent: {{ ratio }}%; border-radius: {{ section.settings.card_image_border_radius }}px;">
+                  {%- if block.settings.image != blank -%}
+                    <img class="portfolio-card__image" src="{{ block.settings.image | image_url: width: 600 }}" alt="{{ block.settings.image.alt | escape }}" loading="lazy">
+                  {%- else -%}
+                    <div class="portfolio-card__image" style="background-color: #f4f4f4; display:flex; align-items:center; justify-content:center;">
+                      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                    </div>
+                  {%- endif -%}
+                </div>
+                
+                {%- if block.settings.title != blank or block.settings.description != blank -%}
+                  <div class="portfolio-card__content" style="background-color: {{ block.settings.bg_color }};">
+                    {%- if block.settings.description != blank -%}
+                      <div class="portfolio-card__description">{{ block.settings.description }}</div>
+                    {%- endif -%}
+                    {%- if block.settings.title != blank -%}
+                      <h3 class="portfolio-card__title h4">{{ block.settings.title | escape }}</h3>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+                
+              {%- if block.settings.link != blank -%}
+                </a>
+              {%- else -%}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+
+      </div>
+    </div>
+
+    {% if section.settings.enable_banner %}
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+  {% if section.settings.image_shape == 'arch' %}
+    {% render 'mask-arch' %}
+  {%- endif -%}
+</div>
+
+<script>
+  function initPortfolioSwiper_{{ section.id_for_javascript | replace: '-', '_' }}() {
+    var swiperEl = document.querySelector("#swiper-{{ section.id }}");
+    var sectionWrap = document.querySelector("#portfolio-section-{{ section.id }}");
+
+    if (swiperEl && typeof Swiper !== 'undefined' && !swiperEl.classList.contains('swiper-initialized')) {
+      new Swiper(swiperEl, {
+        slidesPerView: {{ section.settings.desktop_column }},
+        spaceBetween: {{ section.settings.desktop_column_gaps }},
+        navigation: {
+          nextEl: sectionWrap.querySelector(".navbtn.next"),
+          prevEl: sectionWrap.querySelector(".navbtn.prev")
+        },
+        breakpoints: {
+          320: {
+            slidesPerView: 1.2,
+            spaceBetween: {{ section.settings.mobile_column_gaps }}
+          },
+          768: {
+            slidesPerView: {{ section.settings.tablet_column }},
+            spaceBetween: {{ section.settings.mobile_column_gaps }}
+          },
+          1024: {
+            slidesPerView: {{ section.settings.laptop_column }},
+            spaceBetween: {{ section.settings.desktop_column_gaps }}
+          },
+          1200: {
+            slidesPerView: {{ section.settings.desktop_column }},
+            spaceBetween: {{ section.settings.desktop_column_gaps }}
+          }
+        }
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", initPortfolioSwiper_{{ section.id_for_javascript | replace: '-', '_' }});
+  
+  if (window.Shopify && Shopify.designMode) {
+    document.addEventListener("shopify:section:load", function(event) {
+      if (event.detail.sectionId === "{{ section.id }}") {
+        initPortfolioSwiper_{{ section.id_for_javascript | replace: '-', '_' }}();
+      }
+    });
+  } else {
+    // If deferred JS already loaded
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+      setTimeout(initPortfolioSwiper_{{ section.id_for_javascript | replace: '-', '_' }}, 500);
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Portfolio slider",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        { "value": "full_width", "label": "Full width" },
+        { "value": "grid", "label": "Grid / Page Width" }
+      ],
+      "default": "grid",
+      "label": "Layout Settings"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Global Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_shadow",
+      "label": "Enable card shadow",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Section background image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "Portfolio Showcase",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" },
+        { "value": "hxl", "label": "Extra Large" }
+      ],
+      "default": "h2",
+      "label": "Heading Size"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left",
+      "label": "Text alignment"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "default": "Sub title",
+      "label": "Subtitle"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description from admin",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "description_style",
+      "label": "Description Style",
+      "options": [
+        { "value": "body", "label": "Body" },
+        { "value": "subtitle", "label": "Subtitle" },
+        { "value": "uppercase", "label": "Uppercase" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 25,
+      "step": 1,
+      "default": 8,
+      "label": "Products to show"
+    },
+    {
+      "type": "header",
+      "content": "Main banner settings"
+    },
+    {
+      "type": "color_scheme",
+      "id": "card_color_scheme",
+      "label": "Card color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_image_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Card image border radius",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_banner",
+      "default": false,
+      "label": "Enable main banner image"
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Banner image"
+    },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "arch", "label": "Arch" },
+        { "value": "blob", "label": "Blob" },
+        { "value": "chevronleft", "label": "Chevron Left" },
+        { "value": "chevronright", "label": "Chevron Right" },
+        { "value": "diamond", "label": "Diamond" },
+        { "value": "parallelogram", "label": "Parallelogram" },
+        { "value": "round", "label": "Round" }
+      ],
+      "default": "default",
+      "label": "Image shape"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        { "value": "adapt", "label": "Adapt to image" },
+        { "value": "portrait", "label": "Portrait (4:5)" },
+        { "value": "square", "label": "Square (1:1)" },
+        { "value": "landscape", "label": "Landscape (4:3)" }
+      ],
+      "default": "square",
+      "label": "Image ratio"
+    },
+    {
+      "type": "header",
+      "content": "Slider Configuration"
+    },
+    {
+      "type": "range",
+      "id": "desktop_column",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "label": "Desktop slides",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "laptop_column",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "label": "Laptop slides",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "tablet_column",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Tablet slides",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "desktop_column_gaps",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "label": "Desktop gap",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "mobile_column_gaps",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "label": "Mobile gap",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "portfolio_card",
+      "name": "Portfolio card (Fallback)",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Portfolio Item",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Add a description here.</p>"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Text area background color",
+          "default": "transparent"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Card link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Portfolio slider",
+      "blocks": [
+        { "type": "portfolio_card" },
+        { "type": "portfolio_card" },
+        { "type": "portfolio_card" }
+      ]
+    }
+  ]
+}
+{% endschema %}

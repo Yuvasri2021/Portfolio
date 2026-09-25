@@ -1,0 +1,621 @@
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 748px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  .variants-section-grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
+    gap: 20px;
+  }
+  
+  /* Slider Wrapper */
+  .product-slider-wrapper {
+    position: relative;
+  }
+
+  /* Slider Navigation Buttons */
+  .product-slider-btn {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    transition: opacity 0.2s, transform 0.2s;
+    padding: 0;
+  }
+  .product-slider-btn:hover {
+    transform: translateY(-50%) scale(1.1);
+    background: #f8f8f8;
+  }
+  .product-slider-btn.prev { left: -20px; }
+  .product-slider-btn.next { right: -20px; }
+  .product-slider-btn svg {
+    width: 20px;
+    height: 20px;
+    color: #333;
+  }
+
+  @media screen and (max-width: 989px) {
+    /* Tablet Slider State */
+    {% if section.settings.swipe_on_tablet %}
+      .section-{{ section.id }}-padding .product-slider-btn { display: flex; }
+      .section-{{ section.id }}-padding .product-slider-btn.prev { left: -10px; }
+      .section-{{ section.id }}-padding .product-slider-btn.next { right: -10px; }
+      
+      .section-{{ section.id }}-padding .variants-section-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 15px;
+        padding-bottom: 10px;
+      }
+      .section-{{ section.id }}-padding .variants-section-grid::-webkit-scrollbar { display: none; }
+      
+      .section-{{ section.id }}-padding .variants-section-grid > * {
+        flex: 0 0 calc({{ 100.0 | divided_by: section.settings.columns_tablet }}% - (15px * ({{ section.settings.columns_tablet | plus: 0 | minus: 1 }}) / {{ section.settings.columns_tablet | plus: 0 }}));
+        max-width: calc({{ 100.0 | divided_by: section.settings.columns_tablet }}% - (15px * ({{ section.settings.columns_tablet | plus: 0 | minus: 1 }}) / {{ section.settings.columns_tablet | plus: 0 }}));
+        scroll-snap-align: start;
+      }
+    {% else %}
+      .variants-section-grid {
+        grid-template-columns: repeat({{ section.settings.columns_tablet }}, 1fr);
+      }
+    {% endif %}
+  }
+
+  @media screen and (max-width: 747px) {
+    /* Mobile Slider State */
+    {% if section.settings.swipe_on_mobile %}
+      .section-{{ section.id }}-padding .product-slider-btn { display: flex; }
+      
+      .section-{{ section.id }}-padding .variants-section-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 14px;
+        padding-bottom: 15px;
+      }
+      
+      .section-{{ section.id }}-padding .variants-section-grid > * {
+        flex: 0 0 calc({{ 100.0 | divided_by: section.settings.columns_mobile | plus: 0 }}% - (14px * ({{ section.settings.columns_mobile | plus: 0 | minus: 1 }}) / {{ section.settings.columns_mobile | plus: 0 }}));
+        max-width: calc({{ 100.0 | divided_by: section.settings.columns_mobile | plus: 0 }}% - (14px * ({{ section.settings.columns_mobile | plus: 0 | minus: 1 }}) / {{ section.settings.columns_mobile | plus: 0 }}));
+        scroll-snap-align: start;
+      }
+    {% else %}
+      .variants-section-grid {
+        display: grid;
+        grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr);
+        gap: 14px;
+      }
+    {% endif %}
+  }
+{%- endstyle -%}
+
+<div id="variant_section" class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="section-{{ section.id }}-padding page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="title-wrapper-with-link title-wrapper--self-contained-mobile title-wrapper--no-top-margin">
+        <h2 class="title inline-richtext {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+      </div>
+    {%- endif -%}
+
+    {%- capture popup_custom_liquid -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'custom_liquid' -%}
+          <div {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
+        {%- elsif block.type == 'text' -%}
+          <div class="product__text-wrapper" style="display: flex; align-items: center; gap: 10px; color: {{ block.settings.text_color }}; font-size: {{ block.settings.text_size }};" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              <img
+                src="{{ block.settings.image | image_url: width: block.settings.image_width }}"
+                width="{{ block.settings.image_width }}"
+                height="{{ block.settings.image_width | divided_by: block.settings.image.aspect_ratio }}"
+                loading="lazy"
+                style="width: {{ block.settings.image_width }}px; height: auto;"
+                alt=""
+              >
+            {%- endif -%}
+            <p
+              class="product__text inline-richtext {% if block.settings.text_style == 'uppercase' %}caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %}subtitle{% endif %}"
+              style="margin: 0; color: inherit; font-size: inherit;"
+            >
+              {{- block.settings.text -}}
+            </p>
+          </div>
+        {%- elsif block.type == 'divider' -%}
+          <hr
+            {{ block.shopify_attributes }}
+            style="border: none; border-top: {{ block.settings.thickness }}px {{ block.settings.style }} {{ block.settings.color }}; margin: 0;"
+          >
+        {%- elsif block.type == 'space' -%}
+          <div
+            {{ block.shopify_attributes }}
+            style="display: block; height: {{ block.settings.height }}px;"
+            aria-hidden="true"
+          ></div>
+
+        {%- elsif block.type == 'metadata' -%}
+          {%- liquid
+            assign md_parts = block.settings.metafield_key | split: '.'
+            assign md_ns    = md_parts[0]
+            assign md_key   = md_parts[1]
+            assign md_obj   = product.metafields[md_ns][md_key]
+          -%}
+          {%- if md_obj != blank -%}
+            <div class="vcm-metadata-block" {{ block.shopify_attributes }}
+              style="font-size: {{ block.settings.text_size }}; color: {{ block.settings.text_color }};">
+              {%- if block.settings.label != blank -%}
+                <p class="inline-richtext" style="font-size: {{ block.settings.label_size }}; font-weight: 600; margin: 0 0 6px 0;">{{ block.settings.label }}</p>
+              {%- endif -%}
+
+              {%- if md_obj.type contains 'list.' -%}
+                <ul style="list-style: none; margin: 0; padding: 0;">
+                  {%- for md_item in md_obj.value -%}
+                    <li style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 5px;">
+                      <span style="color: {{ block.settings.bullet_color }}; flex-shrink: 0;">&#8226;</span>
+                      <span>{{ md_item }}</span>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- elsif md_obj.type == 'url' -%}
+                <a href="{{ md_obj.value }}" target="_blank" rel="noopener noreferrer" style="color: inherit; word-break: break-all;">{{ md_obj.value }}</a>
+              {%- elsif md_obj.type == 'link' -%}
+                {%- assign link_url  = md_obj.value.url  | default: md_obj.value -%}
+                {%- assign link_text = md_obj.value.text | default: link_url -%}
+                <a href="{{ link_url }}" target="_blank" rel="noopener noreferrer" style="color: inherit;">{{ link_text }}</a>
+              {%- elsif md_obj.type == 'date_time' -%}
+                <p style="margin: 0;">{{ md_obj.value | date: '%d %B %Y at %I:%M %p' }}</p>
+              {%- elsif md_obj.type == 'date' -%}
+                <p style="margin: 0;">{{ md_obj.value | date: '%d %B %Y' }}</p>
+              {%- else -%}
+                <p style="margin: 0;">{{ md_obj.value }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+
+    <div class="product-slider-wrapper">
+      <button class="product-slider-btn prev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+
+      <div class="variants-section-grid">
+        {%- for variant in product.variants -%}
+          {% render 'variant-card-minimal',
+            card_product: product,
+            card_variant: variant,
+            section_id: section.id,
+            loop_index: forloop.index,
+            button_label: section.settings.button_label,
+            title_size: section.settings.title_size,
+            popup_custom_liquid: popup_custom_liquid,
+            show_event: section.settings.show_event,
+            show_event_date: section.settings.show_event_date,
+            show_live_stream: section.settings.show_live_stream,
+            card_color_scheme: section.settings.card_color_scheme
+          %}
+        {%- endfor -%}
+      </div>
+
+      <button class="product-slider-btn next" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    function initVariantsSlider(section) {
+      const grid = section.querySelector('.variants-section-grid');
+      const prevBtn = section.querySelector('.product-slider-btn.prev');
+      const nextBtn = section.querySelector('.product-slider-btn.next');
+
+      if (!grid || !prevBtn || !nextBtn) return;
+
+      const scrollAmount = () => grid.offsetWidth * 0.8;
+
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        grid.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+      });
+
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        grid.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+      });
+    }
+
+    const sectionElement = document.querySelector('.section-{{ section.id }}-padding');
+    if (sectionElement) initVariantsSlider(sectionElement);
+
+    // Handle Theme Editor reloads
+    document.addEventListener('shopify:section:load', (event) => {
+      if (event.detail.sectionId === '{{ section.id }}') {
+        initVariantsSlider(event.target);
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Variants Section",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Product Variants",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Card Settings"
+    },
+    {
+      "type": "color_scheme",
+      "id": "card_color_scheme",
+      "label": "Card color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Select"
+    },
+    {
+      "type": "select",
+      "id": "title_size",
+      "label": "Title size",
+      "default": "1.5rem",
+      "options": [
+        { "value": "1.2rem", "label": "Small" },
+        { "value": "1.5rem", "label": "Medium" },
+        { "value": "1.8rem", "label": "Large" },
+        { "value": "2.2rem", "label": "Extra Large" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Card Metafields"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_event",
+      "label": "Show Events (custom.event)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_event_date",
+      "label": "Show Date (custom.event_date_and_time)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_live_stream",
+      "label": "Show Live Stream Link (custom.live_stream_link)",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Grid Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3,
+      "label": "Columns on desktop"
+    },
+    {
+      "type": "range",
+      "id": "columns_tablet",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3,
+      "label": "Columns on tablet"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "default": "1",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Slider Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_tablet",
+      "default": false,
+      "label": "Enable slider on tablet"
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": false,
+      "label": "Enable slider on mobile"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Variants Section"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text (Popup)",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "This text will appear inside every variant popup, below the buttons."
+        },
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "default": "Add your text here",
+          "label": "Text"
+        },
+        {
+          "type": "select",
+          "id": "text_style",
+          "options": [
+            { "value": "body", "label": "Body" },
+            { "value": "subtitle", "label": "Subtitle" },
+            { "value": "uppercase", "label": "Uppercase" }
+          ],
+          "default": "body",
+          "label": "Text style"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "text_size",
+          "options": [
+            { "value": "14px", "label": "Small" },
+            { "value": "16px", "label": "Medium" },
+            { "value": "18px", "label": "Large" },
+            { "value": "22px", "label": "Extra large" },
+            { "value": "28px", "label": "Extra extra large" }
+          ],
+          "default": "16px",
+          "label": "Text size"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "range",
+          "id": "image_width",
+          "min": 10,
+          "max": 200,
+          "step": 5,
+          "unit": "px",
+          "label": "Image width",
+          "default": 20
+        }
+      ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom Liquid (Popup)",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "This content will appear inside every variant popup, below the buttons."
+        },
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom Liquid"
+        }
+      ]
+    },
+    {
+      "type": "divider",
+      "name": "Divider (Popup)",
+      "settings": [
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Line color",
+          "default": "#e0e0e0"
+        },
+        {
+          "type": "range",
+          "id": "thickness",
+          "label": "Thickness",
+          "min": 1,
+          "max": 8,
+          "step": 1,
+          "unit": "px",
+          "default": 1
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Line style",
+          "default": "solid",
+          "options": [
+            { "value": "solid", "label": "Solid" },
+            { "value": "dashed", "label": "Dashed" },
+            { "value": "dotted", "label": "Dotted" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "space",
+      "name": "Spacer (Popup)",
+      "settings": [
+        {
+          "type": "range",
+          "id": "height",
+          "label": "Height",
+          "min": 4,
+          "max": 80,
+          "step": 4,
+          "unit": "px",
+          "default": 16
+        }
+      ]
+    },
+    {
+      "type": "metadata",
+      "name": "Metadata",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Displays any product metafield. List types show as bullet points, single values show as plain text."
+        },
+        {
+          "type": "text",
+          "id": "metafield_key",
+          "label": "Metafield key",
+          "default": "custom.event",
+          "info": "Enter namespace.key — e.g. custom.event or custom.short_description"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "label",
+          "label": "Label",
+          "default": "Details",
+          "info": "Optional heading. Supports bold, italic. Clear to hide."
+        },
+        {
+          "type": "select",
+          "id": "label_size",
+          "label": "Label size",
+          "default": "1.4rem",
+          "options": [
+            { "value": "1.2rem", "label": "Small" },
+            { "value": "1.4rem", "label": "Medium" },
+            { "value": "1.8rem", "label": "Large" },
+            { "value": "2.2rem", "label": "Extra large" }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "bullet_color",
+          "label": "Bullet color",
+          "default": "#b45309"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#333333"
+        },
+        {
+          "type": "select",
+          "id": "text_size",
+          "label": "Text size",
+          "default": "1.35rem",
+          "options": [
+            { "value": "1.2rem", "label": "Small" },
+            { "value": "1.35rem", "label": "Medium" },
+            { "value": "1.5rem", "label": "Large" },
+            { "value": "1.8rem", "label": "Extra large" }
+          ]
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}
+

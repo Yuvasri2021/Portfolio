@@ -1,0 +1,385 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .custom-stats-grid {
+    display: grid;
+    gap: {{ section.settings.card_gap }}px;
+    align-items: center; /* Vertically center side cards */
+    grid-template-columns: 1fr;
+  }
+
+  @media screen and (min-width: 769px) {
+    .custom-stats-grid {
+      grid-template-columns: 1fr 2fr 1fr;
+    }
+  }
+
+  /* Cards */
+  .stat-card {
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Side cards (Light) */
+  .stat-card.light {
+    background: {{ section.settings.side_card_bg }};
+  }
+
+  .stat-card.light h2 {
+    color: {{ section.settings.side_card_number_color }};
+    font-size: 26px; /* Specific smaller size for side cards */
+    margin: 0;
+  }
+
+  .stat-card.light p {
+    font-size: 14px;
+    color: #555;
+  }
+
+  /* Main card (Highlighted) */
+  .stat-card.main {
+    background: {{ section.settings.center_card_bg }};
+  }
+
+  .stat-card.main h2 {
+    font-size: clamp(calc(var(--font-heading-scale) * 2.5rem), 4vw, calc(var(--font-heading-scale) * 4rem));
+    color: {{ section.settings.center_card_text_color }};
+    margin: 0;
+  }
+
+  .stat-card.main p,
+  .stat-card.main .top-text {
+    color: {{ section.settings.center_card_text_color }};
+  }
+
+  /* Text */
+  .stat-card p {
+    margin-top: 6px;
+    font-size: var(--body-text-font-size, 16px);
+  }
+
+  .top-text {
+    margin-bottom: 4px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Mobile adjustment */
+  @media(max-width: 768px) {
+    .stat-card.light h2 {
+       font-size: 22px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding{% if section.settings.layout == 'grid' %} page-width{% endif %}">
+  {%- if section.settings.heading != blank -%}
+    <h2 style="color: {{ section.settings.heading_color }}; font-size: clamp(calc(var(--font-heading-scale) * 2.5rem), 4vw, calc(var(--font-heading-scale) * 4rem)); font-weight: 350; text-align: center; margin-bottom: 8px;">
+      {{ section.settings.heading }}
+    </h2>
+  {%- endif -%}
+
+  {%- if section.settings.subtext != blank -%}
+    <p style="color: {{ section.settings.subtext_color }}; font-size: 16px; text-align: center; margin-bottom: 25px;">
+      {{ section.settings.subtext }}
+    </p>
+  {%- endif -%}
+
+  <div class="custom-stats-grid">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign padding_v = block.settings.card_padding_vertical
+        assign padding_h = block.settings.card_padding_horizontal
+        # Applying a slight boost to main style if not manually adjusted high already
+        if block.settings.style == 'main'
+          assign padding_v = padding_v | plus: 15
+          assign padding_h = padding_h | plus: 10
+        endif
+      -%}
+      <div class="stat-card {{ block.settings.style }}" 
+        style="padding: {{ padding_v }}px {{ padding_h }}px;"
+        {{ block.shopify_attributes }}>
+        {%- if block.settings.top_text != blank -%}
+          <p class="top-text">{{ block.settings.top_text }}</p>
+        {%- endif -%}
+
+        {%- if block.settings.number != blank -%}
+          <h2 class="h2">
+            <span class="counter" data-target="{{ block.settings.number }}">0</span>+
+          </h2>
+        {%- endif -%}
+
+        {%- if block.settings.label != blank -%}
+          <p>{{ block.settings.label }}</p>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const counters = document.querySelectorAll(".counter");
+
+    const startCounting = (counter) => {
+      const target = +counter.getAttribute("data-target");
+      let count = 0;
+
+      const update = () => {
+        const increment = target / 120; // Using exactly 120 as per provided code
+
+        if (count < target) {
+          count += increment;
+          if (count > target) count = target;
+          counter.innerText = Math.ceil(count).toLocaleString("en-IN");
+          requestAnimationFrame(update);
+        } else {
+          counter.innerText = target.toLocaleString("en-IN");
+        }
+      };
+
+      update();
+    };
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const counter = entry.target;
+
+          if (!counter.classList.contains("counted")) {
+            counter.classList.add("counted");
+            startCounting(counter);
+          }
+
+          obs.unobserve(counter);
+        }
+      });
+    }, { threshold: 0.6 });
+
+    counters.forEach(counter => observer.observe(counter));
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Journey Stats",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "full_bleed",
+          "label": "Full width"
+        },
+        {
+          "value": "grid",
+          "label": "Grid"
+        }
+      ],
+      "default": "grid",
+      "label": "Layout"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Our Journey so far in delivering blessings",
+      "label": "Heading"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtext",
+      "default": "Why should you start your Devotional Journey",
+      "label": "Subtext"
+    },
+    {
+      "type": "color",
+      "id": "subtext_color",
+      "label": "Subtext Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between cards",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Global Card Colors"
+    },
+    {
+      "type": "color",
+      "id": "side_card_bg",
+      "label": "Light Card Background",
+      "default": "#f3e1c7"
+    },
+    {
+      "type": "color",
+      "id": "side_card_number_color",
+      "label": "Light Card Number Color",
+      "default": "#e86f1c"
+    },
+    {
+      "type": "color",
+      "id": "center_card_bg",
+      "label": "Main Card Background",
+      "default": "#FA8E33"
+    },
+    {
+      "type": "color",
+      "id": "center_card_text_color",
+      "label": "Main Card Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat Card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Card Style",
+          "options": [
+            { "value": "light", "label": "Light (Side Card)" },
+            { "value": "main", "label": "Highlighted (Center Card)" }
+          ],
+          "default": "light"
+        },
+        {
+          "type": "text",
+          "id": "top_text",
+          "label": "Top Heading (Optional)",
+          "info": "Example: 'Trusted by'"
+        },
+        {
+          "type": "number",
+          "id": "number",
+          "label": "Stat Number",
+          "default": 100000
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Stat Label",
+          "default": "Happy Customers"
+        },
+        {
+          "type": "header",
+          "content": "Card Sizing"
+        },
+        {
+          "type": "range",
+          "id": "card_padding_vertical",
+          "min": 10,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "label": "Vertical Padding",
+          "default": 26
+        },
+        {
+          "type": "range",
+          "id": "card_padding_horizontal",
+          "min": 10,
+          "max": 60,
+          "step": 2,
+          "unit": "px",
+          "label": "Horizontal Padding",
+          "default": 16
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Journey Stats",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "style": "light",
+            "number": 600000,
+            "label": "Sevas Performed"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "style": "main",
+            "top_text": "Trusted by",
+            "number": 300000,
+            "label": "Devotees"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "style": "light",
+            "number": 600000,
+            "label": "In the service of Devotees"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,500 @@
+{% if section.settings.enable_popup_newsletter %}
+  {% if section.settings.spin_wheel %}
+    <style>
+      .spin-wheel-popup .popupnewsletter-popup .popup-content{
+          max-height: 100%;padding: 3rem;
+      }
+       .spin-wheel-button.disabled{
+         display: none;
+       }
+       .arrow {
+         position: absolute;
+         left: 50%;
+         top: 50%;
+         transform: translate(-50%, -50%);
+         width: 30px;
+         height: 30px;
+         background: black;
+         border-radius: 50%;
+       }
+       .spin-wheel-button.button{
+         position: absolute;
+         left: 0;
+         bottom: 0;
+         z-index: 2;
+       }
+       .triangle-bottom-left {
+         width: 0;
+         height: 0;
+         position: absolute;
+         transform: translate(-22px, 0px) rotate(45deg);
+         left: 50%;
+         top: 50%;
+         border-left: 10px solid transparent;
+         border-right: 10px solid transparent;
+         border-top: 25px solid black;
+       }
+    </style>
+  {% endif %}
+  {% liquid
+    assign has_social_icons = true
+    if settings.social_facebook_link == blank and settings.social_instagram_link == blank and settings.social_youtube_link == blank and settings.social_tiktok_link == blank and settings.social_twitter_link == blank and settings.social_pinterest_link == blank and settings.social_snapchat_link == blank and settings.social_tumblr_link == blank and settings.social_vimeo_link == blank
+      assign has_social_icons = false
+    endif
+  %}
+  <div
+    id="popupnewsletter-container"
+    class="popupnewsletter-container {% if section.settings.spin_wheel %}spin-wheel-popup{% endif %}"
+  >
+    {{ 'newsletter-popup.css' | asset_url | stylesheet_tag }}
+    <div class="popupnewsletter-container-overlay"></div>
+    <div class="popupnewsletter-popup color-{{ section.settings.color_scheme }} gradient">
+      <div class="popup-content">
+        <button class="close-window">
+          {% render 'icon-close' %}
+        </button>
+
+        <div class="popupnewsletter-media">
+          {% if section.settings.spin_wheel %}
+            <div class="wheel-container">
+              <div class="arrow">
+                <span class="triangle-bottom-left"></span>
+              </div>
+              <canvas id="wheel" width="400" height="400"></canvas>
+            </div>
+
+            <p class="result">Coupon code:</p>
+
+          {% else %}
+            {%- if section.settings.image != blank -%}
+              {%- capture sizes -%}
+                  (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px,
+                  (min-width: 749px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)
+                {%- endcapture -%}
+              {{
+                section.settings.image
+                | image_url: width: 1500
+                | image_tag: sizes: sizes, widths: '165, 360, 535, 750, 1070, 1500'
+              }}
+            {%- else -%}
+              {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          {% endif %}
+        </div>
+        <div class="popupnewsletter-content">
+          <h2 class="popup-title {{ section.settings.heading_size }}">{{ section.settings.title }}</h2>
+          <p class="popup-description">{{ section.settings.description }}</p>
+          <div class="newsletter-input">
+            {% form 'customer', class: 'newsletter-form contact-form' %}
+              <input type="hidden" name="contact[tags]" value="newsletter">
+              <div class="newsletter-form__field-wrapper">
+                <div class="field">
+                  <input
+                    id="NewsletterForm--{{ section.id }}"
+                    type="email"
+                    name="contact[email]"
+                    class="field__input"
+                    value="{{ form.email }}"
+                    aria-required="true"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    autocomplete="email"
+                    {% if form.errors %}
+                      autofocus
+                      aria-invalid="true"
+                      aria-describedby="Newsletter-error--{{ section.id }}"
+                    {% elsif form.posted_successfully? %}
+                      aria-describedby="Newsletter-success--{{ section.id }}"
+                    {% endif %}
+                    placeholder="{{ 'newsletter.label' | t }}"
+                    required
+                  >
+                  <label class="field__label" for="NewsletterForm--{{ section.id }}">
+                    {{ 'newsletter.label' | t }}
+                  </label>
+                </div>
+                {%- if form.errors -%}
+                  <small class="newsletter-form__message form__message" id="Newsletter-error--{{ section.id }}">
+                    {%- render 'icon-error' -%}
+                    {{- form.errors.translated_fields.email | capitalize }}
+                    {{ form.errors.messages.email -}}
+                  </small>
+                {%- endif -%}
+                <button type="submit" class="newsletter__button button" name="commit">
+                  {{ 'newsletter.button_label' | t }}
+                </button>
+                {% if section.settings.spin_wheel %}
+                  <button id="spin" class="spin-wheel-button button" type="button">Spin the Wheel</button>
+                {% endif %}
+              </div>
+              {%- if form.posted_successfully? -%}
+                <h3
+                  class="newsletter-form__message newsletter-form__message--success form__message"
+                  id="Newsletter-success--{{ section.id }}"
+                  tabindex="-1"
+                  autofocus
+                >
+                  {% render 'icon-success' -%}
+                  {{- 'newsletter.success' | t }}
+                </h3>
+              {%- endif -%}
+            {% endform %}
+          </div>
+          {%- if section.settings.show_social and has_social_icons -%}
+            {%- render 'social-icons', class: 'popup__list-social' -%}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="secondary-modal" class="secondary-modal" style="display:none;">
+    <button id="signup-button" class="button">{{ section.settings.button_text }}</button>
+  </div>
+  <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const delaySeconds = parseInt('{{ section.settings.cookie_modal_delay }}') || 1;
+          const popupnewsletterContainer = document.getElementById('popupnewsletter-container');
+          const closeBtn = document.querySelector('.close-window');
+          const overlay = document.querySelector('.popupnewsletter-container-overlay');
+          const contactForm = document.querySelector('.contact-form');
+          const secondaryModal = document.getElementById('secondary-modal');
+          let formSubmitted = false;
+
+          if (popupnewsletterContainer) {
+            if (!getCookie('PopupNewsletterCookie')) {
+              setTimeout(() => {
+                showPopupNewsletter();
+              }, delaySeconds * 1000);
+            } else {
+              popupnewsletterContainer.style.display = 'none';
+            }
+
+            if (closeBtn) {
+              closeBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (!formSubmitted) {
+                  showSecondaryModal(); // Show the secondary modal
+                }
+                hidePopupNewsletter();
+              });
+            }
+
+            if (overlay) {
+              overlay.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (!formSubmitted) {
+                  showSecondaryModal(); // Show the secondary modal
+                }
+                hidePopupNewsletter();
+              });
+            }
+
+            if (contactForm) {
+              contactForm.addEventListener('submit', function () {
+                formSubmitted = true; // Mark the form as submitted
+                hidePopupNewsletter(); // Hide the popup when the form is submitted
+                setCookie('PopupNewsletterCookie', 'cookie-has-been-set', delaySeconds);
+              });
+            }
+          }
+
+          function showPopupNewsletter() {
+            popupnewsletterContainer.classList.add('show');
+            popupnewsletterContainer.style.display = 'block'; // Ensure the popup is displayed
+            document.body.style.overflow = 'hidden';
+            document.body.style.padding = '0 5px 0 0';
+          }
+
+          function hidePopupNewsletter() {
+            popupnewsletterContainer.classList.remove('show');
+            popupnewsletterContainer.classList.add('hide');
+    document.body.style.padding = '0 0 0 0';
+            document.body.style.overflow = 'visible';
+            setTimeout(() => {
+                popupnewsletterContainer.style.display = 'none'; // Set display to none to hide
+                popupnewsletterContainer.classList.remove('hide');
+
+                document.body.style.overflowY = 'auto';
+            }, 300); // check in css animation timefunction
+          }
+
+          function showSecondaryModal() {
+            secondaryModal.style.display = 'block'; // Display the secondary modal
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+          }
+
+          function hideSecondaryModal() {
+            secondaryModal.style.display = 'none'; // Hide the secondary modal
+            document.body.style.overflow = 'visible'; // Enable scrolling again
+          }
+
+          function setCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+          }
+
+          function getCookie(cname) {
+            const name = cname + "=";
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+              let c = ca[i].trim();
+              if (c.indexOf(name) === 0) {
+                return c.substring(name.length, c.length);
+              }
+            }
+            return "";
+          }
+
+          // Handle sign-up button click
+          const signupButton = document.getElementById('signup-button');
+          if (signupButton) {
+            signupButton.addEventListener('click', function() {
+              hideSecondaryModal(); // Hide the secondary modal
+              popupnewsletterContainer.classList.remove('hide'); // Remove the hide class
+              showPopupNewsletter(); // Show the newsletter popup again
+            });
+          }
+        });
+  </script>
+  {% if section.settings.spin_wheel %}
+    <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('wheel');
+    const ctx = canvas.getContext('2d');
+    const spinBtn = document.getElementById('spin');
+    const resultTexts = document.querySelectorAll('.result');  // Select all elements with class 'result'
+    const wheelContainer = document.querySelector('.wheel-container');
+    const emailInput = document.getElementById('NewsletterForm--{{ section.id }}');
+    const form = document.getElementById('newsletter-form');
+
+    // Define the coupons and wheel colors
+    const coupons = ['10% Off', '20% Off', '50% Off', 'Free Shipping', '20% Off', 'Free Shipping'];
+    const colors = ['#00cc99', '#ff6666', '#996600', '#990099','#ff6666', '#990099'];
+
+    // Define the probabilities (the sum of probabilities should be 1 or 100%)
+    const probabilities = [0.25, 0.25, 0.25, 0.25]; // Adjust these probabilities as needed
+
+    // Function to select a random coupon based on the probability distribution
+    function selectRandomCoupon() {
+        const randomNum = Math.random(); // Random number between 0 and 1
+        let cumulativeProbability = 0;
+
+        for (let i = 0; i < probabilities.length; i++) {
+            cumulativeProbability += probabilities[i];
+            if (randomNum < cumulativeProbability) {
+                return i; // Return the index of the selected coupon
+            }
+        }
+        return 0; // Default in case of error
+    }
+
+    // Function to draw the wheel
+    function drawWheel() {
+        const totalSegments = coupons.length;
+        const anglePerSegment = (2 * Math.PI) / totalSegments;
+
+        for (let i = 0; i < totalSegments; i++) {
+            ctx.beginPath();
+            ctx.moveTo(200, 200);
+            ctx.arc(200, 200, 200, i * anglePerSegment, (i + 1) * anglePerSegment);
+            ctx.fillStyle = colors[i];
+            ctx.fill();
+            ctx.stroke();
+
+            // Add text to each segment
+            ctx.save();
+            ctx.translate(200, 200);
+            ctx.rotate((i + 0.5) * anglePerSegment);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 20px Arial';
+            ctx.fillText(coupons[i], 180, 10);
+            ctx.restore();
+        }
+    }
+
+    drawWheel();
+
+    let isSpinning = false;
+    let rotationAngle = 0;
+    let currentCoupon = '';
+
+    // Easing function for smooth deceleration
+    function easeOut(t) {
+        return t * (2 - t); // Quadratic easing
+    }
+
+    // Function to spin the wheel
+    function spinWheel() {
+        if (isSpinning || !emailInput.value) {
+            alert("Please fill in your email to spin the wheel.");
+            return;
+        }
+
+        isSpinning = true;
+
+        // Add classes to wheel container and spin button
+        wheelContainer.classList.add('spinning');
+        spinBtn.classList.add('disabled');
+
+        // Ensure the wheel stops at a random position
+        const totalSegments = coupons.length;
+        const anglePerSegment = (2 * Math.PI) / totalSegments;
+        const randomSpin = selectRandomCoupon(); // Use the custom probability function
+        const stoppingAngle = randomSpin * anglePerSegment;  // The angle at which the wheel should stop
+
+        // Ensure the wheel stops at the left side (pointing to the arrow)
+        const finalAngle = (2 * Math.PI * 5) + (Math.PI / 2) - stoppingAngle;
+
+        let frame = 0;
+        const totalFrames = 300;  // The higher, the slower the spin
+        const startAngle = rotationAngle;
+
+        function animateSpin() {
+            frame++;
+            const progress = easeOut(frame / totalFrames);  // Apply easing for smooth deceleration
+            rotationAngle = startAngle + (finalAngle - startAngle) * progress;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(200, 200);
+            ctx.rotate(rotationAngle);
+            ctx.translate(-200, -200);
+            drawWheel();
+            ctx.restore();
+
+            if (frame < totalFrames) {
+                requestAnimationFrame(animateSpin);
+            } else {
+                isSpinning = false;
+                currentCoupon = coupons[randomSpin];
+
+              // Store the coupon code in localStorage
+                localStorage.setItem('winningCoupon', currentCoupon);
+                // Update all .result elements with the coupon code
+                resultTexts.forEach(result => {
+                    result.innerText = `Winning Coupon: ${currentCoupon}`;
+                });
+                
+                // Remove the added classes when spinning is done
+                wheelContainer.classList.remove('spinning');
+            }
+        }
+        animateSpin();
+    }
+
+    // Attach spin button event
+    spinBtn.addEventListener('click', spinWheel);
+     
+      // Check if there is a coupon code in localStorage when the page is reloaded
+    const storedCoupon = localStorage.getItem('winningCoupon');
+    if (storedCoupon) {
+       resultTexts.forEach(result => {
+            result.innerText = `Winning Coupon: ${storedCoupon}`;
+        });
+    }
+});
+    </script>
+  {% endif %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Popup newsletter",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_popup_newsletter",
+      "label": "Enable popup newsletter",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "spin_wheel",
+      "label": "Enable spin wheel",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Popup Title",
+      "default": "Subscribe our emails"
+    },
+    {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "h3",
+              "label": "t:sections.all.heading_size.options__1.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.all.heading_size.options__2.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.all.heading_size.options__3.label"
+            },
+            {
+              "value": "h0",
+              "label": "t:sections.all.heading_size.options__4.label"
+            },
+            {
+              "value": "hxl",
+              "label": "t:sections.all.heading_size.options__5.label"
+            }
+          ],
+          "default": "h1",
+          "label": "t:sections.all.heading_size.label"
+        },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Popup Description",
+      "default": "Try your luck and win exciting prizes!"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "default": true,
+      "label": "t:sections.footer.settings.show_social.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.multirow.blocks.row.settings.image.label"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Sign up button text",
+      "default": "Spin Now"
+    },
+    {
+      "type": "range",
+      "id": "cookie_modal_delay",
+      "label": "Days to Delay Modal",
+      "min": 1,
+      "max": 50,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "cookie_expires",
+      "label": "Days Until Cookie Expires",
+      "min": 1,
+      "max": 50,
+      "default": 5
+    }
+  ]
+}
+{% endschema %}

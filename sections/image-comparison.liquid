@@ -1,0 +1,449 @@
+{{ 'image-comparison.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  
+.image-comparison__figure {
+  margin: 0;
+  padding-top: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;
+}
+{%- endstyle -%}
+
+
+{%- liquid
+  assign full_width = '100vw'
+  assign widths = '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
+
+  if section.settings.image_behavior == 'ambient'
+    assign half_width = '60vw'
+    assign full_width = '120vw'
+    assign stacked_sizes = '(min-width: 749px) 60vw, 120vw'
+    assign widths = '450, 660, 900, 1320, 1800, 2136, 2400, 3600, 7680'
+  elsif section.settings.image_behavior == 'fixed' or section.settings.image_behavior == 'zoom-in'
+    assign half_width = '100vw'
+    assign stacked_sizes = '100vw'
+  else
+    assign half_width = '50vw'
+    assign stacked_sizes = '(min-width: 749px) 50vw, 100vw'
+  endif
+  assign fetch_priority = 'auto'
+  if section.index == 1
+    assign fetch_priority = 'high'
+  endif
+-%}
+<div class="color-{{ section.settings.color_scheme }} isolate gradient">
+  <div class="section-{{ section.id }}-padding {% if section.settings.layout == 'grid' %} page-width {% endif %}">
+    <div class="image-comparison color-{{ section.settings.container_color_scheme }}" data-component="image-comparison-slider">
+      <div class="image-comparison__wrap">
+        {%- if section.settings.image != blank -%}
+          <figure class="image-comparison__figure">
+            {%- liquid
+              assign image_height = section.settings.image.width | divided_by: section.settings.image.aspect_ratio
+              if section.settings.image_2 != blank
+                assign image_class = 'image-comparison__image before'
+              else
+                assign image_class = ''
+              endif
+              if section.settings.image_2 != blank and section.settings.stack_images_on_mobile
+                assign sizes = stacked_sizes
+              elsif section.settings.image_2 != blank
+                assign sizes = half_width
+              else
+                assign sizes = full_width
+              endif
+            -%}
+            {{
+              section.settings.image
+              | image_url: width: 3840
+              | image_tag:
+                width: section.settings.image.width,
+                height: image_height,
+                class: image_class,
+                sizes: sizes,
+                widths: widths,
+                fetchpriority: fetch_priority
+            }}
+            <figcaption class="image-comparison__caption image-comparison__caption--before">
+              <div class="image-comparison__caption-body">Before</div>
+            </figcaption>
+          </figure>
+        {%- else -%}
+          <div class="image-comparison__figure placeholder-svg">
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.image_2 != blank -%}
+          <div class="image-comparison__image-wrapper--overlay" data-image-comparison-overlay>
+            <figure class="image-comparison__figure image-comparison__figure--overlay">
+              {%- liquid
+                assign image_height_2 = section.settings.image_2.width | divided_by: section.settings.image_2.aspect_ratio
+                if section.settings.image != blank
+                  assign image_class_2 = 'image-comparison__image'
+                else
+                  assign image_class_2 = ''
+                endif
+                if section.settings.image != blank and section.settings.stack_images_on_mobile
+                  assign sizes = stacked_sizes
+                elsif section.settings.image_2 != blank
+                  assign sizes = half_width
+                else
+                  assign sizes = full_width
+                endif
+              -%}
+              {{
+                section.settings.image_2
+                | image_url: width: 3840
+                | image_tag:
+                  width: section.settings.image_2.width,
+                  height: image_height_2,
+                  class: image_class_2,
+                  sizes: sizes,
+                  widths: widths,
+                  fetchpriority: fetch_priority
+              }}
+            </figure>
+          </div>
+          <figcaption class="image-comparison__caption image-comparison__caption--after">
+            <div class="image-comparison__caption-body">After</div>
+          </figcaption>
+        {%- else -%}
+          <div class="image-comparison__image-wrapper--overlay" data-image-comparison-overlay style="width: 50%;">
+            <div class="image-comparison__figure placeholder-svg">
+              {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          </div>
+        {%- endif -%}
+
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value="50"
+          class="image-comparison__range"
+          aria-label="Image comparison range"
+          data-image-comparison-range
+        >
+
+        <div class="image-comparison__slider" data-comparison-slide>
+          <div class="image-comparison__thumb" data-image-comparison-thumb>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} Text Wrap {% endcomment %}
+      <div class="image-comparison-text">
+        <div class="image-text">
+          {%- if section.settings.subtitle != blank -%}
+            <p  class="subtitle" {{ section.shopify_attributes }}>{{ section.settings.subtitle }}</p>
+          {%- endif -%} 
+
+          <h2 id="SectionHeading-{{ section.id }}" 
+                class="image-text-heading inline-richtext {{ section.settings.heading_size }}">
+                {{ section.settings.title }}
+          </h2>
+
+          <div class="features-list">
+            {% for block in section.blocks %}
+              {% if block.type == 'feature' %}
+                <div class="imhg">
+                  {% if block.settings.feature_icon != blank %}
+                    <img src="{{ block.settings.feature_icon | image_url: width: 30, height: 30 }}" alt="icon">
+                  {% endif %}
+                  <p>{{ block.settings.feature_text }}</p>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="product-text">
+          {% if section.settings.product != blank %}
+            {% assign comp_product = all_products[section.settings.product] %}
+            {% if comp_product %}
+              <div class="img-com-pic">
+                {% if comp_product.featured_image %}
+                  <img src="{{ comp_product.featured_image | image_url: width: 400 }}" alt="{{ comp_product.title }}">
+                {% endif %}
+              </div>
+              <div class="product-info">
+                {% if comp_product.metafields.reviews.rating.value %}
+                  {% assign rating_value = comp_product.metafields.reviews.rating.value.rating | default: comp_product.metafields.reviews.rating.value %}
+                  {% assign rating_max = comp_product.metafields.reviews.rating.value.scale_max | default: 5 %}
+                  {% assign rating_count = comp_product.metafields.reviews.rating_count | default: 0 %}
+                  {% assign full_stars = rating_value | floor %}
+                  {% assign half_star = rating_value | modulo: 1 %}
+                  
+                  <div class="product-review">
+                    {% for i in (1..full_stars) %}
+                      ⭐
+                    {% endfor %}
+                    {% if half_star >= 0.5 %}
+                      ⭐
+                    {% endif %}
+                    {% comment %} Note: the following loop might be problematic in Liquid if rating_max - full_stars is small {% endcomment %}
+                    <span>({{ rating_count }})</span>
+                  </div>
+                {% endif %}
+
+                <p class="img-com-care care-type">{{ comp_product.metafields.custom.type_of_care.value | default: "Skin Care" }}</p>
+                <p class="img-com-title h4">{{ comp_product.title }}</p>
+                <p class="img-com-price">{{ comp_product.price | money }}</p>
+
+                <div class="product-action">
+                  <a href="{{ comp_product.url }}" class="go-to-product-btn">
+                     Explore Product
+                  </a>
+                </div>
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="no-product-selected">
+              <p>No product selected</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+<script>
+  const imageComparisonSlider = document.querySelector('[data-component="image-comparison-slider"]');
+
+  function setSliderstate(e, element) {
+    const sliderRange = element.querySelector('[data-image-comparison-range]');
+
+    if (e.type === 'input') {
+      sliderRange.classList.add('image-comparison__range--active');
+      return;
+    }
+
+    sliderRange.classList.remove('image-comparison__range--active');
+    element.removeEventListener('mousemove', moveSliderThumb);
+  }
+
+  function moveSliderThumb(e) {
+    const sliderRange = document.querySelector('[data-image-comparison-range]');
+    const thumb = document.querySelector('[data-image-comparison-thumb]');
+    let position = e.layerX;
+
+    if (e.layerX <= sliderRange.offsetLeft) {
+      position = 0;
+    }
+
+    if (e.layerX >= sliderRange.offsetWidth) {
+      position = sliderRange.offsetWidth;
+    }
+
+    thumb.style.left = `${position}px`;
+  }
+
+  function moveSliderRange(e, element) {
+    const value = e.target.value;
+    const slider = element.querySelector('[data-comparison-slide]');
+    const imageWrapperOverlay = element.querySelector('[data-image-comparison-overlay]');
+
+    slider.style.left = `${value}%`;
+    imageWrapperOverlay.style.width = `${value}%`;
+
+    element.addEventListener('mousemove', moveSliderThumb);
+    setSliderstate(e, element);
+  }
+
+  function init(element) {
+    const sliderRange = element.querySelector('[data-image-comparison-range]');
+
+    if ('ontouchstart' in window === false) {
+      sliderRange.addEventListener('mouseup', e => setSliderstate(e, element));
+      sliderRange.addEventListener('mousedown', moveSliderThumb);
+    }
+
+    sliderRange.addEventListener('input', e => moveSliderRange(e, element));
+    sliderRange.addEventListener('change', e => moveSliderRange(e, element));
+  }
+
+  init(imageComparisonSlider);
+</script>
+
+{% schema %}
+{
+  "name": "Image comparison",
+  "tag": "section",
+  "class": "section image-comparison-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+      {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "full_bleed",
+          "label": "t:sections.all.layout.options__1.label"
+        },
+        {
+          "value": "grid",
+          "label": "t:sections.all.layout.options__2.label"
+        }
+      ],
+      "default": "full_bleed",
+      "label": "t:sections.all.layout.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Before image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "After image"
+    },
+
+    {
+      "type": "select",
+      "id": "image_height",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.image-banner.settings.image_height.options__1.label"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.image-banner.settings.image_height.options__2.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.image-banner.settings.image_height.options__3.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.image-banner.settings.image_height.options__4.label"
+        }
+      ],
+      "default": "medium",
+      "label": "t:sections.image-banner.settings.image_height.label",
+      "info": "t:sections.image-banner.settings.image_height.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "container_color_scheme",
+      "label": "t:sections.multirow.settings.container_color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "pure with nature"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "t:sections.collection-list.settings.title.default",
+      "label": "t:sections.collection-list.settings.title.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        },
+        {
+          "value": "hxl",
+          "label": "t:sections.all.heading_size.options__4.label"
+        },
+        {
+          "value": "hxxl",
+          "label": "t:sections.all.heading_size.options__5.label"
+        }
+      ],
+      "default": "h2",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Select Product"
+    }
+  ],
+ "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "feature_icon",
+          "label": "Feature Icon"
+        },
+        {
+          "type": "text",
+          "id": "feature_text",
+          "label": "Feature Text",
+          "default": "Supports hydration, balance, and natural glow."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image comparison"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,290 @@
+{{ 'section-number-counter.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 749px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="number-counter-section section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  <div class="{% if section.settings.layout_width == 'grid' %}page-width{% endif %}">
+    {%- if section.settings.heading != blank -%}
+      <div class="title-wrapper-with-link title-wrapper--self-contained-tablet-down title-wrapper--no-top-margin center">
+        <h2 class="title inline-richtext {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+      </div>
+    {%- endif -%}
+
+    <div class="number-counter-container">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'number_count' -%}
+            <div class="number-counter-block" {{ block.shopify_attributes }} style="background-color: {{ block.settings.bg_color }};{% if block.settings.bg_image != blank %} background-image: url('{{ block.settings.bg_image | image_url: width: 800 }}');{% endif %} border-radius: {{ block.settings.border_radius }}px;">
+              
+              {%- if block.settings.image != blank -%}
+                <div class="number-counter-image" style="width:{{ block.settings.image_width }}px; max-width: 100%; margin-left: auto; margin-right: auto;">
+                  <img src="{{ block.settings.image | image_url: width: 600 }}" alt="{{ block.settings.image.alt | escape }}" loading="lazy" width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" style="width: 100%; height: auto;">
+                </div>
+              {%- endif -%}
+
+              {%- if block.settings.title != blank -%}
+                <h3 class="number-counter-title h3">{{ block.settings.title | escape }}</h3>
+              {%- endif -%}
+
+              <div class="number-counter-value" data-target="{{ block.settings.target_number }}" style="color: {{ block.settings.number_color }};">0</div>
+              
+              {%- if block.settings.label != blank -%}
+                <div class="number-counter-label" style="color: {{ block.settings.label_color }};">{{ block.settings.label }}</div>
+              {%- endif -%}
+
+              {%- if block.settings.description != blank -%}
+                <div class="number-counter-description rte">{{ block.settings.description }}</div>
+              {%- endif -%}
+
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.2
+    };
+
+    const counterObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = entry.target;
+          const targetNumber = parseInt(target.getAttribute('data-target'));
+          animateCounter(target, targetNumber);
+          observer.unobserve(target);
+        }
+      });
+    }, observerOptions);
+
+    const counters = document.querySelectorAll('.number-counter-value');
+    counters.forEach(counter => counterObserver.observe(counter));
+
+    function animateCounter(element, target) {
+      let current = 0;
+      const duration = 2000; // 2 seconds
+      const increment = target / (duration / 16); // 60fps
+
+      const updateCounter = () => {
+        current += increment;
+        if (current < target) {
+          element.innerText = Math.ceil(current);
+          requestAnimationFrame(updateCounter);
+        } else {
+          element.innerText = target;
+        }
+      };
+
+      updateCounter();
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Number Counter",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Our Achievements",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        }
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "layout_width",
+      "options": [
+        {
+          "value": "full_bleed",
+          "label": "t:sections.all.layout.options__1.label"
+        },
+        {
+          "value": "grid",
+          "label": "t:sections.all.layout.options__2.label"
+        }
+      ],
+      "default": "grid",
+      "label": "t:sections.all.layout.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "number_count",
+      "name": "Number Count",
+      "settings": [
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background Color",
+          "default": "transparent"
+        },
+        {
+          "type": "image_picker",
+          "id": "bg_image",
+          "label": "Background Image"
+        },
+        {
+          "type": "range",
+          "id": "border_radius",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "label": "Corner radius",
+          "default": 8
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Icon/Image"
+        },
+        {
+          "type": "range",
+          "id": "image_width",
+          "min": 20,
+          "max": 300,
+          "step": 5,
+          "unit": "px",
+          "label": "Icon/Image width",
+          "default": 100
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Add a description about this metric here.</p>"
+        },
+        {
+          "type": "number",
+          "id": "target_number",
+          "label": "Target Number",
+          "default": 100
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Customers"
+        },
+        {
+          "type": "color",
+          "id": "number_color",
+          "label": "Number Color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "label_color",
+          "label": "Label Color",
+          "default": "#666666"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Number Counter",
+      "blocks": [
+        {
+          "type": "number_count",
+          "settings": {
+            "target_number": 100,
+            "label": "Projects Done"
+          }
+        },
+        {
+          "type": "number_count",
+          "settings": {
+            "target_number": 500,
+            "label": "Happy Clients"
+          }
+        },
+        {
+          "type": "number_count",
+          "settings": {
+            "target_number": 50,
+            "label": "Awards Won"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

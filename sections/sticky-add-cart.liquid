@@ -1,0 +1,227 @@
+<style>
+.sticky-section {
+  position: fixed;
+  bottom: 20px;
+  right: 40px;
+  width: clamp(240px, 32vw, 360px); 
+  background: var(--gradient-background);
+  padding: clamp(10px, 1.5vw, 16px);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 2;
+  align-items: center;
+}
+
+.image-part {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1vw, 12px);
+}
+
+.product-featured-image {
+  width: clamp(50px, 12vw, 70px);
+  height: auto;
+  border-radius: 10px;
+}
+
+.pro-details {
+  line-height: 1.2;
+  flex: 1;
+}
+
+#variantPrice-{{ section.id }} {
+  font-size: clamp(13px, 1.4vw, 16px);
+  margin-top: 4px;
+}
+
+.product-form__submit {
+  min-width: clamp(90px, 35%, 130px);
+  padding: 6px 12px !important;
+  border-radius: 10px !important;
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sticky-section {
+    right: 30px;
+    bottom: 15px;
+    width: clamp(220px, 40vw, 340px);
+  }
+
+  .product-featured-image {
+    width: clamp(45px, 15vw, 60px);
+  }
+
+  .product-form__submit {
+    min-width: clamp(80px, 35%, 120px);
+  }
+}
+
+@media (max-width: 768px) {
+  .sticky-section {
+    right: 50%;
+    transform: translateX(50%);
+    width: clamp(240px, 80vw, 335px);
+  }
+}
+
+@media (max-width: 430px) {
+  .sticky-section {
+    width: 90%;
+    bottom: 12px;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .image-part {
+    width: 100%;
+  }
+
+  .product-featured-image {
+    width: 20%;
+    min-width: 45px;
+  }
+
+  .product-form__submit {
+    width: 100%;
+    min-width: unset;
+    font-size: 13px;
+  }
+}
+
+</style>
+
+<div class="sticky-section" id="stickyProduct">
+  <div class="image-part">
+    {% assign first_variant = product.selected_or_first_available_variant %}
+    {% if product.featured_image %}
+      <img
+        class="product-featured-image"
+        src="{{ product.featured_image | image_url: width: 120 }}"
+        alt="{{ product.featured_image.alt | escape }}"
+        loading="lazy"
+        width="90"
+        height="{{ 90 | divided_by: product.featured_image.aspect_ratio | round }}"
+      >
+    {% endif %}
+
+    <div class="pro-details">
+      {{ product.title | truncatewords: 3 }}
+      <div id="variantPrice-{{ section.id }}" style="font-weight:700; margin-top:6px;">
+        {{ first_variant.price | money }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Shopify Product Form -->
+  <product-form
+    class="product-form"
+    data-section-id="{{ section.id }}"
+    data-hide-errors="{{ gift_card_recipient_feature_active }}"
+    data-no-dynamic-checkout
+  >
+    {%- form 'product',
+      product,
+      id: product_form_id,
+      class: 'form',
+      novalidate: 'novalidate',
+      data-type: 'add-to-cart-form'
+    -%}
+
+    <input 
+      type="hidden" 
+      id="variant-id-input-{{ section.id }}"
+      name="id" 
+      value="{{ first_variant.id }}"
+      class="product-variant-id"
+    />
+
+    <div class="product-form__buttons">
+      <button
+        id="ProductSubmitButton-{{ section_id }}"
+        type="submit"
+        name="add"
+        class="product-form__submit button button--full-width button--primary"
+        style="padding:0;border-radius:15px;"
+      >
+        <span>Add To Cart</span>
+        {%- render 'loading-spinner' -%}
+      </button>
+    </div>
+
+    {%- endform -%}
+  </product-form>
+</div>
+
+<script type="application/json" id="ProductJson-{{ section.id }}">
+  {{ product | json }}
+</script>
+
+<script>
+(function() {
+  const sectionId = '{{ section.id }}';
+  const variantInput = document.getElementById('variant-id-input-' + sectionId);
+  const variantPrice = document.getElementById('variantPrice-' + sectionId);
+  const stickyImg = document.querySelector('#stickyProduct .product-featured-image');
+  const productJsonEl = document.getElementById('ProductJson-' + sectionId);
+
+  if (!productJsonEl) return;
+
+  const productData = JSON.parse(productJsonEl.textContent || "{}");
+
+  function formatMoney(cents) {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: '{{ shop.currency }}'
+    }).format(cents / 100);
+  }
+
+  function updateVariant(variantId) {
+    const v = productData.variants.find(x => String(x.id) === String(variantId));
+    if (!v) return;
+
+    variantInput.value = v.id;
+    if (variantPrice) variantPrice.textContent = formatMoney(v.price);
+    if (v.featured_image && stickyImg) {
+      stickyImg.src = v.featured_image.src;
+      stickyImg.alt = v.featured_image.alt || v.title;
+    }
+  }
+
+  document.addEventListener('change', function(e) {
+    if (e.target.name === "id") {
+      updateVariant(e.target.value);
+    }
+  });
+
+  const firstVariantId =
+    productData.selected_variant?.id ||
+    document.querySelector('select[name="id"]')?.value ||
+    document.querySelector('input[name="id"]:checked')?.value ||
+    productData.variants[0]?.id;
+
+  if (firstVariantId) updateVariant(firstVariantId);
+
+})();
+</script>
+
+<script>
+const stickyProduct = document.getElementById("stickyProduct");
+
+window.addEventListener('scroll', function() {
+  if (document.body.scrollTop > window.innerHeight || document.documentElement.scrollTop > window.innerHeight) {
+    stickyProduct.style.display = "flex";
+  } else {
+    stickyProduct.style.display = "none";
+  }
+});
+</script>
+
+{% schema %}
+{
+  "name": "Variant Name Display",
+  "settings": [],
+  "presets": [ { "name": "Variant Name Display" } ]
+}
+{% endschema %}
