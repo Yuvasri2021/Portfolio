@@ -209,6 +209,7 @@
                     </a>
                   </div>
                 {%- endif -%}
+                  <div>{{ block.settings.icon-image }}</div>
               </div>
             </div>
           </div>
@@ -535,6 +536,11 @@
           "id": "button_style_secondary",
           "label": "t:sections.slideshow.blocks.slide.settings.secondary_style.label",
           "default": false
+        },
+         {
+          "type": "image_picker",
+          "id": "icon-image",
+          "label": "t:sections.slideshow.blocks.slide.settings.image.label"
         },
         {
           "type": "select",
