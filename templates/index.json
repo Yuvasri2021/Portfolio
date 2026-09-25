@@ -23,7 +23,7 @@
             "subheading": "From Design to Development, I help brands create beautiful, high-performing Shopify stores that are fast, responsive and build for growth.",
             "button_label": "View My Work",
             "link": "#",
-            "button_style_secondary": true,
+            "button_style_secondary": false,
             "box_align": "middle-left",
             "show_text_box": false,
             "text_alignment": "left",
