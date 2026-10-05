@@ -144,6 +144,7 @@
       "blocks": {
         "forms_inline_PfHTAi": {
           "type": "shopify://apps/forms/blocks/inline/8744a304-fcb1-4347-b211-bb6b4759a76a",
+          "disabled": true,
           "settings": {
             "form_id": "1174906",
             "text_color": "#202020",
@@ -163,7 +164,6 @@
       "block_order": [
         "forms_inline_PfHTAi"
       ],
-      "disabled": true,
       "settings": {
         "include_margins": true
       }
