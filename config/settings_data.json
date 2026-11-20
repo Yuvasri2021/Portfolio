@@ -9,7 +9,7 @@
  */
 {
   "current": {
-    "logo": "shopify://shop_images/White_Logo_faf54273-56ce-4989-9427-075a9d9212ff.png",
+    "logo": "shopify://shop_images/yuva-logo.png",
     "logo_width": 200,
     "favicon": "shopify://shop_images/White_Logo.png",
     "enable_preloader": false,
@@ -198,7 +198,7 @@
       },
       "scheme-2": {
         "settings": {
-          "background": "#203729",
+          "background": "#000000",
           "background_gradient": "",
           "text": "#ffffff",
           "button": "#ffffff",
