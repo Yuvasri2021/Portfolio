@@ -11,7 +11,7 @@
   "current": {
     "logo": "shopify://shop_images/yuva-logo.png",
     "logo_width": 200,
-    "favicon": "shopify://shop_images/White_Logo.png",
+    "favicon": "shopify://shop_images/yuva-fevicon.png",
     "enable_preloader": false,
     "type_header_font": "ebgaramond_n7",
     "heading_text_transform": "capitalize",
