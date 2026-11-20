@@ -13,7 +13,7 @@
     "logo_width": 200,
     "favicon": "shopify://shop_images/White_Logo.png",
     "enable_preloader": false,
-    "type_header_font": "frank_ruhl_libre_n6",
+    "type_header_font": "ebgaramond_n7",
     "heading_text_transform": "capitalize",
     "heading_scale": 100,
     "type_body_font": "inter_n4",
@@ -204,7 +204,7 @@
           "button": "#ffffff",
           "button_label": "#203729",
           "secondary_button_label": "#ffffff",
-          "button_hover": "#DCE5DF",
+          "button_hover": "#dce5df",
           "shadow": "#cacaca"
         }
       },
