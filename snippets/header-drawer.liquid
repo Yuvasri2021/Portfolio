@@ -5,28 +5,23 @@
   {% render 'header-drawer' %}
 {% endcomment %}
 {%- assign shop_mega_menu = false -%}
-{%- assign promomenu = '' -%}
 
 {%- for block in section.blocks -%}
   {% for i in (1..5) %}
+    {%- assign map_item = '' -%}
+    {%- assign link_title = link.title | escape | strip | handleize -%}
     {%- assign shop_menu_collect = i | prepend: 'mega_' -%}
-
     {% if block.settings[shop_menu_collect] != blank %}
       {% assign map_item = block.settings[shop_menu_collect] | handleize %}
-      {% assign link_title = link.title | handleize %}
-
-      {% if link_title == map_item %}
-        {% assign shop_mega_menu = true %}
-
-        {% capture promomenu %}
+      {%- if link_title == map_item -%}
+        {%- assign shop_mega_menu = true -%}
+        {%- capture promomenu -%}
           {% render 'promo-menu', block: block %}
-        {% endcapture %}
-
-      {% endif %}
-    {% endif %}
-  {% endfor %}
-{% endfor %}
-
+        {%- endcapture -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
 
 <li>
   {%- if link.links != blank -%}
@@ -110,11 +105,7 @@
                   {%- endif -%}
                 </li>
               {%- endfor -%}
-              {% if shop_mega_menu %}
-  <div class="mobile-mega-menu-promo">
-    {{ promomenu }}
-  </div>
-{% endif %}
+              {{ promomenu }}
             </ul>
           </div>
         </div>
