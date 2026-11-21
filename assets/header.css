@@ -653,30 +653,23 @@ header-menu .full_bleed {
 
 
  @media screen and (max-width: 989px) {
-
   .mobile-promo-wrapper {
-    list-style: none;
-    padding: 15px;
-  }
-
-  .mobile-promo-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
-    padding: 0;
-    margin: 0;
+    padding: 15px;
   }
 
-  .mobile-promo-grid .mega-menu__link {
+  .mobile-promo-wrapper .mega-menu__link {
     width: 100%;
-    list-style: none;
     margin: 0;
+    list-style: none;
   }
 
-  .mobile-promo-grid .mega-promo-image {
+  .mobile-promo-wrapper .mega-promo-image {
+    display: block;
     width: 100%;
     height: auto;
-    display: block;
     object-fit: cover;
   }
 }
