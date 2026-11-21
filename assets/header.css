@@ -623,4 +623,23 @@ header-menu .full_bleed {
     color: #EE7428;
 } */
 
+.header-menu-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
 
+.menu-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.header-menu-link:hover .menu-icon,
+.header-menu-link[aria-current="page"] .menu-icon {
+  opacity: 1;
+  visibility: visible;
+}
