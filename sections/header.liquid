@@ -359,7 +359,7 @@ justify-content: flex-start;
           <nav class="menu-drawer__navigation">
             <ul class="menu-drawer__menu has-submenu list-menu" role="list">
               {%- for link in section.settings.menu.links -%}
-{% render 'header-drawer', link: link, section: section %}
+                  {% render 'header-drawer', link: link %}
                 {%- endfor -%}
             </ul>
           </nav>
