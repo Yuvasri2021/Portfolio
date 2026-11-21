@@ -18,7 +18,8 @@
           "type": "Promo-menu",
           "disabled": true,
           "settings": {
-            "mega_1": "Japa Challange",
+            "mega_1": "Home",
+            "header_image": "shopify://shop_images/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg",
             "image_link_1": "",
             "image_link_2": "",
             "image_link_3": "",
