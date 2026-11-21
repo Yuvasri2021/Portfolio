@@ -10,27 +10,24 @@
 {%- assign link_title = link.title | strip | handleize -%}
 
 {%- for block in section.blocks -%}
-  {%- for i in (1..5) -%}
 
-    {%- assign shop_menu_collect = i | prepend: 'mega_' -%}
+  {%- if block.type == 'Promo-menu' -%}
 
-    {%- if block.settings[shop_menu_collect] != blank -%}
+    {%- assign map_item = block.settings.mega_1 | strip | handleize -%}
 
-      {%- assign map_item = block.settings[shop_menu_collect] | handleize -%}
+    {%- if link_title == map_item and map_item != blank -%}
 
-      {%- if link_title == map_item -%}
+      {%- assign shop_mega_menu = true -%}
 
-        {%- assign shop_mega_menu = true -%}
+      {%- capture promomenu -%}
+        {% render 'promo-menu', block: block %}
+      {%- endcapture -%}
 
-        {%- capture promomenu -%}
-          {% render 'promo-menu', block: block %}
-        {%- endcapture -%}
-
-      {%- endif -%}
     {%- endif -%}
-  {%- endfor -%}
-{%- endfor -%}
 
+  {%- endif -%}
+
+{%- endfor -%}
 
 <li>
   {%- if link.links != blank -%}
