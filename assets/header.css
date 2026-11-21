@@ -643,3 +643,10 @@ header-menu .full_bleed {
   opacity: 1;
   visibility: visible;
 }
+
+ .header__menu-item {
+   display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+ }
