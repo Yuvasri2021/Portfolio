@@ -650,3 +650,37 @@ header-menu .full_bleed {
     align-items: center;
     gap: 5px;
  }
+
+
+ /* Mobile Mega Menu Promo Images */
+
+@media screen and (max-width: 749px) {
+
+  .mobile-mega-menu-promo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 15px;
+    width: 100%;
+  }
+
+  .mobile-mega-menu-promo .mega-menu__link {
+    list-style: none;
+    width: 100%;
+    margin: 0;
+  }
+
+  .mobile-mega-menu-promo .promo-banner-image {
+    display: block;
+    width: 100%;
+  }
+
+  .mobile-mega-menu-promo .mega-promo-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+}
