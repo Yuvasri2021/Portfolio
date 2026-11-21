@@ -644,7 +644,7 @@ header-menu .full_bleed {
   visibility: visible;
 }
 
- .header__menu-item , .header__active-menu-item{
+.header__menu-item, .header__active-menu-item{
    display: flex;
     justify-content: center;
     align-items: center;
