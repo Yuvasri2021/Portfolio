@@ -651,25 +651,15 @@ header-menu .full_bleed {
     gap: 5px;
  }
 
+.mobile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
- @media screen and (max-width: 989px) {
-  .mobile-promo-wrapper {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    padding: 15px;
-  }
-
-  .mobile-promo-wrapper .mega-menu__link {
-    width: 100%;
-    margin: 0;
-    list-style: none;
-  }
-
-  .mobile-promo-wrapper .mega-promo-image {
-    display: block;
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-  }
+.mobile-menu-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
