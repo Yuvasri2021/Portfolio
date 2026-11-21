@@ -445,6 +445,26 @@ justify-content: flex-start;
     {%- for link in linklists[section.settings.menu].links -%}
     {% render 'header-mega-menu', link: link %}
      {%- endfor -%}
+     {% for link in section.settings.menu.links %}
+
+  {% assign icon_key = 'menu_icon_' | append: forloop.index %}
+  {% assign menu_icon = section.settings[icon_key] %}
+
+  <a href="{{ link.url }}" class="header-menu-link">
+
+    <span>{{ link.title }}</span>
+
+    {% if menu_icon != blank %}
+      {{
+        menu_icon
+        | image_url: width: 40
+        | image_tag: class: 'menu-icon'
+      }}
+    {% endif %}
+
+  </a>
+
+{% endfor %}
   </ul>
       </nav>
       
