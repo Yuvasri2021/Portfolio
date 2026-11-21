@@ -52,17 +52,17 @@
               class="header__active-menu-item"
             {% endif %}
           >
+            {% if menu_icon != blank %}
+  {{
+    menu_icon
+    | image_url: width: 30
+    | image_tag: class: 'header-menu-icon'
+  }}
+{% endif %}   
 <span class="menu-title">
   {{ link.title | escape }}
 </span>
-
-{% if menu_icon != blank %}
-  {{
-    menu_icon
-    | image_url: width: 40
-    | image_tag: class: 'header-menu-icon'
-  }}
-{% endif %}            {% assign main__tag = link.handle %}
+         {% assign main__tag = link.handle %}
             {% if new_tag contains main__tag %}
               <em class="new-tag">{{ new_label }}</em>
             {% elsif sale_tag contains main__tag %}
@@ -197,17 +197,18 @@
                 class="header__active-menu-item"
               {% endif %}
             >
+              {% if menu_icon != blank %}
+  {{
+    menu_icon
+    | image_url: width: 30
+    | image_tag: class: 'header-menu-icon'
+  }}
+{% endif %}    
 <span class="menu-title">
   {{ link.title | escape }}
 </span>
 
-{% if menu_icon != blank %}
-  {{
-    menu_icon
-    | image_url: width: 40
-    | image_tag: class: 'header-menu-icon'
-  }}
-{% endif %}              {% assign map__tag = link.handle %}
+          {% assign map__tag = link.handle %}
               {% if new_tag contains map__tag %}
                 <em class="new-tag">{{ new_label }}</em>
               {% endif %}
@@ -244,17 +245,17 @@
             class="header__active-menu-item"
           {% endif %}
         >
+          {% if menu_icon != blank %}
+  {{
+    menu_icon
+    | image_url: width: 30
+    | image_tag: class: 'header-menu-icon'
+  }}
+{% endif %}  
 <span class="menu-title">
   {{ link.title | escape }}
 </span>
-
-{% if menu_icon != blank %}
-  {{
-    menu_icon
-    | image_url: width: 40
-    | image_tag: class: 'header-menu-icon'
-  }}
-{% endif %}          {% assign main__tag = link.handle %}
+        {% assign main__tag = link.handle %}
           {% if new_tag contains main__tag %}
             <em class="new-tag">{{ new_label }}</em>
           {% endif %}
