@@ -5,28 +5,22 @@
   {% render 'header-drawer' %}
 {% endcomment %}
 {%- assign shop_mega_menu = false -%}
-{%- assign promomenu = '' -%}
-
-{%- assign link_title = link.title | strip | handleize -%}
 
 {%- for block in section.blocks -%}
-
-  {%- if block.type == 'Promo-menu' -%}
-
-    {%- assign map_item = block.settings.mega_1 | strip | handleize -%}
-
-    {%- if link_title == map_item and map_item != blank -%}
-
-      {%- assign shop_mega_menu = true -%}
-
-      {%- capture promomenu -%}
-        {% render 'promo-menu', block: block %}
-      {%- endcapture -%}
-
+  {% for i in (1..5) %}
+    {%- assign map_item = '' -%}
+    {%- assign link_title = link.title | escape | strip | handleize -%}
+    {%- assign shop_menu_collect = i | prepend: 'mega_' -%}
+    {% if block.settings[shop_menu_collect] != blank %}
+      {% assign map_item = block.settings[shop_menu_collect] | handleize %}
+      {%- if link_title == map_item -%}
+        {%- assign shop_mega_menu = true -%}
+        {%- capture promomenu -%}
+          {% render 'promo-menu', block: block %}
+        {%- endcapture -%}
+      {%- endif -%}
     {%- endif -%}
-
-  {%- endif -%}
-
+  {%- endfor -%}
 {%- endfor -%}
 
 <li>
@@ -111,13 +105,8 @@
                   {%- endif -%}
                 </li>
               {%- endfor -%}
-{% if shop_mega_menu and promomenu != blank %}
-  <li class="mobile-promo-wrapper">
-    <ul class="mobile-promo-grid">
-      {{ promomenu }}
-    </ul>
-  </li>
-{% endif %}      </ul>
+              {{ promomenu }}
+            </ul>
           </div>
         </div>
       {% else %}
