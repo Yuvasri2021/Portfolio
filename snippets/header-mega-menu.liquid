@@ -5,6 +5,9 @@
   {% render 'header-mega-menu' %}
 {% endcomment %}
 
+{% assign icon_key = 'menu_icon_' | append: menu_index %}
+{% assign menu_icon = section.settings[icon_key] %}
+
 {%- assign shop_mega_menu = false -%}
 {% if section.settings.enable_new %}
   {% assign new_tag = section.settings.new_tags | split: ',' | strip | downcase | handle %}
@@ -49,8 +52,17 @@
               class="header__active-menu-item"
             {% endif %}
           >
-            {{- link.title | escape -}}
-            {% assign main__tag = link.handle %}
+<span class="menu-title">
+  {{ link.title | escape }}
+</span>
+
+{% if menu_icon != blank %}
+  {{
+    menu_icon
+    | image_url: width: 40
+    | image_tag: class: 'header-menu-icon'
+  }}
+{% endif %}            {% assign main__tag = link.handle %}
             {% if new_tag contains main__tag %}
               <em class="new-tag">{{ new_label }}</em>
             {% elsif sale_tag contains main__tag %}
