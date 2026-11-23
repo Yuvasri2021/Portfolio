@@ -663,33 +663,3 @@ header-menu .full_bleed {
   object-fit: contain;
   flex-shrink: 0;
 }
-
-/* SVG icon default - White */
-.mobile-menu-icon {
-  filter: none;
-  transition: filter 0.3s ease;
-}
-
-/* Pink icon filter */
-.mobile-menu-icon {
-  --pink-icon-filter: brightness(0) saturate(100%)
-    invert(66%) sepia(42%) saturate(2143%)
-    hue-rotate(292deg) brightness(101%) contrast(101%);
-}
-
-/* Mobile hover and active */
-.menu-drawer a:hover .mobile-menu-icon,
-.menu-drawer summary:hover .mobile-menu-icon,
-.menu-drawer a[aria-current="page"] .mobile-menu-icon {
-  filter: var(--pink-icon-filter);
-}
-
-/* Desktop hover */
-.header__menu-item:hover .mobile-menu-icon {
-  filter: var(--pink-icon-filter);
-}
-
-/* Desktop active menu */
-.header__menu-item[aria-current="page"] .mobile-menu-icon {
-  filter: var(--pink-icon-filter);
-}
