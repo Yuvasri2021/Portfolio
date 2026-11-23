@@ -672,17 +672,19 @@ header-menu .full_bleed {
 
 /* Desktop hover - Pink */
 @media screen and (min-width: 990px) {
-  .header__menu-item:hover .header-menu-icon {
+  .header__menu-item:hover .header-menu-icon, .header__menu-item span {
     filter: brightness(0) saturate(100%)
       invert(66%) sepia(42%) saturate(2143%)
       hue-rotate(292deg) brightness(101%) contrast(101%);
   }
 
   /* Desktop active menu - Pink */
-  .header__menu-item[aria-current="page"] .header-menu-icon {
+  .header__menu-item[aria-current="page"] .header-menu-icon, .header__menu-item span {
     filter: brightness(0) saturate(100%)
       invert(66%) sepia(42%) saturate(2143%)
       hue-rotate(292deg) brightness(101%) contrast(101%);
   }
 }
+
+
 
