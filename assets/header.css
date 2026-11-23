@@ -686,13 +686,3 @@ header-menu .full_bleed {
   }
 }
 
-/* Desktop icon hover and active - #F02DAB */
-@media screen and (min-width: 990px) {
-  .header__menu-item:hover .header-menu-icon,
-  .header__menu-item[aria-current="page"] .header-menu-icon,
-  .header__menu-item[aria-expanded="true"] .header-menu-icon {
-    filter: brightness(0) saturate(100%)
-      invert(27%) sepia(94%) saturate(4347%)
-      hue-rotate(296deg) brightness(95%) contrast(104%) !important;
-  }
-}
