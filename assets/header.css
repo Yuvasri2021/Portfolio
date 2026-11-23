@@ -664,19 +664,3 @@ header-menu .full_bleed {
   flex-shrink: 0;
 }
 
-@media screen and (min-width: 990px) {
-
-  .desktop-menu-icon {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-    transition: filter 0.3s ease;
-  }
-
-  .header__menu-item:hover .desktop-menu-icon,
-  .header__menu-item[aria-current="page"] .desktop-menu-icon {
-    filter: brightness(0) saturate(100%)
-      invert(66%) sepia(42%) saturate(2143%)
-      hue-rotate(292deg) brightness(101%) contrast(101%);
-  }
-}
